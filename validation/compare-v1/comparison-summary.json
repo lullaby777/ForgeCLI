@@ -1,0 +1,28 @@
+{
+  "results": [
+    {
+      "task": "task02",
+      "arm": "original",
+      "status": "not_run"
+    },
+    {
+      "task": "task02",
+      "arm": "improved",
+      "status": "not_run"
+    },
+    {
+      "task": "task04",
+      "arm": "original",
+      "status": "not_run"
+    },
+    {
+      "task": "task04",
+      "arm": "improved",
+      "status": "not_run"
+    }
+  ],
+  "initial_requests_match": {
+    "task02": null,
+    "task04": null
+  }
+}

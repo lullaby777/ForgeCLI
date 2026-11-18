@@ -1,0 +1,318 @@
+"""Default-constructed agents must not share task lists or sub-agent links.
+
+Everything here runs offline: a fake model stands in for the real API, so no
+network call is ever made.
+"""
+
+from typing import ClassVar
+
+import pytest
+
+from corecoder.agent import Agent
+from corecoder.hooks import Hooks
+from corecoder.llm import LLMResponse, ToolCall
+from corecoder.permissions import Permission
+from corecoder.tools import ALL_TOOLS
+from corecoder.tools.agent import AgentTool
+from corecoder.tools.base import Tool
+from corecoder.tools.todo import TodoWriteTool
+
+
+class FakeLLM:
+    """A stand-in model: records what it was asked, replays canned replies."""
+
+    def __init__(self, replies=None, model="fake-model"):
+        self.model = model
+        self.replies = list(replies or [])
+        self.calls = []
+        self.total_prompt_tokens = 0
+        self.total_completion_tokens = 0
+        self.estimated_cost = None
+
+    def chat(self, messages, tools=None, on_token=None, on_reasoning=None):
+        self.calls.append({"messages": messages, "tools": tools})
+        if self.replies:
+            return self.replies.pop(0)
+        return LLMResponse(content="(fake) done")
+
+
+def todo_of(agent) -> TodoWriteTool:
+    return agent._tool_by_name["todo_write"]
+
+
+def agent_tool_of(agent) -> AgentTool:
+    return agent._tool_by_name["agent"]
+
+
+# --- requirement 1: one empty, independent task list per default agent ---
+
+
+def test_default_agents_start_with_separate_empty_task_lists():
+    a = Agent(llm=FakeLLM())
+    b = Agent(llm=FakeLLM())
+
+    assert isinstance(todo_of(a), TodoWriteTool)
+    assert isinstance(todo_of(b), TodoWriteTool)
+    assert todo_of(a) is not todo_of(b)
+    assert todo_of(a)._tasks == []
+    assert todo_of(b)._tasks == []
+
+
+def test_writing_a_task_list_does_not_leak_into_the_next_default_agent():
+    llm_a = FakeLLM()
+    a = Agent(llm=llm_a)
+    todo_a = todo_of(a)
+    todo_a.execute(tasks=[{"content": "A's private roadmap", "status": "in_progress"}])
+    assert "A's private roadmap" in a._full_messages()[0]["content"]
+
+    b = Agent(llm=FakeLLM())
+
+    # the new agent's prompt is clean, and so is its own checklist
+    prompt_b = b._full_messages()[0]["content"]
+    assert "A's private roadmap" not in prompt_b
+    assert "# Current task list" not in prompt_b
+    assert todo_of(b)._tasks == []
+    # ... while A keeps what it wrote
+    assert todo_a._tasks == [{"content": "A's private roadmap", "status": "in_progress"}]
+
+
+def test_updating_one_agents_task_list_leaves_the_other_alone():
+    a = Agent(llm=FakeLLM())
+    todo_a = todo_of(a)
+    todo_a.execute(tasks=[{"content": "A task", "status": "pending"}])
+
+    b = Agent(llm=FakeLLM())
+    todo_b = todo_of(b)
+    todo_b.execute(tasks=[{"content": "B task", "status": "done"}])
+
+    assert todo_a.render() == "1. [pending] A task"
+    assert todo_b.render() == "1. [done] B task"
+    assert "B task" not in a._full_messages()[0]["content"]
+    assert "A task" not in b._full_messages()[0]["content"]
+
+    # clearing one list must not wipe the other
+    todo_b.execute(tasks=[])
+    assert todo_b._tasks == []
+    assert todo_a.render() == "1. [pending] A task"
+
+    todo_a.execute(tasks=[])
+    assert todo_a._tasks == []
+
+
+def test_reset_clears_only_the_calling_agents_task_list():
+    a = Agent(llm=FakeLLM())
+    b = Agent(llm=FakeLLM())
+    todo_of(a).execute(tasks=[{"content": "A task", "status": "pending"}])
+    todo_of(b).execute(tasks=[{"content": "B task", "status": "pending"}])
+
+    a.reset()
+
+    assert todo_of(a)._tasks == []
+    assert "# Current task list" not in a._full_messages()[0]["content"]
+    assert todo_of(b).render() == "1. [pending] B task"
+
+
+def test_full_loop_task_lists_and_histories_stay_per_agent():
+    """The reported repro, driven end to end through the fake model."""
+    llm_a = FakeLLM([
+        LLMResponse(tool_calls=[ToolCall(
+            id="a1",
+            name="todo_write",
+            arguments={"tasks": [{"content": "A-only step", "status": "in_progress"}]},
+        )]),
+        LLMResponse(content="A done"),
+    ])
+    a = Agent(llm=llm_a)
+    assert a.chat("plan A") == "A done"
+
+    llm_b = FakeLLM([
+        LLMResponse(tool_calls=[ToolCall(
+            id="b1",
+            name="todo_write",
+            arguments={"tasks": [{"content": "B-only step", "status": "pending"}]},
+        )]),
+        LLMResponse(content="B done"),
+    ])
+    b = Agent(llm=llm_b)
+    # before B does anything, its prompt carries none of A's checklist
+    assert "A-only step" not in b._full_messages()[0]["content"]
+    assert b.chat("plan B") == "B done"
+
+    assert a._full_messages()[0]["content"].count("A-only step") == 1
+    assert "B-only step" not in a._full_messages()[0]["content"]
+    assert b._full_messages()[0]["content"].count("B-only step") == 1
+    assert "A-only step" not in b._full_messages()[0]["content"]
+    # histories never cross
+    assert all("plan B" not in str(m) for m in a.messages)
+    assert all("plan A" not in str(m) for m in b.messages)
+
+
+def test_default_tool_sets_are_fresh_instances_with_the_same_contract():
+    a = Agent(llm=FakeLLM())
+    b = Agent(llm=FakeLLM())
+
+    assert a.tools is not b.tools
+    assert a.tools is not ALL_TOOLS
+    # same names, schemas and order as the canonical registry
+    assert [t.name for t in a.tools] == [t.name for t in ALL_TOOLS]
+    assert [t.schema() for t in a.tools] == [t.schema() for t in ALL_TOOLS]
+    # but no shared object between the two agents
+    assert not {id(t) for t in a.tools} & {id(t) for t in b.tools}
+
+
+# --- requirement 2: a later default agent must not steal the parent link ---
+
+
+def test_creating_another_default_agent_keeps_the_first_parent_link(monkeypatch):
+    llm_a = FakeLLM()
+    a = Agent(llm=llm_a)
+    tool_a = agent_tool_of(a)
+    assert tool_a._parent_agent is a
+
+    b = Agent(llm=FakeLLM())
+
+    # B's construction did not re-point A's sub-agent tool
+    assert tool_a._parent_agent is a
+    tool_b = agent_tool_of(b)
+    assert tool_b._parent_agent is b
+    assert tool_b is not tool_a
+
+    seen = {}
+
+    def fake_chat(self, text, **kwargs):
+        seen["child"] = self
+        return "report"
+
+    monkeypatch.setattr(Agent, "chat", fake_chat)
+    assert tool_a.execute(task="do the thing") == "[Sub-agent completed]\nreport"
+    assert seen["child"].llm is llm_a  # A's model, not B's
+
+
+# --- requirement 3: sub-agents inherit the owning parent ---
+
+
+def test_sub_agent_inherits_parent_settings_and_cannot_recurse(monkeypatch):
+    permission = Permission(allow_all=True)
+    hooks = Hooks(pre=[], post=[])
+    llm_a = FakeLLM()
+    a = Agent(llm=llm_a, permission=permission, hooks=hooks, max_context_tokens=4096)
+    todo_of(a).execute(tasks=[{"content": "parent task", "status": "pending"}])
+
+    # a second default agent, to prove nothing below is wired to the newest one
+    b = Agent(llm=FakeLLM(), max_context_tokens=99_000)
+
+    captured = {}
+
+    def fake_chat(self, text, **kwargs):
+        captured["child"] = self
+        captured["text"] = text
+        return "child report"
+
+    monkeypatch.setattr(Agent, "chat", fake_chat)
+    assert agent_tool_of(a).execute(task="inspect") == "[Sub-agent completed]\nchild report"
+    child = captured["child"]
+
+    assert child is not a and child is not b
+    assert child.llm is llm_a
+    assert child.permission is permission
+    assert child.hooks is hooks
+    assert child.context.max_tokens == a.context.max_tokens
+    assert child.context.max_tokens != b.context.max_tokens
+    # its own empty checklist, no recursive agent tool, own message history
+    assert child._todo is not None and child._todo._tasks == []
+    assert child._todo is not todo_of(a)
+    assert [t.name for t in child.tools] == [t.name for t in a.tools if t.name != "agent"]
+    assert not any(isinstance(t, AgentTool) for t in child.tools)
+    assert "agent" not in child._tool_by_name
+    assert child.messages == []
+    assert a.messages == []
+
+
+def test_sub_agent_task_list_never_touches_the_parent_list(monkeypatch):
+    a = Agent(llm=FakeLLM())
+    todo_of(a).execute(tasks=[{"content": "parent task", "status": "in_progress"}])
+    children = []
+
+    def fake_chat(self, text, **kwargs):
+        children.append(self)
+        self._todo.execute(tasks=[{"content": f"child {len(children)}", "status": "done"}])
+        return "ok"
+
+    monkeypatch.setattr(Agent, "chat", fake_chat)
+    result = agent_tool_of(a).execute(tasks=[{"task": "one"}, {"task": "two"}])
+
+    assert result.startswith("[Sub-agent team: 2 reports]")
+    assert len(children) == 2
+    # each worker got its own list, seeded empty, and A's list is untouched
+    assert [c._todo._tasks for c in children] == [
+        [{"content": "child 1", "status": "done"}],
+        [{"content": "child 2", "status": "done"}],
+    ]
+    assert children[0]._todo is not children[1]._todo
+    assert todo_of(a).render() == "1. [in_progress] parent task"
+    assert "child 1" not in a._full_messages()[0]["content"]
+
+
+# --- requirement 5: tools=[] and caller-supplied tools keep their meaning ---
+
+
+def test_empty_tool_list_still_means_no_tools():
+    llm = FakeLLM()
+    agent = Agent(llm=llm, tools=[])
+
+    assert agent.tools == []
+    assert agent._todo is None
+    assert agent._tool_schemas() == []
+    assert "# Tools" in agent._full_messages()[0]["content"]
+
+    assert agent.chat("hello") == "(fake) done"
+    assert llm.calls[0]["tools"] == []
+
+
+class _StatefulTool(Tool):
+    """A caller-owned tool with a resource that must survive Agent construction."""
+
+    name = "stateful"
+    description = "records calls in a caller-owned bag"
+    parameters: ClassVar[dict] = {"type": "object", "properties": {}, "required": []}
+
+    def __init__(self, bag):
+        self.bag = bag
+        self.resource = object()
+
+    def __deepcopy__(self, memo):  # a clone would silently break the caller's wiring
+        raise AssertionError("caller-supplied tools must not be deep-copied")
+
+    def execute(self) -> str:
+        self.bag.append("ran")
+        return "ok"
+
+
+def test_explicitly_passed_tools_are_used_as_given():
+    bag = []
+    custom = _StatefulTool(bag)
+
+    agent = Agent(llm=FakeLLM(), tools=[custom])
+
+    assert agent.tools == [custom]
+    assert agent.tools[0] is custom
+    assert agent._tool_by_name["stateful"] is custom
+    assert agent.tools[0].bag is bag
+    resource = custom.resource
+    assert agent.tools[0].resource is resource
+    # the tool still works through the agent, mutating the caller's bag
+    assert agent._exec_tool(_Call()) == "ok"
+    assert bag == ["ran"]
+
+
+class _Call:
+    name = "stateful"
+    id = "c1"
+    arguments: ClassVar[dict] = {}
+
+
+@pytest.mark.parametrize("tools", [None, []])
+def test_reset_never_raises_without_a_task_list(tools):
+    agent = Agent(llm=FakeLLM(), tools=tools)
+    agent.reset()
+    assert agent.messages == []

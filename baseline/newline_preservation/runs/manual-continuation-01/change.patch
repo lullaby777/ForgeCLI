@@ -1,0 +1,198 @@
+diff --git a/README.md b/README.md
+index a6d0781..47dad88 100644
+--- a/README.md
++++ b/README.md
+@@ -105,7 +105,7 @@ corecoder/
+ ├── demo.py         offline end-to-end demo                 101 lines
+ └── tools/
+     ├── bash.py       shell + dangerous-command gate + cd  203 lines
+-    ├── edit.py       unique-match search/replace + diff    99 lines
++    ├── edit.py       unique-match search/replace + diff   144 lines
+     ├── grep.py       content search                        93 lines
+     ├── glob_tool.py  filename matching                     52 lines
+     ├── read.py       file read                             56 lines
+diff --git a/README_CN.md b/README_CN.md
+index 69829ce..1382d93 100644
+--- a/README_CN.md
++++ b/README_CN.md
+@@ -105,7 +105,7 @@ corecoder/
+ ├── demo.py         离线端到端演示                       101 行
+ └── tools/
+     ├── bash.py       shell + 危险命令闸 + cd 追踪      203 行
+-    ├── edit.py       唯一匹配搜索替换 + diff            99 行
++    ├── edit.py       唯一匹配搜索替换 + diff           144 行
+     ├── grep.py       内容搜索                           93 行
+     ├── glob_tool.py  文件名匹配                         52 行
+     ├── read.py       文件读取                           56 行
+diff --git a/article/02-tools.md b/article/02-tools.md
+index 41b7b08..8a2e3ff 100644
+--- a/article/02-tools.md
++++ b/article/02-tools.md
+@@ -68,7 +68,7 @@ ALL_TOOLS = [
+ Claude Code 的解法，也是 CoreCoder 照搬的解法，是第四条路：搜索替换，外加一个唯一性约束。模型给出一段「要找的原文」和「替换成的新文」，工具在文件里找这段原文，要求它恰好出现一次，然后替换。看 `tools/edit.py` 的核心：
+ 
+ ```python
+-occurrences = content.count(old_string)
++occurrences = haystack.count(needle)
+ 
+ if occurrences == 0:
+     preview = content[:500] + ("..." if len(content) > 500 else "")
+@@ -82,7 +82,7 @@ if occurrences > 1:
+         f"Include more surrounding lines to make it unique."
+     )
+ 
+-new_content = content.replace(old_string, new_string, 1)
++edited = haystack.replace(needle, replacement, 1)
+ ```
+ 
+ 精妙之处全在那个「恰好一次」。
+@@ -104,11 +104,13 @@ return f"Edited {file_path}\n{diff}"
+ 
+ ```python
+ try:
+-    content = p.read_text(encoding="utf-8")
++    content = p.read_bytes().decode("utf-8")
+ except UnicodeDecodeError:
+     return f"Error: {file_path} is not a UTF-8 text file (edit_file only edits text files)"
+ ```
+ 
++顺带一提，这里读字节再手工解码，而不是用 `read_text()`：后者会把 CRLF 统一翻译成 LF，一次单词替换就会悄悄把整个文件的换行格式改掉。同理，查找和替换都在归一成 LF 的文本上做（就是上面的 `haystack` / `needle`），写回时再按文件自己的风格渲染，这样 CRLF 文件里的多行 `old_string` 用 LF 或 CRLF 都匹配得上，未编辑部分的字节原样不动。
++
+ 要是没这道判断，模型一不小心对一个二进制文件做 `edit_file`，得到的会是一大坨 Python 解码异常栈，既污染上下文又毫无帮助。有了它，模型拿到的是一句它读得懂的话。给模型的每一条错误信息，都该是「人话」，这是贯穿 CoreCoder 所有工具的一条隐性准则。
+ 
+ ## bash：把危险操作拦在门外，但别假装这是沙箱
+diff --git a/article/02-tools_EN.md b/article/02-tools_EN.md
+index 9c99dae..3f1bbd7 100644
+--- a/article/02-tools_EN.md
++++ b/article/02-tools_EN.md
+@@ -68,7 +68,7 @@ The third dead end is having the model produce a standard diff/patch format. It
+ Claude Code's solution, which CoreCoder copies wholesale, is the fourth path: search and replace, plus a uniqueness constraint. The model gives a chunk of "text to find" and a chunk of "text to replace it with"; the tool finds that text in the file, requires it to appear exactly once, then replaces it. Here's the core of `tools/edit.py`:
+ 
+ ```python
+-occurrences = content.count(old_string)
++occurrences = haystack.count(needle)
+ 
+ if occurrences == 0:
+     preview = content[:500] + ("..." if len(content) > 500 else "")
+@@ -82,7 +82,7 @@ if occurrences > 1:
+         f"Include more surrounding lines to make it unique."
+     )
+ 
+-new_content = content.replace(old_string, new_string, 1)
++edited = haystack.replace(needle, replacement, 1)
+ ```
+ 
+ The brilliance is all in that "exactly once."
+@@ -104,11 +104,13 @@ There's also an easily overlooked corner: confirm the file is UTF-8 text before
+ 
+ ```python
+ try:
+-    content = p.read_text(encoding="utf-8")
++    content = p.read_bytes().decode("utf-8")
+ except UnicodeDecodeError:
+     return f"Error: {file_path} is not a UTF-8 text file (edit_file only edits text files)"
+ ```
+ 
++One aside: the file is read as bytes and decoded by hand rather than through `read_text()`, because the latter translates CRLF to LF, so a one-word replacement would silently rewrite every line ending in the file. For the same reason the search and the replacement both happen on text normalised to LF (that's the `haystack` / `needle` above) and are rendered back in the file's own style, so a multiline `old_string` in a CRLF file matches whether it is written with LF or CRLF, and the bytes outside the match are left untouched.
++
+ Without this check, the moment the model accidentally runs `edit_file` on a binary file, what it gets back is a big lump of Python decode traceback, which pollutes context and helps nobody. With it, the model gets a sentence it can understand. Every error message handed to the model should be plain language, an implicit rule running through all of CoreCoder's tools.
+ 
+ ## bash: keep dangerous operations out, but don't pretend it's a sandbox
+diff --git a/corecoder/tools/edit.py b/corecoder/tools/edit.py
+index e10798f..05d2481 100644
+--- a/corecoder/tools/edit.py
++++ b/corecoder/tools/edit.py
+@@ -4,9 +4,17 @@ The core idea: instead of sending whole-file rewrites or line-number patches,
+ the LLM specifies an *exact* substring to find and its replacement. The
+ substring must appear exactly once in the file, which eliminates ambiguity
+ and makes edits safe and reviewable.
++
++Line endings: the file is read as raw bytes and decoded as UTF-8, so a file
++that uses one consistent style (all CRLF or all LF) keeps it. Matching happens
++on the LF form of the text, which lets an old_string written with plain LF
++line breaks find multiline text in a CRLF file (and vice versa); the
++replacement is then rendered in the file's own style. Untouched bytes, blank
++lines and the presence/absence of a trailing newline survive unchanged.
+ """
+ 
+ import difflib
++import re
+ from pathlib import Path
+ from typing import ClassVar
+ 
+@@ -17,6 +25,31 @@ from .base import Tool
+ _changed_files: set[str] = set()
+ 
+ 
++def _file_newline(text: str) -> str:
++    """Return the file's uniform newline, or LF when it is not uniform.
++
++    Only all-CRLF and all-LF files are in scope; anything mixed (or CR-only)
++    falls back to LF, where the text is used verbatim instead of being
++    rewritten to some other style.
++    """
++    crlf = text.count("\r\n")
++    if crlf and crlf == text.count("\n"):
++        return "\r\n"
++    return "\n"
++
++
++def _to_lf(text: str) -> str:
++    """Normalise CRLF to LF so matching is newline-style agnostic."""
++    return text.replace("\r\n", "\n")
++
++
++def _render_newlines(text: str, newline: str) -> str:
++    """Render LF-only text in the target style without ever doubling a CR."""
++    if newline != "\r\n":
++        return text
++    return re.sub(r"\r?\n", "\r\n", text)
++
++
+ class EditFileTool(Tool):
+     name = "edit_file"
+     description = (
+@@ -52,11 +85,21 @@ class EditFileTool(Tool):
+                 if not p.exists():
+                     return f"Error: {file_path} not found"
+ 
++                # bytes, not read_text: universal-newline translation would
++                # turn CRLF into LF and lose the file's original style
+                 try:
+-                    content = p.read_text(encoding="utf-8")
++                    content = p.read_bytes().decode("utf-8")
+                 except UnicodeDecodeError:
+                     return f"Error: {file_path} is not a UTF-8 text file (edit_file only edits text files)"
+-                occurrences = content.count(old_string)
++
++                newline = _file_newline(content)
++                # match on the LF form so old_string works with either style,
++                # while the file's own bytes stay untouched outside the match
++                haystack = _to_lf(content) if newline == "\r\n" else content
++                needle = _to_lf(old_string)
++                replacement = _to_lf(new_string)
++
++                occurrences = haystack.count(needle)
+ 
+                 if occurrences == 0:
+                     preview = content[:500] + ("..." if len(content) > 500 else "")
+@@ -70,13 +113,15 @@ class EditFileTool(Tool):
+                         f"Include more surrounding lines to make it unique."
+                     )
+ 
+-                new_content = content.replace(old_string, new_string, 1)
++                edited = haystack.replace(needle, replacement, 1)
++                new_content = edited if newline != "\r\n" else _render_newlines(edited, newline)
+                 _record_checkpoint(p)
+-                p.write_text(new_content, encoding="utf-8")
++                p.write_bytes(new_content.encode("utf-8"))
+                 _changed_files.add(str(p))
+ 
+-            # generate a unified diff so the user/LLM can see exactly what changed
+-            diff = _unified_diff(content, new_content, str(p))
++            # diff the LF-normalised halves: they are identical unless the edit
++            # itself changed a line, so the diff shows only the real change
++            diff = _unified_diff(haystack, edited, str(p))
+             return f"Edited {file_path}\n{diff}"
+         except Exception as e:  # noqa: BLE001
+             # boundary: the agent gets an error string, not a traceback

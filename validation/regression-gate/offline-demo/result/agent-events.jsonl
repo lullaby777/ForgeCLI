@@ -1,0 +1,14 @@
+{"event": "run_started", "run_id": "d5dee11c61514dff86108c3a16dc1856", "time": 1794841331.095238, "model": null, "max_rounds": 1, "max_empty_retries": 1}
+{"event": "model_requested", "run_id": "d5dee11c61514dff86108c3a16dc1856", "time": 1794841331.09538, "round": 1}
+{"event": "model_response", "run_id": "d5dee11c61514dff86108c3a16dc1856", "time": 1794841331.09544, "round": 1, "elapsed_seconds": 5.9999991208314896e-05, "finish_reason": null, "prompt_tokens": 0, "completion_tokens": 0, "has_text": false, "tool_calls": 2}
+{"event": "tool_started", "run_id": "d5dee11c61514dff86108c3a16dc1856", "time": 1794841331.096957, "tool": "write_file"}
+{"event": "tool_started", "run_id": "d5dee11c61514dff86108c3a16dc1856", "time": 1794841331.097026, "tool": "write_file"}
+{"event": "tool_returned", "run_id": "d5dee11c61514dff86108c3a16dc1856", "time": 1794841331.09747, "tool": "write_file", "elapsed_seconds": 0.0005132079822942615}
+{"event": "tool_returned", "run_id": "d5dee11c61514dff86108c3a16dc1856", "time": 1794841331.0977721, "tool": "write_file", "elapsed_seconds": 0.00074562500230968}
+{"event": "run_ended", "run_id": "d5dee11c61514dff86108c3a16dc1856", "time": 1794841331.0979111, "status": "round_limit", "rounds": 1, "empty_retries": 0, "finish_reason": null, "error_type": null}
+{"event": "run_started", "run_id": "93d344771e5e44f58c3e133fc1398c2f", "time": 1794841331.250713, "model": null, "max_rounds": 1, "max_empty_retries": 1}
+{"event": "model_requested", "run_id": "93d344771e5e44f58c3e133fc1398c2f", "time": 1794841331.2508512, "round": 1}
+{"event": "model_response", "run_id": "93d344771e5e44f58c3e133fc1398c2f", "time": 1794841331.2509062, "round": 1, "elapsed_seconds": 5.124998278915882e-05, "finish_reason": null, "prompt_tokens": 0, "completion_tokens": 0, "has_text": false, "tool_calls": 1}
+{"event": "tool_started", "run_id": "93d344771e5e44f58c3e133fc1398c2f", "time": 1794841331.250953, "tool": "write_file"}
+{"event": "tool_returned", "run_id": "93d344771e5e44f58c3e133fc1398c2f", "time": 1794841331.2513, "tool": "write_file", "elapsed_seconds": 0.00034616701304912567}
+{"event": "run_ended", "run_id": "93d344771e5e44f58c3e133fc1398c2f", "time": 1794841331.2513978, "status": "round_limit", "rounds": 1, "empty_retries": 0, "finish_reason": null, "error_type": null}

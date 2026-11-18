@@ -53,3 +53,7 @@ Issues = "https://github.com/he-yufeng/CoreCoder/issues"
 [tool.ruff]
 line-length = 130
 target-version = "py310"
+
+[tool.pytest.ini_options]
+# only the project suite; swebench_eval/runs holds checked-out SWE-bench repos with their own tests
+testpaths = ["tests"]

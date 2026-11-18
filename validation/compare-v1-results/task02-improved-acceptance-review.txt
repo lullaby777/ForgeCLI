@@ -1,0 +1,17 @@
+test_ambiguous_match_does_not_change_file_or_checkpoint (test_acceptance.NewlineAcceptance.test_ambiguous_match_does_not_change_file_or_checkpoint) ... ok
+test_crlf_multiline_with_crlf_arguments (test_acceptance.NewlineAcceptance.test_crlf_multiline_with_crlf_arguments) ... ok
+test_crlf_multiline_with_lf_arguments (test_acceptance.NewlineAcceptance.test_crlf_multiline_with_lf_arguments) ... ok
+test_crlf_single_word (test_acceptance.NewlineAcceptance.test_crlf_single_word) ... ok
+test_diff_reports_only_the_changed_line (test_acceptance.NewlineAcceptance.test_diff_reports_only_the_changed_line) ... ok
+test_lf_multiline (test_acceptance.NewlineAcceptance.test_lf_multiline) ... ok
+test_lf_single_word (test_acceptance.NewlineAcceptance.test_lf_single_word) ... ok
+test_missing_match_does_not_change_file_or_checkpoint (test_acceptance.NewlineAcceptance.test_missing_match_does_not_change_file_or_checkpoint) ... ok
+test_no_final_newline_preserved (test_acceptance.NewlineAcceptance.test_no_final_newline_preserved) ... ok
+test_non_utf8_is_rejected_without_modification (test_acceptance.NewlineAcceptance.test_non_utf8_is_rejected_without_modification) ... ok
+test_undo_after_restart_restores_original_bytes (test_acceptance.NewlineAcceptance.test_undo_after_restart_restores_original_bytes) ... ok
+test_unicode_and_blank_lines (test_acceptance.NewlineAcceptance.test_unicode_and_blank_lines) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.007s
+
+OK

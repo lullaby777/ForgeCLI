@@ -1,0 +1,16 @@
+{"event": "requested", "index": 1, "request_hash_normalized": "78a5354fc7a3f29856edf99244ea64efe8c559501709565e7308087c3663662a"}
+{"event": "response", "index": 1, "elapsed_seconds": 0.8628097920445725, "prompt_tokens": 3579, "completion_tokens": 150, "finish_reason": "tool_calls"}
+{"event": "requested", "index": 2, "request_hash_normalized": "fe63987b59cea0ed505410f872424d1cf34015a233cc4daa8949918b142d869b"}
+{"event": "response", "index": 2, "elapsed_seconds": 1.1108677089214325, "prompt_tokens": 5460, "completion_tokens": 113, "finish_reason": "tool_calls"}
+{"event": "requested", "index": 3, "request_hash_normalized": "ce7deef01031f198df3faaf0a9eb5e644660acc61237c7cc0518774542f02f99"}
+{"event": "response", "index": 3, "elapsed_seconds": 1.9749220419907942, "prompt_tokens": 8460, "completion_tokens": 198, "finish_reason": "tool_calls"}
+{"event": "requested", "index": 4, "request_hash_normalized": "1117cb21b18318422ad80ae42362e0e3954209aa6c5c78c257a9fe2a6cf2dbcd"}
+{"event": "response", "index": 4, "elapsed_seconds": 1.1556475000688806, "prompt_tokens": 9857, "completion_tokens": 177, "finish_reason": "tool_calls"}
+{"event": "requested", "index": 5, "request_hash_normalized": "b47143705194fda9fa89fe1e97ebb680b97c21da12fc7f00dc20773fe3b9b0fe"}
+{"event": "response", "index": 5, "elapsed_seconds": 15.559289666940458, "prompt_tokens": 12604, "completion_tokens": 2509, "finish_reason": "tool_calls"}
+{"event": "requested", "index": 6, "request_hash_normalized": "3574db452f2dca2fe5c79db4f92e358efc036491596a075f1322f5f894fa83fa"}
+{"event": "response", "index": 6, "elapsed_seconds": 1.5413217920577154, "prompt_tokens": 16040, "completion_tokens": 208, "finish_reason": "tool_calls"}
+{"event": "requested", "index": 7, "request_hash_normalized": "a2a8a1396b1c253bec6a5c05b79b55f495c3362cf363e8c665251a384d7bba98"}
+{"event": "response", "index": 7, "elapsed_seconds": 49.17456058401149, "prompt_tokens": 19611, "completion_tokens": 8192, "finish_reason": "length"}
+{"event": "requested", "index": 8, "request_hash_normalized": "2508af8f8af09128c0adf00c021d4f5acbe6a45539dabe9bd0ee84948fdf5ac3"}
+{"event": "response", "index": 8, "elapsed_seconds": 49.00520620797761, "prompt_tokens": 21185, "completion_tokens": 8192, "finish_reason": "length"}

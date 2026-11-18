@@ -1,0 +1,123 @@
+diff --git a/README.md b/README.md
+index a6d0781..43b82ef 100644
+--- a/README.md
++++ b/README.md
+@@ -105,7 +105,7 @@ corecoder/
+ ├── demo.py         offline end-to-end demo                 101 lines
+ └── tools/
+     ├── bash.py       shell + dangerous-command gate + cd  203 lines
+-    ├── edit.py       unique-match search/replace + diff    99 lines
++    ├── edit.py       unique-match search/replace + diff   148 lines
+     ├── grep.py       content search                        93 lines
+     ├── glob_tool.py  filename matching                     52 lines
+     ├── read.py       file read                             56 lines
+diff --git a/README_CN.md b/README_CN.md
+index 69829ce..9e9d026 100644
+--- a/README_CN.md
++++ b/README_CN.md
+@@ -105,7 +105,7 @@ corecoder/
+ ├── demo.py         离线端到端演示                       101 行
+ └── tools/
+     ├── bash.py       shell + 危险命令闸 + cd 追踪      203 行
+-    ├── edit.py       唯一匹配搜索替换 + diff            99 行
++    ├── edit.py       唯一匹配搜索替换 + diff           148 行
+     ├── grep.py       内容搜索                           93 行
+     ├── glob_tool.py  文件名匹配                         52 行
+     ├── read.py       文件读取                           56 行
+diff --git a/corecoder/tools/edit.py b/corecoder/tools/edit.py
+index e10798f..3c6de0b 100644
+--- a/corecoder/tools/edit.py
++++ b/corecoder/tools/edit.py
+@@ -4,6 +4,12 @@ The core idea: instead of sending whole-file rewrites or line-number patches,
+ the LLM specifies an *exact* substring to find and its replacement. The
+ substring must appear exactly once in the file, which eliminates ambiguity
+ and makes edits safe and reviewable.
++
++Edits are applied to the raw bytes: only the matched span is rewritten, so the
++rest of the file (line endings included) is preserved byte for byte. Matching
++is done on a newline-normalized copy, which lets an ``old_string`` written with
++plain LF find multi-line CRLF text, while the replacement is written back in
++the file's own newline style.
+ """
+ 
+ import difflib
+@@ -17,6 +23,32 @@ from .base import Tool
+ _changed_files: set[str] = set()
+ 
+ 
++def _normalize_lf(text: str) -> tuple[str, list[int]]:
++    """Collapse CRLF to LF and keep a map back to raw character offsets.
++
++    ``offsets[i]`` is the raw offset of normalized character ``i``, with one
++    extra trailing entry for the end of the text. The map is what lets a match
++    found in the normalized copy be applied to the raw string, so every byte
++    outside the edited span survives untouched.
++    """
++    if "\r\n" not in text:
++        return text, list(range(len(text) + 1))
++
++    normalized: list[str] = []
++    offsets: list[int] = []
++    i, n = 0, len(text)
++    while i < n:
++        offsets.append(i)
++        if text[i] == "\r" and i + 1 < n and text[i + 1] == "\n":
++            normalized.append("\n")
++            i += 2
++        else:
++            normalized.append(text[i])
++            i += 1
++    offsets.append(n)
++    return "".join(normalized), offsets
++
++
+ class EditFileTool(Tool):
+     name = "edit_file"
+     description = (
+@@ -53,10 +85,15 @@ class EditFileTool(Tool):
+                     return f"Error: {file_path} not found"
+ 
+                 try:
+-                    content = p.read_text(encoding="utf-8")
++                    content = p.read_bytes().decode("utf-8")
+                 except UnicodeDecodeError:
+                     return f"Error: {file_path} is not a UTF-8 text file (edit_file only edits text files)"
+-                occurrences = content.count(old_string)
++
++                # match on an LF copy so `old_string` works whether the caller
++                # wrote it with LF or with the file's own CRLF endings
++                normalized, offsets = _normalize_lf(content)
++                needle, _ = _normalize_lf(old_string)
++                occurrences = normalized.count(needle)
+ 
+                 if occurrences == 0:
+                     preview = content[:500] + ("..." if len(content) > 500 else "")
+@@ -70,13 +107,25 @@ class EditFileTool(Tool):
+                         f"Include more surrounding lines to make it unique."
+                     )
+ 
+-                new_content = content.replace(old_string, new_string, 1)
++                # splice the replacement into the *raw* text, so nothing outside
++                # the matched span changes: no newline-style rewrite, no lost
++                # blank lines, no trailing-newline change
++                start = normalized.find(needle)
++                raw_start = offsets[start]
++                raw_end = offsets[start + len(needle)]
++                replacement, _ = _normalize_lf(new_string)
++                if "\r\n" in content:
++                    # write the replacement in the file's style, collapsing any
++                    # CRLF the caller sent first so we never double the CR
++                    replacement = replacement.replace("\n", "\r\n")
++                new_content = content[:raw_start] + replacement + content[raw_end:]
++
+                 _record_checkpoint(p)
+-                p.write_text(new_content, encoding="utf-8")
++                p.write_bytes(new_content.encode("utf-8"))
+                 _changed_files.add(str(p))
+ 
+             # generate a unified diff so the user/LLM can see exactly what changed
+-            diff = _unified_diff(content, new_content, str(p))
++            diff = _unified_diff(normalized, _normalize_lf(new_content)[0], str(p))
+             return f"Edited {file_path}\n{diff}"
+         except Exception as e:  # noqa: BLE001
+             # boundary: the agent gets an error string, not a traceback

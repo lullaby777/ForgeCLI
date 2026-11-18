@@ -1,0 +1,160 @@
+进入后输入：/repair /private/var/folders/_8/4ygyt9010tjgz7z68qb4skb80000gn/T/manual-task-smoke-hyhqmv3z/task.json
+╭──────────────────────────────────────────────────────────────────────────────╮
+│ CoreCoder v0.12.0                                                            │
+│ Model: deepseek-flash  Base: https://api.deepseek.com                        │
+│ Permissions: auto-approve every tool call (--yes)                            │
+│ Type /help for commands, Ctrl+C to cancel, quit to exit.                     │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Task linked. Resume with: corecoder -r session_20261117_122656_72fbd774
+
+【安全暂停窗口】响应和工具结果已经保存，现在没有在途操作。
+请现在按一次 Ctrl+C；回到 You > 后输入 /task 查看，再输入 quit 退出。
+Task: paused; phase: acceptance; calls: 1/30; attempts: 1/3
+Checkpoint: 
+/private/var/folders/_8/4ygyt9010tjgz7z68qb4skb80000gn/T/manual-task-smoke-hyhqm
+v3z/task
+输入“继续任务”或 /continue 恢复
+Completed: False; resume session: corecoder -r session_20261117_122656_72fbd774
+{
+  "task_id": "aa3ab0332c1243f2a8cfa10c9628efef",
+  "status": "paused",
+  "phase": "acceptance",
+  "completed": false,
+  "ledger": {
+    "model_calls": 1,
+    "attempts": 1,
+    "rounds": 1,
+    "active_seconds": 16.355297875008546,
+    "stagnant": 0,
+    "previous_failure": null,
+    "prompt_tokens": 10,
+    "completion_tokens": 2,
+    "unknown_usage_requests": 0
+  },
+  "limits": {
+    "max_attempts": 3,
+    "max_model_calls": 30,
+    "rounds_per_attempt": 10,
+    "max_seconds": 900,
+    "verifier_seconds": 60,
+    "max_stagnant_attempts": 2
+  },
+  "config_hash": "3caf52b6f459c413dc98dc245901ef5e97fe911ae588431990645dccf31c1981",
+  "baseline_hash": "ac6fc68b7deae58ebbaf11b44404ec005ef754db5fcce6b09b4ca394432cf9a7",
+  "baseline_file_sha256": "33ac7f5b9595f0fc798569ffa3f609c9ed1282c018dec28d30ab99cc81ad25dc",
+  "original_failures": [
+    "tests.test_core::test_readme_line_counts_are_current"
+  ],
+  "pending": null,
+  "acceptance": null,
+  "regression": null,
+  "new_failures": null,
+  "session_ids": [
+    "session_20261117_122656_72fbd774"
+  ],
+  "baseline_matches_preflight": true
+}
+Opening saved session session_20261117_122656_72fbd774. 输入“继续任务”才恢复执行。
+Resumed session: session_20261117_122656_72fbd774 (model: deepseek-flash)
+Task: paused; phase: acceptance; calls: 1/30; attempts: 1/3
+Checkpoint: 
+/private/var/folders/_8/4ygyt9010tjgz7z68qb4skb80000gn/T/manual-task-smoke-hyhqm
+v3z/task
+输入“继续任务”或 /continue 恢复
+╭──────────────────────────────────────────────────────────────────────────────╮
+│ CoreCoder v0.12.0                                                            │
+│ Model: deepseek-flash  Base: https://api.deepseek.com                        │
+│ Permissions: auto-approve every tool call (--yes)                            │
+│ Type /help for commands, Ctrl+C to cancel, quit to exit.                     │
+╰──────────────────────────────────────────────────────────────────────────────╯
+{
+  "task_id": "aa3ab0332c1243f2a8cfa10c9628efef",
+  "status": "paused",
+  "phase": "acceptance",
+  "completed": false,
+  "ledger": {
+    "model_calls": 1,
+    "attempts": 1,
+    "rounds": 1,
+    "active_seconds": 16.355297875008546,
+    "stagnant": 0,
+    "previous_failure": null,
+    "prompt_tokens": 10,
+    "completion_tokens": 2,
+    "unknown_usage_requests": 0
+  },
+  "limits": {
+    "max_attempts": 3,
+    "max_model_calls": 30,
+    "rounds_per_attempt": 10,
+    "max_seconds": 900,
+    "verifier_seconds": 60,
+    "max_stagnant_attempts": 2
+  },
+  "config_hash": "3caf52b6f459c413dc98dc245901ef5e97fe911ae588431990645dccf31c1981",
+  "baseline_hash": "ac6fc68b7deae58ebbaf11b44404ec005ef754db5fcce6b09b4ca394432cf9a7",
+  "baseline_file_sha256": "33ac7f5b9595f0fc798569ffa3f609c9ed1282c018dec28d30ab99cc81ad25dc",
+  "original_failures": [
+    "tests.test_core::test_readme_line_counts_are_current"
+  ],
+  "pending": null,
+  "acceptance": null,
+  "regression": null,
+  "new_failures": null,
+  "session_ids": [
+    "session_20261117_122656_72fbd774"
+  ],
+  "baseline_matches_preflight": true,
+  "comparison_to_paused": "passed"
+}
+Task: paused; phase: acceptance; calls: 1/30; attempts: 1/3
+Checkpoint: 
+/private/var/folders/_8/4ygyt9010tjgz7z68qb4skb80000gn/T/manual-task-smoke-hyhqm
+v3z/task
+输入“继续任务”或 /continue 恢复
+Task: no_progress; phase: stopped; calls: 3/30; attempts: 2/3
+Checkpoint: 
+/private/var/folders/_8/4ygyt9010tjgz7z68qb4skb80000gn/T/manual-task-smoke-hyhqm
+v3z/task
+输入“继续任务”或 /continue 恢复
+Completed: False; resume session: corecoder -r session_20261117_122656_72fbd774
+{
+  "task_id": "aa3ab0332c1243f2a8cfa10c9628efef",
+  "status": "no_progress",
+  "phase": "stopped",
+  "completed": false,
+  "ledger": {
+    "model_calls": 3,
+    "attempts": 2,
+    "rounds": 1,
+    "active_seconds": 17.591241457965225,
+    "stagnant": 2,
+    "previous_failure": "28488f68932aceba91ef186a298af3f8de4aae439a9f42b7159f5b0c6cd4f7da",
+    "prompt_tokens": 30,
+    "completion_tokens": 6,
+    "unknown_usage_requests": 0
+  },
+  "limits": {
+    "max_attempts": 3,
+    "max_model_calls": 30,
+    "rounds_per_attempt": 10,
+    "max_seconds": 900,
+    "verifier_seconds": 60,
+    "max_stagnant_attempts": 2
+  },
+  "config_hash": "3caf52b6f459c413dc98dc245901ef5e97fe911ae588431990645dccf31c1981",
+  "baseline_hash": "ac6fc68b7deae58ebbaf11b44404ec005ef754db5fcce6b09b4ca394432cf9a7",
+  "baseline_file_sha256": "33ac7f5b9595f0fc798569ffa3f609c9ed1282c018dec28d30ab99cc81ad25dc",
+  "original_failures": [
+    "tests.test_core::test_readme_line_counts_are_current"
+  ],
+  "pending": null,
+  "acceptance": "failed",
+  "regression": null,
+  "new_failures": null,
+  "session_ids": [
+    "session_20261117_122656_72fbd774"
+  ],
+  "baseline_matches_preflight": true,
+  "comparison_to_paused": "passed"
+}

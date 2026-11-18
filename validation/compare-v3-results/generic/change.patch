@@ -1,0 +1,185 @@
+diff --git a/corecoder/shell.py b/corecoder/shell.py
+index df91f53..e773855 100644
+--- a/corecoder/shell.py
++++ b/corecoder/shell.py
+@@ -49,6 +49,15 @@ def _git_bash() -> str | None:
+     return None
+ 
+ 
++def uses_posix_shell() -> bool:
++    """True when run_shell hands the command to a POSIX shell.
++
++    False only where we would fall back to cmd.exe, whose syntax (``$?``,
++    ``pwd``, redirection quoting) is a different language entirely.
++    """
++    return os.name != "nt" or _git_bash() is not None
++
++
+ def run_shell(command: str, check: bool = False, **kwargs) -> subprocess.CompletedProcess:
+     """Run one POSIX command string, via Git Bash on Windows when present.
+ 
+diff --git a/corecoder/tools/bash.py b/corecoder/tools/bash.py
+index 6145f02..7450269 100644
+--- a/corecoder/tools/bash.py
++++ b/corecoder/tools/bash.py
+@@ -7,13 +7,16 @@ Claude Code's BashTool is 1,143 lines. This is the distilled version:
+ - Working directory tracking (cd awareness)
+ """
+ 
++import itertools
+ import os
+ import re
++import shlex
+ import subprocess
++import tempfile
+ import threading
+ from typing import ClassVar
+ 
+-from ..shell import run_shell
++from ..shell import run_shell, uses_posix_shell
+ from .base import Tool
+ 
+ # Track cwd across commands (Claude Code does this too). Thread-local, so that
+@@ -83,9 +86,14 @@ class BashTool(Tool):
+         # use this thread's own tracked working directory
+         cwd = get_tracked_cwd() or os.getcwd()
+ 
++        # let the shell report where it actually ended up: it is the only one
++        # that knows which `cd`s ran. The answer goes to a temp file, never to
++        # stdout, so the user's output stays byte-identical.
++        probe = _make_cwd_probe() if uses_posix_shell() else None
++
+         try:
+             proc = run_shell(
+-                command,
++                _with_cwd_probe(command, probe) if probe else command,
+                 check=False,
+                 capture_output=True,
+                 text=True,
+@@ -95,8 +103,16 @@ class BashTool(Tool):
+                 cwd=cwd,
+             )
+ 
+-            # track cd commands so next command runs in the right place
+-            if proc.returncode == 0:
++            # trust the shell's own report over the static scan: `cd sub && false`
++            # did move even though the command failed, and `false && cd sub; true`
++            # never moved even though it succeeded. The report is missing only when
++            # the shell died first (explicit `exit`, kill) or there is no POSIX
++            # shell to ask.
++            moved = _read_cwd_probe(probe)
++            if moved is not None:
++                if os.path.normpath(moved) != os.path.normpath(cwd):
++                    _local.cwd = os.path.normpath(moved)
++            elif proc.returncode == 0:
+                 _update_cwd(command, cwd)
+             out = proc.stdout
+             if proc.stderr:
+@@ -116,6 +132,70 @@ class BashTool(Tool):
+         except Exception as e:  # noqa: BLE001
+             # anything else from the OS (spawn failure etc.) also comes back as text
+             return f"Error running command: {e}"
++        finally:
++            _drop_cwd_probe(probe)
++
++
++def _make_cwd_probe() -> str | None:
++    """Reserve an empty file for the shell's final-directory report.
++
++    The file is created with O_EXCL, so the name is provably ours and the
++    cleanup can only ever unlink this one file — never somebody else's
++    directory, however TMPDIR is patched. No writable temp dir means no probe
++    and the static scan stays in charge.
++    """
++    for _ in range(100):
++        path = os.path.join(
++            tempfile.gettempdir(), f"corecoder-cwd-{os.getpid()}-{next(_probe_seq)}"
++        )
++        try:
++            os.close(os.open(path, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600))
++        except FileExistsError:
++            continue
++        except OSError:
++            return None
++        return path
++    return None
++
++
++def _drop_cwd_probe(probe: str | None) -> None:
++    if not probe:
++        return
++    try:
++        os.unlink(probe)
++    except OSError:
++        pass
++
++
++def _with_cwd_probe(command: str, probe_path: str) -> str:
++    """Append a trailing probe that records where this very shell ended up.
++
++    It runs in the same shell and after the whole chain, so `&&` short-circuits,
++    `;` leftovers, subshell parentheses and quoting are all decided by the shell
++    itself instead of being guessed. The directory is written to a file (never
++    to stdout), and the shell then exits with the command's own status so a
++    failure still reads as `[exit code: N]`.
++    """
++    return "\n".join([
++        command,
++        "__corecoder_status=$?",
++        f"pwd > {shlex.quote(probe_path)}",
++        "exit $__corecoder_status",
++    ])
++
++
++def _read_cwd_probe(probe_path: str | None) -> str | None:
++    """The directory the shell reported, or None if it never got to write one."""
++    if not probe_path:
++        return None
++    try:
++        with open(probe_path, encoding="utf-8", errors="replace") as fh:
++            reported = fh.read().strip()
++    except OSError:
++        return None
++    # a report that is not a real directory (a foreign path form, a dir deleted
++    # mid-command) is no better than no report at all
++    return reported if reported and os.path.isdir(reported) else None
+ 
+ 
+ def _check_dangerous(cmd: str) -> str | None:
+@@ -153,9 +233,9 @@ def _split_words(statement: str) -> list[str]:
+ 
+ 
+ def _split_statements(command: str) -> list[list[str]]:
+-    """Split a shell command into per-statement word lists on `&&` and `;`,
+-    honoring quotes. Words come back dequoted, so `cd "my dir"` arrives as
+-    ["cd", "my dir"] and a separator inside quotes never splits."""
++    """Split a shell command into per-statement word lists on `&&`, `;` and
++    newlines, honoring quotes. Words come back dequoted, so `cd "my dir"` arrives
++    as ["cd", "my dir"] and a separator inside quotes never splits."""
+     statements: list[str] = []
+     quote: str | None = None
+     start = 0
+@@ -169,7 +249,7 @@ def _split_statements(command: str) -> list[list[str]]:
+             quote = ch
+         else:
+             is_and = command[i : i + 2] == "&&"
+-            if ch == ";" or is_and:
++            if ch in (";", "\n") or is_and:
+                 statement = command[start:i]
+                 if statement.strip():
+                     statements.append(statement)
+@@ -184,7 +264,13 @@ def _split_statements(command: str) -> list[list[str]]:
+ 
+ 
+ def _update_cwd(command: str, current_cwd: str):
+-    """Track directory changes from cd commands, per thread."""
++    """Static fallback: guess directory changes from the cd commands, per thread.
++
++    Only used when the shell could not report its own final directory (explicit
++    `exit`, a killed shell, cmd.exe). It cannot tell whether a `cd` actually ran
++    — `cd a && false` moved, `false && cd a; true` did not — so the live probe
++    in `execute` is the source of truth wherever there is a POSIX shell.
++    """
+     # walk each cd in a && or ; chain, resolving relative targets against the dir the
+     # previous cd landed in (not the original cwd) so `cd a && cd b` ends in a/b.
+     # a parenthesized group is a subshell — `( cd a )` never changes this shell's

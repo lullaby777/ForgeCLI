@@ -1,0 +1,28 @@
+{
+  "kind": "human_feedback_continuation",
+  "model": "deepseek-flash",
+  "initial_baseline": "failed_no_source_changes",
+  "history_adjustment": "removed last invalid empty assistant in a copied session",
+  "acceptance": {
+    "methods": 12,
+    "failures": 0
+  },
+  "regression": {
+    "passed": 367,
+    "failed": 1,
+    "new_failures": 0,
+    "known_failure": "test_readme_line_counts_are_current",
+    "real_model_test_excluded": true
+  },
+  "existing_tests_modified": false,
+  "new_tests": 15,
+  "usage_from_screenshot": {
+    "prompt": 1123393,
+    "completion": 18899,
+    "total": 1142292
+  },
+  "cost": null,
+  "agent_elapsed_seconds": null,
+  "verdict": "passed_after_human_feedback",
+  "deferred_issue": "ISSUE-001 in baseline/KNOWN_ISSUES.md"
+}

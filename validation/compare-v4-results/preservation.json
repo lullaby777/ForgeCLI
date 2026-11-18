@@ -1,0 +1,8 @@
+{
+  "previous_v1_v2_v3_unchanged": true,
+  "five_baselines_unchanged": true,
+  "baseline_unchanged": true,
+  "prior_validation_snapshot_unchanged": true,
+  "original_results_not_overwritten": true,
+  "model_calls_during_analysis": 0
+}

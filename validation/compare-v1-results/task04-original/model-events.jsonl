@@ -1,0 +1,10 @@
+{"event": "requested", "index": 1, "request_hash_normalized": "2192dfcbdffd88f5a2c2bfc9baffddab5c0313ad2c1502e7a0d2864c88e4f140"}
+{"event": "response", "index": 1, "elapsed_seconds": 0.9963468339992687, "prompt_tokens": 3579, "completion_tokens": 150, "finish_reason": null}
+{"event": "requested", "index": 2, "request_hash_normalized": "aed77c80e6d71db41d21a4e440fd2596baf28385c989da9f97a0d2eb51543bb9"}
+{"event": "response", "index": 2, "elapsed_seconds": 0.9162757920566946, "prompt_tokens": 4871, "completion_tokens": 113, "finish_reason": null}
+{"event": "requested", "index": 3, "request_hash_normalized": "caeda560795ef4e7f5116453a342ae2737ae4cd83cb72dbf36a02b11e3a28c0a"}
+{"event": "response", "index": 3, "elapsed_seconds": 1.925754874944687, "prompt_tokens": 7871, "completion_tokens": 274, "finish_reason": null}
+{"event": "requested", "index": 4, "request_hash_normalized": "02ce57b7af1be5717753ec5c5791b1262469c12eb0370873087bfa8d2ff1a4e3"}
+{"event": "response", "index": 4, "elapsed_seconds": 1.0083563330117613, "prompt_tokens": 9241, "completion_tokens": 152, "finish_reason": null}
+{"event": "requested", "index": 5, "request_hash_normalized": "ace86f619b72b3d55d698e00042f1eff8e7c5c11c879891081e54a6f4e48ce23"}
+{"event": "response", "index": 5, "elapsed_seconds": 25.007086499943398, "prompt_tokens": 12018, "completion_tokens": 4096, "finish_reason": null}

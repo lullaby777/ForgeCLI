@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="0.011" timestamp="2026-11-16T23:02:11.197851+08:00" hostname="Mac"><testcase classname="tests.test_old" name="test_legacy" time="0.000"><failure message="AssertionError: legacy broke&#10;assert 'broken' == 'ok'&#10;  &#10;  - ok&#10;  + broken">def test_legacy():
+&gt;    assert Path('legacy.txt').read_text() == 'ok', 'legacy broke'
+E    AssertionError: legacy broke
+E    assert 'broken' == 'ok'
+E      
+E      - ok
+E      + broken
+
+tests/test_old.py:3: AssertionError</failure></testcase></testsuite></testsuites>

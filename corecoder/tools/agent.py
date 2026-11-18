@@ -89,6 +89,9 @@ class AgentTool(Tool):
             # the sub-agent answers to the same consent layer and hooks as the parent
             permission=parent.permission,
             hooks=parent.hooks,
+            execution_check=parent.execution_check,
+            event_log_path=parent.event_log_path,
+            max_empty_retries=parent.max_empty_retries,
         )
 
     def _dependency_waves(self, work: list[dict]) -> list[list[dict]]:

@@ -1,0 +1,8 @@
+{
+  "paused_calls": 2,
+  "final_calls": 4,
+  "attempts": 2,
+  "completed": true,
+  "checkpoint": "/private/tmp/corecoder-task-checkpoint-check/demo-final/task/state.json",
+  "real_model_calls": 0
+}

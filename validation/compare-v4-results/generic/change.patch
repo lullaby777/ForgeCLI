@@ -1,0 +1,178 @@
+diff --git a/corecoder/shell.py b/corecoder/shell.py
+index df91f53..d861ecc 100644
+--- a/corecoder/shell.py
++++ b/corecoder/shell.py
+@@ -49,6 +49,16 @@ def _git_bash() -> str | None:
+     return None
+ 
+ 
++def uses_posix_shell() -> bool:
++    """True when run_shell will hand the command to a POSIX shell (bash/sh).
++
++    Callers that want to wrap a command in POSIX script syntax (bash's own
++    `pwd`, `$?`, `exit`) must ask first: without Git Bash on Windows the
++    command goes to cmd.exe, where that syntax means something else.
++    """
++    return _git_bash() is not None or os.name != "nt"
++
++
+ def run_shell(command: str, check: bool = False, **kwargs) -> subprocess.CompletedProcess:
+     """Run one POSIX command string, via Git Bash on Windows when present.
+ 
+diff --git a/corecoder/tools/bash.py b/corecoder/tools/bash.py
+index 6145f02..df564a9 100644
+--- a/corecoder/tools/bash.py
++++ b/corecoder/tools/bash.py
+@@ -9,11 +9,14 @@ Claude Code's BashTool is 1,143 lines. This is the distilled version:
+ 
+ import os
+ import re
++import shlex
++import shutil
+ import subprocess
++import tempfile
+ import threading
+ from typing import ClassVar
+ 
+-from ..shell import run_shell
++from ..shell import run_shell, uses_posix_shell
+ from .base import Tool
+ 
+ # Track cwd across commands (Claude Code does this too). Thread-local, so that
+@@ -83,9 +86,13 @@ class BashTool(Tool):
+         # use this thread's own tracked working directory
+         cwd = get_tracked_cwd() or os.getcwd()
+ 
++        # Ask the shell itself where it ended up (see _with_cwd_report). Only a
++        # POSIX shell can answer, so cmd.exe keeps the textual fallback below.
++        report_dir = _new_cwd_report_dir() if uses_posix_shell() else None
++        report_file = os.path.join(report_dir, "pwd") if report_dir else None
+         try:
+             proc = run_shell(
+-                command,
++                _with_cwd_report(command, report_file) if report_file else command,
+                 check=False,
+                 capture_output=True,
+                 text=True,
+@@ -95,8 +102,12 @@ class BashTool(Tool):
+                 cwd=cwd,
+             )
+ 
+-            # track cd commands so next command runs in the right place
+-            if proc.returncode == 0:
++            # track the directory the shell actually reached, so next command
++            # runs in the right place -- even when this command ended in failure
++            reported = _read_cwd_report(report_file)
++            if reported is not None:
++                _remember_cwd(reported, cwd)
++            elif report_file is None and proc.returncode == 0:
+                 _update_cwd(command, cwd)
+             out = proc.stdout
+             if proc.stderr:
+@@ -112,10 +123,14 @@ class BashTool(Tool):
+                 )
+             return out.strip() or "(no output)"
+         except subprocess.TimeoutExpired:
++            # the shell died before it could report: keep the previous dir
+             return f"Error: timed out after {timeout}s"
+         except Exception as e:  # noqa: BLE001
+             # anything else from the OS (spawn failure etc.) also comes back as text
+             return f"Error running command: {e}"
++        finally:
++            if report_dir is not None:
++                shutil.rmtree(report_dir, ignore_errors=True)
+ 
+ 
+ def _check_dangerous(cmd: str) -> str | None:
+@@ -126,6 +141,76 @@ def _check_dangerous(cmd: str) -> str | None:
+     return None
+ 
+ 
++# --- real-shell cwd tracking ------------------------------------------------
++#
++# Reading cd's out of the command line can only ever be a guess: `false && cd a`
++# and `cd a && false` look alike, a cd inside quotes is not a command, and a cd
++# inside `( ... )` never moves this shell. The exit status does not help either:
++# `cd sub && false` fails *after* the cd landed. So the shell tells us itself.
++
++def _new_cwd_report_dir() -> str | None:
++    """Scratch directory the wrapped shell will drop its final `pwd` into.
++
++    A fresh directory (rather than a pre-created file) means a stale answer can
++    never be mistaken for this run's answer: no file ⇒ the shell never got that
++    far, which is exactly what timeout/`exit` look like.
++    """
++    try:
++        return tempfile.mkdtemp(prefix="corecoder-cwd-")
++    except OSError:
++        return None
++
++
++def _with_cwd_report(command: str, report_file: str) -> str:
++    """Append a postamble that writes the shell's final directory to a file.
++
++    The postamble runs in the same shell process as the user's command, so every
++    cd that really executed is reflected and every skipped one is not. It then
++    exits with the user's own status, so stdout/stderr and the exit code come
++    back untouched, and `pwd`'s answer goes to a scratch file instead of the
++    output the user sees. Placed on its own lines so a trailing `# comment`
++    cannot swallow it; `set +x` is silenced first so an active `set -x` does not
++    echo these internal lines into stderr.
++    """
++    return (
++        f"{command}\n"
++        "__corecoder_cwd_status=$?\n"
++        "{ set +x; } 2>/dev/null\n"
++        f"pwd > {shlex.quote(report_file)} 2>/dev/null\n"
++        "exit $__corecoder_cwd_status\n"
++    )
++
++
++def _read_cwd_report(report_file: str | None) -> str | None:
++    """The directory the shell reported, or None if it never reported one."""
++    if report_file is None:
++        return None
++    try:
++        with open(report_file, encoding="utf-8", errors="replace") as fh:
++            reported = fh.read().strip()
++    except OSError:
++        return None
++    # a directory name may contain newlines; the last line is the tail of it
++    return reported.splitlines()[-1] if reported else None
++
++
++def _remember_cwd(reported: str, previous: str) -> None:
++    """Record the shell's final directory for this thread, if it really moved."""
++    if _same_dir(reported, previous):
++        return
++    _local.cwd = os.path.normpath(reported)
++
++
++def _same_dir(a: str, b: str) -> bool:
++    """True when two paths name the same directory (symlinks included)."""
++    if os.path.normpath(a) == os.path.normpath(b):
++        return True
++    try:
++        return os.path.samefile(a, b)
++    except OSError:
++        return False
++
++
+ def _split_words(statement: str) -> list[str]:
+     """Split one statement into words on unquoted whitespace, stripping the
+     quotes. Backslashes are kept verbatim (Windows paths must not lose them,
+@@ -184,7 +269,13 @@ def _split_statements(command: str) -> list[list[str]]:
+ 
+ 
+ def _update_cwd(command: str, current_cwd: str):
+-    """Track directory changes from cd commands, per thread."""
++    """Track directory changes from cd commands, per thread.
++
++    Textual fallback for shells we cannot wrap (cmd.exe without Git Bash): it
++    trusts that every cd it can see ran, which is why the execute path prefers
++    asking the real shell instead. Kept because the heuristic still is the best
++    guess available from a bare command string.
++    """
+     # walk each cd in a && or ; chain, resolving relative targets against the dir the
+     # previous cd landed in (not the original cwd) so `cd a && cd b` ends in a/b.
+     # a parenthesized group is a subshell — `( cd a )` never changes this shell's

@@ -1,0 +1,27 @@
+{
+  "real_model_calls": 0,
+  "previous_results_unchanged": true,
+  "formal_cases_unused": true,
+  "runtimes_identical_to_v3": true,
+  "workspaces_match_v3_initial_seals": true,
+  "only_execution_setting_changed": "rounds_per_attempt: 30 -> 10",
+  "observability_added": "Feedback matched to the next attempt model input hash AND request index range; request and response recorded separately.",
+  "dependencies": "fresh venv; offline copied packages; pip freeze equals v3 pins",
+  "preflight": {
+    "task04-generic": {
+      "expected_acceptance_failures": 9,
+      "workspace_matches": true
+    },
+    "task04-staged": {
+      "expected_acceptance_failures": 9,
+      "workspace_matches": true
+    },
+    "regression": {
+      "passed": 352,
+      "known_failed": 1,
+      "live_smoke_excluded": true
+    },
+    "real_model_calls": 0
+  },
+  "offline_scenarios": 6
+}

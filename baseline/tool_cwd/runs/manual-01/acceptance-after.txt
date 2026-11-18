@@ -1,0 +1,20 @@
+test_absolute_paths_keep_their_meaning (test_acceptance.ToolCwdAcceptance.test_absolute_paths_keep_their_meaning) ... ok
+test_child_directory_does_not_leak_into_parent (test_acceptance.ToolCwdAcceptance.test_child_directory_does_not_leak_into_parent) ... ok
+test_edit_changes_only_session_file (test_acceptance.ToolCwdAcceptance.test_edit_changes_only_session_file) ... ok
+test_explicit_relative_search_directory (test_acceptance.ToolCwdAcceptance.test_explicit_relative_search_directory) ... ok
+test_glob_default_searches_only_session_directory (test_acceptance.ToolCwdAcceptance.test_glob_default_searches_only_session_directory) ... ok
+test_grep_default_searches_only_session_directory (test_acceptance.ToolCwdAcceptance.test_grep_default_searches_only_session_directory) ... ok
+test_grep_relative_filename_uses_session_directory (test_acceptance.ToolCwdAcceptance.test_grep_relative_filename_uses_session_directory) ... ok
+test_parallel_file_tools_inherit_batch_directory (test_acceptance.ToolCwdAcceptance.test_parallel_file_tools_inherit_batch_directory) ... ok
+test_read_matches_shell_after_cd (test_acceptance.ToolCwdAcceptance.test_read_matches_shell_after_cd) ... ok
+test_same_batch_uses_start_directory_then_merges_cd (test_acceptance.ToolCwdAcceptance.test_same_batch_uses_start_directory_then_merges_cd) ... ok
+test_threads_do_not_share_path_context_or_change_process_cwd (test_acceptance.ToolCwdAcceptance.test_threads_do_not_share_path_context_or_change_process_cwd) ... ok
+test_tilde_still_uses_home (test_acceptance.ToolCwdAcceptance.test_tilde_still_uses_home) ... ok
+test_unset_session_directory_falls_back_to_process_directory (test_acceptance.ToolCwdAcceptance.test_unset_session_directory_falls_back_to_process_directory) ... ok
+test_write_creates_nested_file_in_session_directory (test_acceptance.ToolCwdAcceptance.test_write_creates_nested_file_in_session_directory) ... ok
+test_write_overwrites_only_session_file (test_acceptance.ToolCwdAcceptance.test_write_overwrites_only_session_file) ... ok
+
+----------------------------------------------------------------------
+Ran 15 tests in 0.077s
+
+OK

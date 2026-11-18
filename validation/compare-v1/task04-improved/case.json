@@ -1,0 +1,80 @@
+{
+  "task": "task04",
+  "arm": "improved",
+  "model": {
+    "name": "deepseek-flash",
+    "base_url": "https://api.deepseek.com",
+    "temperature": 0.0,
+    "max_tokens": 4096,
+    "context_tokens": 128000,
+    "request_seconds": 60,
+    "sdk_retries": 0
+  },
+  "limits": {
+    "max_attempts": 3,
+    "max_model_calls": 30,
+    "rounds_per_attempt": 30,
+    "max_seconds": 900,
+    "verifier_seconds": 60,
+    "max_stagnant_attempts": 2
+  },
+  "evaluation": "/tmp/corecoder-compare-01/evaluation/task04",
+  "protected_paths": [
+    "pyproject.toml",
+    "tests/__init__.py",
+    "tests/check_installed_wheel.py",
+    "tests/conftest.py",
+    "tests/mcp_resource_fixture.py",
+    "tests/test_checkpoints.py",
+    "tests/test_core.py",
+    "tests/test_demo.py",
+    "tests/test_hooks.py",
+    "tests/test_litellm.py",
+    "tests/test_live_smoke.py",
+    "tests/test_mcp.py",
+    "tests/test_mcp_http.py",
+    "tests/test_mcp_resources.py",
+    "tests/test_multi_agent.py",
+    "tests/test_permissions.py",
+    "tests/test_plan_mode.py",
+    "tests/test_repl.py",
+    "tests/test_safety_matrix.py",
+    "tests/test_session.py",
+    "tests/test_shell.py",
+    "tests/test_slash_commands.py",
+    "tests/test_tools.py",
+    "pytest.ini",
+    "conftest.py",
+    "setup.cfg",
+    "tox.ini",
+    "/tmp/corecoder-compare-01/task04-improved/runtime",
+    "/tmp/corecoder-compare-01/evaluation/task04",
+    "/tmp/corecoder-compare-01/task04-improved/case.json",
+    "/tmp/corecoder-compare-01/task04-improved/task.md",
+    "/tmp/corecoder-compare-01/runner"
+  ],
+  "absent_protected": [
+    "pytest.ini",
+    "conftest.py",
+    "setup.cfg",
+    "tox.ini"
+  ],
+  "verification_argv": [
+    "/tmp/corecoder-compare-01/venv/bin/python",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "/tmp/corecoder-compare-01/evaluation/task04",
+    "-v"
+  ],
+  "known_regression_failures": [
+    "tests/test_core.py::test_readme_line_counts_are_current"
+  ],
+  "start_commit": "c19091c2d5ee8670f772fae6cbbeffe0cd2c3da9",
+  "behavior": {
+    "chat_attempts": 3,
+    "empty_response_retry": 1,
+    "verification_feedback": true
+  }
+}

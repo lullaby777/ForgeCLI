@@ -1,0 +1,373 @@
+diff --git a/README.md b/README.md
+index a6d0781..9b67349 100644
+--- a/README.md
++++ b/README.md
+@@ -89,7 +89,7 @@ Laid out flat, the whole project is this big. Skim it before you clone and you'l
+ 
+ ```
+ corecoder/
+-├── agent.py        agent loop + parallel tool exec       240 lines   ← start here
++├── agent.py        agent loop + parallel tool exec       242 lines   ← start here
+ ├── llm.py          streaming client + retry + cost        364 lines
+ ├── context.py      three-tier context compaction          220 lines
+ ├── session.py      save / resume + path-traversal guard    97 lines
+@@ -104,15 +104,15 @@ corecoder/
+ ├── checkpoints.py  /undo snapshot and restore               93 lines
+ ├── demo.py         offline end-to-end demo                 101 lines
+ └── tools/
+-    ├── bash.py       shell + dangerous-command gate + cd  203 lines
+-    ├── edit.py       unique-match search/replace + diff    99 lines
++    ├── bash.py       shell + dangerous-command gate + cd  205 lines
++    ├── edit.py       unique-match search/replace + diff    98 lines
+     ├── grep.py       content search                        93 lines
+-    ├── glob_tool.py  filename matching                     52 lines
+-    ├── read.py       file read                             56 lines
+-    ├── write.py      file write                            46 lines
++    ├── glob_tool.py  filename matching                     51 lines
++    ├── read.py       file read                             55 lines
++    ├── write.py      file write                            45 lines
+     ├── todo.py       agent-maintained task checklist       79 lines
+     ├── agent.py      sub-agent teams + isolation         224 lines
+-    └── base.py       tool base class                       32 lines
++    └── base.py       tool base class                       57 lines
+ examples/
+ ├── plan_hooks_demo.py  offline plan mode + hooks demo (no API key)
+ └── multi_agent_demo.py  offline three-role parallel demo (no API key)
+@@ -193,7 +193,7 @@ I also wrote a bilingual source-reading series, one intro plus eight parts, each
+ Once you understand it, the natural next step is to fork. Getting started doesn't take much:
+ 
+ - **Swap in a model you actually use.** It's the two env vars from above; `llm.py` (364 lines) is the entry point for all provider adaptation.
+-- **Add a tool of your own.** Write a new file against the tool base class in `tools/base.py` (32 lines): run tests, fetch a page, call an LSP, whatever. The end of the second essay walks you through your first one by hand.
++- **Add a tool of your own.** Write a new file against the tool base class in `tools/base.py` (57 lines): run tests, fetch a page, call an LSP, whatever. The end of the second essay walks you through your first one by hand.
+ - **Rewrite the system prompt.** `prompt.py` is all of 41 lines; change one line and you'll watch the agent's temperament shift. It's the cheapest "change one thing, see a result" in the whole project.
+ - **Import it as a library.** The top level exports `Agent`, `LLM`, and `Config`, ready to embed in your own program:
+ 
+diff --git a/README_CN.md b/README_CN.md
+index 69829ce..81e32fb 100644
+--- a/README_CN.md
++++ b/README_CN.md
+@@ -89,7 +89,7 @@ corecoder -p "给 parse_config() 加错误处理"   # 一次性模式，干完
+ 
+ ```
+ corecoder/
+-├── agent.py        agent 主循环 + 并行工具执行       240 行   ← 从这里开始读
++├── agent.py        agent 主循环 + 并行工具执行       242 行   ← 从这里开始读
+ ├── llm.py          流式客户端 + 重试 + 成本统计       364 行
+ ├── context.py      三层上下文压缩                     220 行
+ ├── session.py      会话存盘 / 续聊 + 路径穿越防护      97 行
+@@ -104,15 +104,15 @@ corecoder/
+ ├── checkpoints.py  /undo 快照与回滚                      93 行
+ ├── demo.py         离线端到端演示                       101 行
+ └── tools/
+-    ├── bash.py       shell + 危险命令闸 + cd 追踪      203 行
+-    ├── edit.py       唯一匹配搜索替换 + diff            99 行
++    ├── bash.py       shell + 危险命令闸 + cd 追踪      205 行
++    ├── edit.py       唯一匹配搜索替换 + diff            98 行
+     ├── grep.py       内容搜索                           93 行
+-    ├── glob_tool.py  文件名匹配                         52 行
+-    ├── read.py       文件读取                           56 行
+-    ├── write.py      文件写入                           46 行
++    ├── glob_tool.py  文件名匹配                         51 行
++    ├── read.py       文件读取                           55 行
++    ├── write.py      文件写入                           45 行
+     ├── todo.py       agent 自维护的任务清单             79 行
+     ├── agent.py      子 agent 团队与隔离                224 行
+-    └── base.py       工具基类                           32 行
++    └── base.py       工具基类                           57 行
+ examples/
+ ├── plan_hooks_demo.py  离线 plan mode + hooks 演示（免 API key）
+ └── multi_agent_demo.py  离线三角色并行演示（免 API key）
+@@ -193,7 +193,7 @@ worker 名不能重复，依赖必须指向已有名字，循环依赖会在任
+ 读懂之后，最自然的下一步就是 fork。起手不用伤筋动骨：
+ 
+ - **换个你常用的模型。** 就是上面那两个环境变量，`llm.py`（364 行）是所有 provider 适配的入口。
+-- **加一件你自己的工具。** 照 `tools/base.py`（32 行）的工具基类写个新文件，跑测试、抓网页、调 LSP 都行，第二篇文章末尾手把手带你写第一个。
++- **加一件你自己的工具。** 照 `tools/base.py`（57 行）的工具基类写个新文件，跑测试、抓网页、调 LSP 都行，第二篇文章末尾手把手带你写第一个。
+ - **改系统提示词。** `prompt.py` 才 41 行，改一句就能看到 agent 的脾气变了，是门槛最低的「改一处就有反馈」。
+ - **直接当库 import。** 顶层导出了 `Agent`、`LLM`、`Config`，能嵌进你自己的程序：
+ 
+diff --git a/article/00-index.md b/article/00-index.md
+index 1987dc0..f984c42 100644
+--- a/article/00-index.md
++++ b/article/00-index.md
+@@ -22,7 +22,7 @@ CoreCoder 做的事，是把这套骨架压到一千四百行出头的纯 Python
+ 
+ 前六篇是「读懂」。每篇盯住 agent 的一个子系统，先讲 Claude Code 在这件事上的做法和取舍，再翻到 CoreCoder 对应的真实代码，看同一个想法被压缩成几十行后长什么样。最后一篇是「自己做」，把前面所有零件接起来，从 fork 到加一个自定义工具到换模型，落到一个能跑的成品。
+ 
+-1. [一个 agent 的本体，是一个 while 循环](01-the-loop.md)。整个 agent 最核心的东西，是一个「问模型、跑工具、把结果喂回去、再问」的循环。我们看 CoreCoder 的 `agent.py`（240 行）怎么把它写明白，以及打断、轮次上限、半截工具调用回填这些真实世界的麻烦各自怎么收场。
++1. [一个 agent 的本体，是一个 while 循环](01-the-loop.md)。整个 agent 最核心的东西，是一个「问模型、跑工具、把结果喂回去、再问」的循环。我们看 CoreCoder 的 `agent.py`（242 行）怎么把它写明白，以及打断、轮次上限、半截工具调用回填这些真实世界的麻烦各自怎么收场。
+ 2. [工具系统：让模型安全地动手](02-tools.md)。模型本身只会吐字，是工具让它能读文件、写文件、跑命令。这篇讲 CoreCoder 的七个工具，重点是那个看似平平无奇、实则是 Claude Code 关键创新的「唯一性搜索替换」编辑，以及 bash 的安全闸。v0.6.0 之后还补了一节「门之外」：plan 模式、hooks、MCP 这三个进阶件怎么挂在一次调用的前后。末尾教你写第一个自己的工具。
+ 3. [接入任意大模型，顺便把钱算清楚](03-llm-and-cost.md)。`llm.py`（364 行，引擎里最大的文件）怎么用一套 OpenAI 兼容接口接住 DeepSeek、Qwen、Kimi、本地 Ollama，怎么做指数退避重试，怎么在流式输出里顺手把 token 和美元成本统计出来。
+ 4. [用有限的窗口扛住一个长任务](04-context.md)。上下文窗口是 agent 的硬约束。`context.py`（220 行）实现了三层压缩，从轻到重。这篇还会讲一个特别容易踩、API 一定报错的坑：孤儿 tool 消息。这是我做这个项目时真改过的 bug。
+diff --git a/article/00-index_EN.md b/article/00-index_EN.md
+index a9569d8..1080c94 100644
+--- a/article/00-index_EN.md
++++ b/article/00-index_EN.md
+@@ -22,7 +22,7 @@ The answer is engineering. And the kind that, once you've read it, makes you thi
+ 
+ The first six are about understanding. Each one fixes on a single subsystem of the agent, first describing how Claude Code handles that thing and the tradeoffs it makes, then turning to the real code in CoreCoder to see what the same idea looks like once it's compressed into a few dozen lines. The last piece is about building it yourself, wiring all the parts back together, from fork to a custom tool to swapping the model, landing on something that runs.
+ 
+-1. [An agent is, at heart, a while loop](01-the-loop_EN.md). The most central thing in the whole agent is a loop: ask the model, run a tool, feed the result back, ask again. We look at how CoreCoder's `agent.py` (240 lines) writes it out plainly, and how real-world headaches like interruption, a round cap, and backfilling half-finished tool calls each get handled.
++1. [An agent is, at heart, a while loop](01-the-loop_EN.md). The most central thing in the whole agent is a loop: ask the model, run a tool, feed the result back, ask again. We look at how CoreCoder's `agent.py` (242 lines) writes it out plainly, and how real-world headaches like interruption, a round cap, and backfilling half-finished tool calls each get handled.
+ 2. [The tool system: letting the model act, safely](02-tools_EN.md). The model on its own only emits text. Tools are what let it read files, write files, run commands. This piece covers CoreCoder's seven tools, with the spotlight on the seemingly unremarkable unique search-and-replace edit that is in fact one of Claude Code's key innovations, plus bash's safety gate. Since v0.6.0 it also carries a "beyond the gates" section on how the three advanced pieces — plan mode, hooks, and MCP — hang off the moments around a call. At the end I'll have you write your first tool.
+ 3. [Plug in any model, and get the bill right while you're at it](03-llm-and-cost_EN.md). How `llm.py` (364 lines, the largest single file in the engine) uses one OpenAI-compatible interface to catch DeepSeek, Qwen, Kimi, and local Ollama, how it does exponential-backoff retry, and how it tallies tokens and dollar cost right inside the streaming output.
+ 4. [Surviving a long task in a finite window](04-context_EN.md). The context window is the agent's hard constraint. `context.py` (220 lines) implements three layers of compression, lightest to heaviest. This piece also covers a trap that's easy to hit and that the API will always reject: the orphaned tool message. That's a bug I actually fixed while building this project.
+diff --git a/article/01-the-loop.md b/article/01-the-loop.md
+index 190656d..cabe055 100644
+--- a/article/01-the-loop.md
++++ b/article/01-the-loop.md
+@@ -2,7 +2,7 @@
+ 
+ 如果只能用一句话解释编码 agent，我会这么说：它是一个循环，反复地问模型「下一步干什么」，照着模型说的去动手，把结果再讲给模型听，直到模型说「不用动手了，我有答案了」。
+ 
+-听起来朴素到有点失望。但这就是真相。Claude Code 把这件事做到了几十万行，可那个最中心的东西，公开拆解里叫 `query.ts`，它的主体是一个一千七百行上下的 `while` 循环。CoreCoder 把同一个循环写在 `corecoder/agent.py`（240 行，连空行带注释）里。两者形状一模一样，区别只是后者你能一眼看完。
++听起来朴素到有点失望。但这就是真相。Claude Code 把这件事做到了几十万行，可那个最中心的东西，公开拆解里叫 `query.ts`，它的主体是一个一千七百行上下的 `while` 循环。CoreCoder 把同一个循环写在 `corecoder/agent.py`（242 行，连空行带注释）里。两者形状一模一样，区别只是后者你能一眼看完。
+ 
+ 这一篇，我们就把这个循环逐段读透。
+ 
+diff --git a/article/01-the-loop_EN.md b/article/01-the-loop_EN.md
+index 6c78891..bd68d1b 100644
+--- a/article/01-the-loop_EN.md
++++ b/article/01-the-loop_EN.md
+@@ -2,7 +2,7 @@
+ 
+ If I had only one sentence to explain a coding agent, I'd put it like this: it's a loop that keeps asking the model "what's next," does what the model says, reports the result back to the model, and repeats until the model says "no need to act, I have the answer."
+ 
+-It sounds almost disappointingly plain. But that is the truth of it. Claude Code took this same thing and built it out to hundreds of thousands of lines, yet the most central piece, the part public teardowns call `query.ts`, is at its core a `while` loop of around seventeen hundred lines. CoreCoder writes the same loop in `corecoder/agent.py` (240 lines including blanks and comments). The two have an identical shape; the only difference is you can read the latter in a single glance.
++It sounds almost disappointingly plain. But that is the truth of it. Claude Code took this same thing and built it out to hundreds of thousands of lines, yet the most central piece, the part public teardowns call `query.ts`, is at its core a `while` loop of around seventeen hundred lines. CoreCoder writes the same loop in `corecoder/agent.py` (242 lines including blanks and comments). The two have an identical shape; the only difference is you can read the latter in a single glance.
+ 
+ In this piece we read that loop closely, section by section.
+ 
+diff --git a/article/02-tools.md b/article/02-tools.md
+index 41b7b08..6523e73 100644
+--- a/article/02-tools.md
++++ b/article/02-tools.md
+@@ -8,7 +8,7 @@ CoreCoder 给了模型八个工具：`bash`、`read_file`、`write_file`、`edit
+ 
+ ## 一个工具长什么样
+ 
+-所有工具继承自 `tools/base.py` 里的 `Tool`，整个基类 32 行：
++所有工具继承自 `tools/base.py` 里的 `Tool`，整个基类 57 行：
+ 
+ ```python
+ class Tool(ABC):
+@@ -115,7 +115,7 @@ except UnicodeDecodeError:
+ 
+ `read_file`、`edit_file` 这些工具能造成的破坏有限。`bash` 不一样，它能跑任意 shell 命令，模型一旦写出 `rm -rf /`，后果是真实的。
+ 
+-Claude Code 的 `BashTool` 公开拆解里是 1143 行，里头有命令分类器、有基于 `sandbox-exec` 和 `seccomp` 的真沙箱、有输出截断、有交互式命令拦截。CoreCoder 的 `bash.py` 是 203 行的蒸馏版，保留了四件最要紧的事：危险命令检测、输出截断、超时、工作目录跟踪。
++Claude Code 的 `BashTool` 公开拆解里是 1143 行，里头有命令分类器、有基于 `sandbox-exec` 和 `seccomp` 的真沙箱、有输出截断、有交互式命令拦截。CoreCoder 的 `bash.py` 是 205 行的蒸馏版，保留了四件最要紧的事：危险命令检测、输出截断、超时、工作目录跟踪。
+ 
+ 危险命令检测是一张正则黑名单：
+ 
+diff --git a/article/02-tools_EN.md b/article/02-tools_EN.md
+index 9c99dae..ba2cecd 100644
+--- a/article/02-tools_EN.md
++++ b/article/02-tools_EN.md
+@@ -8,7 +8,7 @@ CoreCoder gives the model eight tools: `bash`, `read_file`, `write_file`, `edit_
+ 
+ ## What a tool looks like
+ 
+-Every tool inherits from `Tool` in `tools/base.py`, the whole base class being 32 lines:
++Every tool inherits from `Tool` in `tools/base.py`, the whole base class being 57 lines:
+ 
+ ```python
+ class Tool(ABC):
+diff --git a/corecoder/agent.py b/corecoder/agent.py
+index 70d7e57..28d1a9c 100644
+--- a/corecoder/agent.py
++++ b/corecoder/agent.py
+@@ -189,11 +189,13 @@ class Agent:
+         session_cwd = get_tracked_cwd()
+         with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:
+             def run(i, tc, base_cwd):
+-                is_bash = tc.name == "bash"
+-                if is_bash and base_cwd is not None:
++                # every worker gets the batch-start cwd, not just bash: the file
++                # tools resolve relative paths against the session dir too, and
++                # a sibling's cd must never decide where they look
++                if base_cwd is not None:
+                     set_tracked_cwd(base_cwd)
+                 out = self._exec_tool(tc)
+-                if not is_bash:
++                if tc.name != "bash":
+                     return i, out, None
+                 cwd_after = get_tracked_cwd()
+                 # only a worker that actually moved the dir reports back; a
+diff --git a/corecoder/tools/base.py b/corecoder/tools/base.py
+index f62aeab..4ed37ea 100644
+--- a/corecoder/tools/base.py
++++ b/corecoder/tools/base.py
+@@ -1,13 +1,38 @@
+ """Base class for all tools."""
+ 
++import os
+ import threading
+ from abc import ABC, abstractmethod
++from pathlib import Path
+ 
+ # File-mutating tools (write_file/edit_file) serialize on this, so a parallel
+ # batch can't interleave read-modify-write on the same file and lose an edit.
+ FILE_MUTATION_LOCK = threading.Lock()
+ 
+ 
++def resolve_tool_path(path: str) -> Path:
++    """Resolve a tool's path argument against the session's working directory.
++
++    The bash tool tracks the directory the session is "in" thread-locally, so
++    the file tools have to agree with it: a relative path means "relative to
++    where the session is now", not "relative to wherever the Python process
++    happens to have been started". Absolute paths and ``~`` keep their usual
++    meaning, and a session with no recorded directory falls back to the
++    process cwd, exactly like bash does.
++
++    Resolving per call (instead of ``os.chdir``) keeps threads, parallel tool
++    batches and sub-agents isolated from each other.
++    """
++    p = Path(path).expanduser()
++    if p.is_absolute():
++        return p.resolve()
++    # imported lazily: bash.py imports this module at import time
++    from .bash import get_tracked_cwd
++
++    base = get_tracked_cwd() or os.getcwd()
++    return (Path(base) / p).resolve()
++
++
+ class Tool(ABC):
+     """Minimal tool interface. Subclass this to add new capabilities."""
+ 
+diff --git a/corecoder/tools/bash.py b/corecoder/tools/bash.py
+index 6145f02..62be7fa 100644
+--- a/corecoder/tools/bash.py
++++ b/corecoder/tools/bash.py
+@@ -19,6 +19,8 @@ from .base import Tool
+ # Track cwd across commands (Claude Code does this too). Thread-local, so that
+ # when the agent executes tools in parallel two bash calls never race on one
+ # shared global: each worker thread carries its own cwd. See article 05.
++# The file tools read this same thread-local via base.resolve_tool_path, so a
++# `cd backend` moves bash *and* read_file/edit_file/write_file/grep/glob alike.
+ _local = threading.local()
+ 
+ 
+diff --git a/corecoder/tools/edit.py b/corecoder/tools/edit.py
+index e10798f..2131e5f 100644
+--- a/corecoder/tools/edit.py
++++ b/corecoder/tools/edit.py
+@@ -7,11 +7,10 @@ and makes edits safe and reviewable.
+ """
+ 
+ import difflib
+-from pathlib import Path
+ from typing import ClassVar
+ 
+ from ..checkpoints import record as _record_checkpoint
+-from .base import Tool
++from .base import Tool, resolve_tool_path
+ 
+ # track files changed this session for /diff
+ _changed_files: set[str] = set()
+@@ -48,7 +47,7 @@ class EditFileTool(Tool):
+ 
+         try:
+             with FILE_MUTATION_LOCK:
+-                p = Path(file_path).expanduser().resolve()
++                p = resolve_tool_path(file_path)
+                 if not p.exists():
+                     return f"Error: {file_path} not found"
+ 
+diff --git a/corecoder/tools/glob_tool.py b/corecoder/tools/glob_tool.py
+index f7f8df4..6b34a13 100644
+--- a/corecoder/tools/glob_tool.py
++++ b/corecoder/tools/glob_tool.py
+@@ -1,9 +1,8 @@
+ """File pattern matching."""
+ 
+-from pathlib import Path
+ from typing import ClassVar
+ 
+-from .base import Tool
++from .base import Tool, resolve_tool_path
+ 
+ 
+ class GlobTool(Tool):
+@@ -29,7 +28,7 @@ class GlobTool(Tool):
+ 
+     def execute(self, pattern: str, path: str = ".") -> str:
+         try:
+-            base = Path(path).expanduser().resolve()
++            base = resolve_tool_path(path)
+             if not base.exists():
+                 return f"Error: {path} not found"
+             if not base.is_dir():
+diff --git a/corecoder/tools/grep.py b/corecoder/tools/grep.py
+index e58ded0..3d9b066 100644
+--- a/corecoder/tools/grep.py
++++ b/corecoder/tools/grep.py
+@@ -4,7 +4,7 @@ import re
+ from pathlib import Path
+ from typing import ClassVar
+ 
+-from .base import Tool
++from .base import Tool, resolve_tool_path
+ 
+ # skip these dirs to avoid noise
+ _SKIP_DIRS = {".git", "node_modules", "__pycache__", ".venv", "venv", ".tox", "dist", "build"}
+@@ -41,7 +41,7 @@ class GrepTool(Tool):
+         except re.error as e:
+             return f"Invalid regex: {e}"
+ 
+-        base = Path(path).expanduser().resolve()
++        base = resolve_tool_path(path)
+         if not base.exists():
+             return f"Error: {path} not found"
+ 
+diff --git a/corecoder/tools/read.py b/corecoder/tools/read.py
+index 725304b..72c3e5f 100644
+--- a/corecoder/tools/read.py
++++ b/corecoder/tools/read.py
+@@ -1,9 +1,8 @@
+ """File reading with line numbers."""
+ 
+-from pathlib import Path
+ from typing import ClassVar
+ 
+-from .base import Tool
++from .base import Tool, resolve_tool_path
+ 
+ 
+ class ReadFileTool(Tool):
+@@ -33,7 +32,7 @@ class ReadFileTool(Tool):
+ 
+     def execute(self, file_path: str, offset: int = 1, limit: int = 2000) -> str:
+         try:
+-            p = Path(file_path).expanduser().resolve()
++            p = resolve_tool_path(file_path)
+             if not p.exists():
+                 return f"Error: {file_path} not found"
+             if not p.is_file():
+diff --git a/corecoder/tools/write.py b/corecoder/tools/write.py
+index 1a80003..bc827fb 100644
+--- a/corecoder/tools/write.py
++++ b/corecoder/tools/write.py
+@@ -1,10 +1,9 @@
+ """File creation / overwrite."""
+ 
+-from pathlib import Path
+ from typing import ClassVar
+ 
+ from ..checkpoints import record as _record_checkpoint
+-from .base import Tool
++from .base import Tool, resolve_tool_path
+ from .edit import _changed_files
+ 
+ 
+@@ -34,7 +33,7 @@ class WriteFileTool(Tool):
+ 
+         try:
+             with FILE_MUTATION_LOCK:
+-                p = Path(file_path).expanduser().resolve()
++                p = resolve_tool_path(file_path)
+                 p.parent.mkdir(parents=True, exist_ok=True)
+                 _record_checkpoint(p)
+                 p.write_text(content, encoding="utf-8")

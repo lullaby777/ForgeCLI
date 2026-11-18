@@ -1,0 +1,28 @@
+{
+  "task": "agent-isolation",
+  "run": "manual-01",
+  "model": "deepseek-flash",
+  "user_turns": 1,
+  "verdict": "functional_acceptance_passed",
+  "execution_note": "50 assistant rounds; saved history ends with tool result, consistent with default round limit; no final assistant summary",
+  "acceptance_methods": 12,
+  "acceptance_failures": 0,
+  "independent_acceptance_review_exit": 0,
+  "regression": {
+    "before_passed": 352,
+    "after_passed": 365,
+    "known_failed": 1,
+    "new_failed": 0,
+    "live_model_tests_excluded": true
+  },
+  "existing_tests_modified": false,
+  "new_test_items": 13,
+  "usage_from_screenshot": {
+    "prompt": 2135028,
+    "completion": 27819,
+    "total": 2162847
+  },
+  "agent_elapsed_seconds": null,
+  "cost": null,
+  "start_commit": "e487ea4298d1c7fc094067da215de21321b58102"
+}

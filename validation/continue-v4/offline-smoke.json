@@ -1,0 +1,122 @@
+{
+  "real_model_calls": 0,
+  "formal_case_unchanged": true,
+  "checks": [
+    {
+      "scenario": "stay",
+      "real_model_calls": 0,
+      "status": "no_progress",
+      "functional_passed": false,
+      "scripted_calls": 2,
+      "initial_feedback": {
+        "requested": true,
+        "response_returned": true,
+        "request_indexes": [
+          1,
+          2
+        ]
+      },
+      "retry_feedback": {
+        "definition": "Used = model entry requested with this feedback as the latest user message; not proof of model comprehension.",
+        "feedback_generated_count": 2,
+        "feedback_submitted_count": 1,
+        "feedback_used_count": 1,
+        "feedback_response_count": 1,
+        "records": [
+          {
+            "source_attempt": 1,
+            "kind": "regression_failed",
+            "message_hash": "32b549e485bc720cb276d774db480b9cbba57056263b821ca50bb6538aaa608b",
+            "submitted_to_agent": true,
+            "model_requested_with_feedback": true,
+            "response_returned_with_feedback": true,
+            "request_indexes": [
+              2
+            ],
+            "response_indexes": [
+              2
+            ],
+            "next_attempt": 2,
+            "next_attempt_model_calls": 1,
+            "next_verification": "passed",
+            "next_files_changed": false
+          },
+          {
+            "source_attempt": 2,
+            "kind": "regression_failed",
+            "message_hash": "32b549e485bc720cb276d774db480b9cbba57056263b821ca50bb6538aaa608b",
+            "submitted_to_agent": false,
+            "model_requested_with_feedback": false,
+            "response_returned_with_feedback": false,
+            "request_indexes": [],
+            "response_indexes": [],
+            "next_attempt": null,
+            "next_attempt_model_calls": 0,
+            "next_verification": null,
+            "next_files_changed": null
+          }
+        ]
+      }
+    },
+    {
+      "scenario": "fix",
+      "real_model_calls": 0,
+      "status": "passed",
+      "functional_passed": true,
+      "scripted_calls": 3,
+      "initial_feedback": {
+        "requested": true,
+        "response_returned": true,
+        "request_indexes": [
+          1,
+          2,
+          3
+        ]
+      },
+      "retry_feedback": {
+        "definition": "Used = model entry requested with this feedback as the latest user message; not proof of model comprehension.",
+        "feedback_generated_count": 1,
+        "feedback_submitted_count": 1,
+        "feedback_used_count": 1,
+        "feedback_response_count": 1,
+        "records": [
+          {
+            "source_attempt": 1,
+            "kind": "regression_failed",
+            "message_hash": "32b549e485bc720cb276d774db480b9cbba57056263b821ca50bb6538aaa608b",
+            "submitted_to_agent": true,
+            "model_requested_with_feedback": true,
+            "response_returned_with_feedback": true,
+            "request_indexes": [
+              2,
+              3
+            ],
+            "response_indexes": [
+              2,
+              3
+            ],
+            "next_attempt": 2,
+            "next_attempt_model_calls": 2,
+            "next_verification": "passed",
+            "next_files_changed": true
+          }
+        ]
+      }
+    }
+  ],
+  "launch_guards": [
+    {
+      "arguments": [
+        "--live"
+      ],
+      "exit_code": 1,
+      "output": "Set CORECODER_API_KEY first; the case remains unused\n"
+    },
+    {
+      "arguments": [],
+      "exit_code": 2,
+      "output": "usage: run.py [-h] --live\nrun.py: error: the following arguments are required: --live\n"
+    }
+  ],
+  "scope": "Actual v4 failed snapshot, two real doc checks for smoke; full suite checked in preflight"
+}

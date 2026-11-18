@@ -15,3 +15,7 @@ venv/
 .DS_Store
 .pytest_cache/
 .tmp/
+.vscode/
+# frozen source copies / archives from earlier local experiments (the code lives in corecoder/)
+validation/**/source/
+validation/**/*.tar.gz

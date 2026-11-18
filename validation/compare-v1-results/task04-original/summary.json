@@ -1,0 +1,58 @@
+{
+  "task": "task04",
+  "arm": "original",
+  "live": true,
+  "functional_passed": false,
+  "execution_process": {
+    "exit_code": 0,
+    "timeout": false
+  },
+  "acceptance": {
+    "exit_code": 1,
+    "timeout": false
+  },
+  "regression": {
+    "exit_code": 1,
+    "timeout": false
+  },
+  "new_regression_failures": [],
+  "known_regression_failures_present": [
+    "tests/test_core.py::test_readme_line_counts_are_current"
+  ],
+  "protected_tests_changed": [],
+  "runtime_changed": false,
+  "acceptance_changed": false,
+  "harness_changed": false,
+  "execution": {
+    "arm": "original",
+    "model": {
+      "name": "deepseek-flash",
+      "base_url": "https://api.deepseek.com",
+      "temperature": 0.0,
+      "max_tokens": 4096,
+      "context_tokens": 128000,
+      "request_seconds": 60,
+      "sdk_retries": 0
+    },
+    "limits": {
+      "max_attempts": 3,
+      "max_model_calls": 30,
+      "rounds_per_attempt": 30,
+      "max_seconds": 900,
+      "verifier_seconds": 60,
+      "max_stagnant_attempts": 2
+    },
+    "behavior": {
+      "chat_attempts": 1,
+      "empty_response_retry": 0,
+      "verification_feedback": false
+    },
+    "live": true,
+    "execution_status": "returned_empty",
+    "model_calls": 5,
+    "elapsed_seconds": 29.958155500004068,
+    "prompt_tokens": 37580,
+    "completion_tokens": 4785,
+    "estimated_cost_usd": null
+  }
+}

@@ -1,0 +1,5 @@
+目录结构: note.txt=ROOT VALUE；backend/note.txt=SUB VALUE
+命令工具已经成功 cd backend
+bash cat note.txt: SUB VALUE
+read_file note.txt: 1	ROOT VALUE
+预期: 两者都读取 SUB VALUE

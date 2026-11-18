@@ -1,0 +1,45 @@
+{
+  "real_model_calls": 0,
+  "task_identity_preserved": true,
+  "restored_ledger_exactly_preserved": true,
+  "original_baseline_bytes_preserved": true,
+  "workspace_has_no_changes": true,
+  "task_id": "89e56e4d7cd141cd8374d84c9fad2afd",
+  "paused_ledger": {
+    "model_calls": 7,
+    "attempts": 1,
+    "rounds": 7,
+    "active_seconds": 41.19454250007402,
+    "stagnant": 0,
+    "previous_failure": null,
+    "prompt_tokens": 49730,
+    "completion_tokens": 908,
+    "unknown_usage_requests": 1
+  },
+  "final_ledger": {
+    "model_calls": 11,
+    "attempts": 2,
+    "rounds": 3,
+    "active_seconds": 172.89556450000964,
+    "stagnant": 2,
+    "previous_failure": "5df5048b2d069e2da65423af635d8eb0d5edc1c82bf09313cdcbb0088efbafc9",
+    "prompt_tokens": 141245,
+    "completion_tokens": 23861,
+    "unknown_usage_requests": 1
+  },
+  "resumed_model_calls": 4,
+  "resumed_active_seconds": 131.70102199993562,
+  "known_total_tokens": 165106,
+  "known_resume_tokens": 114468,
+  "status": "no_progress",
+  "completed": false,
+  "acceptance_failures": 9,
+  "acceptance_tests": 14,
+  "post_edit_regression_in_controller": "not_run: acceptance never passed",
+  "independent_regression": {
+    "passed": 352,
+    "known_failures": 1,
+    "new_failures": []
+  },
+  "original_manual_suite_unchanged": true
+}

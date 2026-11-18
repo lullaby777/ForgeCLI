@@ -1,0 +1,302 @@
+diff --git a/README.md b/README.md
+index a6d0781..bf04995 100644
+--- a/README.md
++++ b/README.md
+@@ -104,7 +104,7 @@ corecoder/
+ ├── checkpoints.py  /undo snapshot and restore               93 lines
+ ├── demo.py         offline end-to-end demo                 101 lines
+ └── tools/
+-    ├── bash.py       shell + dangerous-command gate + cd  203 lines
++    ├── bash.py       shell + dangerous-command gate + cd  335 lines
+     ├── edit.py       unique-match search/replace + diff    99 lines
+     ├── grep.py       content search                        93 lines
+     ├── glob_tool.py  filename matching                     52 lines
+diff --git a/README_CN.md b/README_CN.md
+index 69829ce..78151fa 100644
+--- a/README_CN.md
++++ b/README_CN.md
+@@ -104,7 +104,7 @@ corecoder/
+ ├── checkpoints.py  /undo 快照与回滚                      93 行
+ ├── demo.py         离线端到端演示                       101 行
+ └── tools/
+-    ├── bash.py       shell + 危险命令闸 + cd 追踪      203 行
++    ├── bash.py       shell + 危险命令闸 + cd 追踪      335 行
+     ├── edit.py       唯一匹配搜索替换 + diff            99 行
+     ├── grep.py       内容搜索                           93 行
+     ├── glob_tool.py  文件名匹配                         52 行
+diff --git a/article/02-tools.md b/article/02-tools.md
+index 41b7b08..14351e6 100644
+--- a/article/02-tools.md
++++ b/article/02-tools.md
+@@ -115,7 +115,7 @@ except UnicodeDecodeError:
+ 
+ `read_file`、`edit_file` 这些工具能造成的破坏有限。`bash` 不一样，它能跑任意 shell 命令，模型一旦写出 `rm -rf /`，后果是真实的。
+ 
+-Claude Code 的 `BashTool` 公开拆解里是 1143 行，里头有命令分类器、有基于 `sandbox-exec` 和 `seccomp` 的真沙箱、有输出截断、有交互式命令拦截。CoreCoder 的 `bash.py` 是 203 行的蒸馏版，保留了四件最要紧的事：危险命令检测、输出截断、超时、工作目录跟踪。
++Claude Code 的 `BashTool` 公开拆解里是 1143 行，里头有命令分类器、有基于 `sandbox-exec` 和 `seccomp` 的真沙箱、有输出截断、有交互式命令拦截。CoreCoder 的 `bash.py` 是 335 行的蒸馏版，保留了四件最要紧的事：危险命令检测、输出截断、超时、工作目录跟踪。
+ 
+ 危险命令检测是一张正则黑名单：
+ 
+diff --git a/article/02-tools_EN.md b/article/02-tools_EN.md
+index 9c99dae..e548ed4 100644
+--- a/article/02-tools_EN.md
++++ b/article/02-tools_EN.md
+@@ -115,7 +115,7 @@ Without this check, the moment the model accidentally runs `edit_file` on a bina
+ 
+ Tools like `read_file` and `edit_file` can only do limited damage. `bash` is different; it runs arbitrary shell commands, and the moment the model writes `rm -rf /`, the consequences are real.
+ 
+-Claude Code's `BashTool` is 1,143 lines in public teardowns, with a command classifier, a real sandbox built on `sandbox-exec` and `seccomp`, output truncation, and interactive-command interception. CoreCoder's `bash.py` is a 203-line distillation that keeps the four most essential things: dangerous-command detection, output truncation, timeout, and working-directory tracking.
++Claude Code's `BashTool` is 1,143 lines in public teardowns, with a command classifier, a real sandbox built on `sandbox-exec` and `seccomp`, output truncation, and interactive-command interception. CoreCoder's `bash.py` is a 335-line distillation that keeps the four most essential things: dangerous-command detection, output truncation, timeout, and working-directory tracking.
+ 
+ Dangerous-command detection is a regex blocklist:
+ 
+diff --git a/corecoder/tools/bash.py b/corecoder/tools/bash.py
+index 6145f02..93ac574 100644
+--- a/corecoder/tools/bash.py
++++ b/corecoder/tools/bash.py
+@@ -4,12 +4,15 @@ Claude Code's BashTool is 1,143 lines. This is the distilled version:
+ - Output capture with truncation (head+tail preserved)
+ - Timeout support
+ - Dangerous command detection
+-- Working directory tracking (cd awareness)
++- Working directory tracking (cd awareness): the shell itself reports the
++  directory its command chain actually reached, so a `cd` counts when it ran
++  — not when the whole chain happened to exit 0.
+ """
+ 
+ import os
+ import re
+ import subprocess
++import tempfile
+ import threading
+ from typing import ClassVar
+ 
+@@ -35,6 +38,102 @@ def set_tracked_cwd(path: str | None) -> None:
+     else:
+         _local.cwd = path
+ 
++
++# The shell reports its own final directory through a throwaway file, never
++# through stdout/stderr, so the bookkeeping can never show up in tool output.
++_REPORT_VAR = "__corecoder_status"
++
++
++def _report_path() -> str:
++    """Reserve a fresh temp file for one report of the shell's final $PWD."""
++    fd, path = tempfile.mkstemp(prefix="corecoder-cwd-", suffix=".txt")
++    os.close(fd)
++    return path
++
++
++def _discard_report(path: str) -> None:
++    try:
++        os.remove(path)
++    except OSError:
++        pass
++
++
++def _quote_shell_path(path: str) -> str:
++    """Single-quote a path for sh/bash; forward slashes keep git-bash happy."""
++    return "'" + path.replace("\\", "/").replace("'", "'\\''") + "'"
++
++
++def _wrap_with_cwd_report(command: str, report: str) -> str:
++    """Run `command`, then record the directory this shell really ended in.
++
++    `{ ... }` is a plain group, not a subshell, so a `cd` inside it moves this
++    shell exactly as it would at top level - even when a later command in the
++    chain fails. The leading `:` keeps the group non-empty (comments-only
++    commands still parse) and the trailing `exit` forwards the command's own
++    status untouched, so the caller's view of the run does not change.
++    """
++    return (
++        f"{{\n:\n{command}\n}}\n"
++        f"{_REPORT_VAR}=$?\n"
++        f"pwd > {_quote_shell_path(report)} 2>/dev/null\n"
++        f"exit ${_REPORT_VAR}\n"
++    )
++
++
++def _read_cwd_report(report: str) -> str | None:
++    """The path the shell recorded, or None if it stopped before reporting
++    (timeout, explicit `exit`, killed process)."""
++    try:
++        with open(report, encoding="utf-8", errors="replace") as fh:
++            lines = [line.strip() for line in fh.read().splitlines()]
++    except OSError:
++        return None
++    return next((line for line in reversed(lines) if line), None)
++
++
++# git-bash spells `C:\Users\me` as `/c/Users/me`; Python needs the drive form.
++_DRIVE_LETTER_RE = re.compile(r"^/([A-Za-z])(/.*)?$")
++
++
++def _python_path(shell_path: str) -> str | None:
++    """Translate a shell-reported $PWD into a directory Python can verify.
++    None when it does not name an existing dir in this process's dialect."""
++    path = shell_path.strip()
++    if not path:
++        return None
++    if os.name == "nt":
++        drive = _DRIVE_LETTER_RE.match(path)
++        if drive:
++            path = f"{drive.group(1)}:{drive.group(2) or '/'}"
++    path = os.path.normpath(path)
++    return path if os.path.isdir(path) else None
++
++
++def _shell_env(cwd: str) -> dict[str, str]:
++    """Launch env with $PWD pinned to the dir we hand the shell: shells keep an
++    inherited $PWD only when it names the real directory, and pinning it makes
++    the report spell the path the way Python tracks it (no `/private/tmp`)."""
++    env = dict(os.environ)
++    env["PWD"] = cwd
++    return env
++
++
++def _track_reported_cwd(reported: str | None, start_cwd: str, command: str) -> None:
++    """Adopt the directory the shell ended in, when it really moved.
++
++    No report (timeout, explicit `exit`) leaves the tracked dir untouched, and
++    landing back where we started is a no-op. An unverifiable report falls back
++    to the static scan.
++    """
++    if reported is None:
++        return
++    resolved = _python_path(reported)
++    if resolved is None:
++        _update_cwd(command, start_cwd)
++    elif resolved != os.path.normpath(start_cwd):
++        set_tracked_cwd(resolved)
++
++
+ # patterns that could wreck the filesystem or leak secrets
+ _DANGEROUS_PATTERNS = [
+     # recursive delete aimed at root/home (force flag optional)
+@@ -83,21 +182,28 @@ class BashTool(Tool):
+         # use this thread's own tracked working directory
+         cwd = get_tracked_cwd() or os.getcwd()
+ 
++        report = _report_path()
+         try:
+-            proc = run_shell(
+-                command,
+-                check=False,
+-                capture_output=True,
+-                text=True,
+-                encoding="utf-8",
+-                errors="replace",
+-                timeout=timeout,
+-                cwd=cwd,
+-            )
+-
+-            # track cd commands so next command runs in the right place
+-            if proc.returncode == 0:
+-                _update_cwd(command, cwd)
++            try:
++                proc = run_shell(
++                    _wrap_with_cwd_report(command, report),
++                    check=False,
++                    capture_output=True,
++                    text=True,
++                    encoding="utf-8",
++                    errors="replace",
++                    timeout=timeout,
++                    cwd=cwd,
++                    env=_shell_env(cwd),
++                )
++                reported = _read_cwd_report(report)
++            finally:
++                _discard_report(report)
++
++            # the shell knows which cd's actually ran: adopt the dir it ended
++            # up in, even when the last command of the chain failed
++            _track_reported_cwd(reported, cwd, command)
++
+             out = proc.stdout
+             if proc.stderr:
+                 out += f"\n[stderr]\n{proc.stderr}"
+@@ -152,11 +258,14 @@ def _split_words(statement: str) -> list[str]:
+     return words
+ 
+ 
+-def _split_statements(command: str) -> list[list[str]]:
+-    """Split a shell command into per-statement word lists on `&&` and `;`,
+-    honoring quotes. Words come back dequoted, so `cd "my dir"` arrives as
+-    ["cd", "my dir"] and a separator inside quotes never splits."""
+-    statements: list[str] = []
++def _split_chain(command: str) -> list[tuple[list[str], str]]:
++    """Split a command into (statement words, following separator) pairs.
++
++    Only `&&` and `;` separate statements, and separators inside quotes never
++    split; words come back dequoted (see `_split_words`). The last pair gets
++    `;` because nothing runs after it.
++    """
++    statements: list[tuple[str, str]] = []
+     quote: str | None = None
+     start = 0
+     i = 0
+@@ -172,19 +281,31 @@ def _split_statements(command: str) -> list[list[str]]:
+             if ch == ";" or is_and:
+                 statement = command[start:i]
+                 if statement.strip():
+-                    statements.append(statement)
++                    statements.append((statement, "&&" if is_and else ";"))
+                 i += 2 if is_and else 1
+                 start = i
+                 continue
+         i += 1
+     tail = command[start:]
+     if tail.strip():
+-        statements.append(tail)
+-    return [_split_words(statement) for statement in statements]
++        statements.append((tail, ";"))
++    return [(_split_words(statement), sep) for statement, sep in statements]
++
++
++def _split_statements(command: str) -> list[list[str]]:
++    """Split a shell command into per-statement word lists on `&&` and `;`,
++    honoring quotes. Words come back dequoted, so `cd "my dir"` arrives as
++    ["cd", "my dir"] and a separator inside quotes never splits."""
++    return [words for words, _sep in _split_chain(command)]
+ 
+ 
+ def _update_cwd(command: str, current_cwd: str):
+-    """Track directory changes from cd commands, per thread."""
++    """Best-effort static tracking of cd commands, per thread.
++
++    Only used when the shell could not report its own directory. A cd is
++    adopted only when the chain is guaranteed to reach it: `cd a && false`
++    lands in a, while the cd in `false && cd b` may never run and is skipped.
++    """
+     # walk each cd in a && or ; chain, resolving relative targets against the dir the
+     # previous cd landed in (not the original cwd) so `cd a && cd b` ends in a/b.
+     # a parenthesized group is a subshell — `( cd a )` never changes this shell's
+@@ -192,12 +313,23 @@ def _update_cwd(command: str, current_cwd: str):
+     scrubbed = re.sub(r"\([^()]*\)", " ", command)
+     running = current_cwd
+     changed = False
+-    for words in _split_statements(scrubbed):
+-        if words and words[0] == "cd":
++    # whether the next statement is sure to run: a failed command short-circuits
++    # the rest of an && chain, while `;` always runs what follows
++    reachable = True
++    for words, sep in _split_chain(scrubbed):
++        if reachable and words and words[0] == "cd":
+             target = words[1] if len(words) > 1 else "~"
+             new_dir = os.path.normpath(os.path.join(running, os.path.expanduser(target)))
+             if os.path.isdir(new_dir):
+                 running = new_dir
+                 changed = True
++            else:
++                reachable = False  # this cd fails, so an && chain stops here
++        elif reachable:
++            # any other command may fail; statically we cannot know it didn't
++            reachable = False
++        if sep == ";":
++            # `;` runs the next statement whatever this one did
++            reachable = True
+     if changed:
+-        _local.cwd = running
++        set_tracked_cwd(running)

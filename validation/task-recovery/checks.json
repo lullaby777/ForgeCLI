@@ -1,0 +1,30 @@
+{
+  "real_model_calls": 0,
+  "full_offline_suite": "469 passed in 31.12s",
+  "new_task_recovery_tests": 29,
+  "changed_files_lint": "passed",
+  "existing_tests_unchanged": true,
+  "five_baselines_unchanged": true,
+  "baseline_unchanged": true,
+  "v1_v2_v3_v4_unchanged": true,
+  "continuation_suite_unchanged": true,
+  "prior_validation_files_unchanged": true,
+  "demo": {
+    "paused_calls": 2,
+    "final_calls": 4,
+    "attempts": 2,
+    "completed": true,
+    "actual_provider_calls": 0
+  },
+  "source_hashes": {
+    "corecoder/agent.py": "4ee420b7c918e50a75ea1263131775dedc0fb39fa707075d0c12fea0a8f0542c",
+    "corecoder/cli.py": "4709db41afbe3000afc5ab8a101882c2fbb985bc50c7a3fdaf6c303afc4f556e",
+    "corecoder/prompt.py": "08ab6655be72df5763800e9d0449bce4c454a6f46f5d5ee5edba6e1ebc818dfe",
+    "corecoder/session.py": "7baae27a303e5bd3660727d4cc954f3b4b396cea71e41b83d18d275cb5f74429",
+    "corecoder/task_store.py": "6dc4d2c97d2b7cbef0ff683feedc6917f153e7bfc4b0696763fed52684044658",
+    "corecoder/tasks.py": "01db8b69678c50a3c2638dcecb120290ed6f71a8e721eb6101946e8cf02c3470",
+    "docs/task-recovery.md": "10e229d1c3433223c8e31fb753b1fc7a2359211d113429b2733ff0a48d93b98d",
+    "examples/task_recovery_demo.py": "0c36e34c9ce6c7691504fe6d7e698b147d5ee521c276f85966be20e02452914d",
+    "tests/test_task_recovery.py": "b84d60807c0f2da6a9159dbb5819f4d8643b5face8fdfd0ff213dc5988276cd9"
+  }
+}

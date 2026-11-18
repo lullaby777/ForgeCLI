@@ -1,0 +1,13 @@
+编辑结果: Edited /var/folders/_8/4ygyt9010tjgz7z68qb4skb80000gn/T/corecoder-newline-test-vd8fp3on/sample.txt
+--- a//private/var/folders/_8/4ygyt9010tjgz7z68qb4skb80000gn/T/corecoder-newline-test-vd8fp3on/sample.txt
++++ b//private/var/folders/_8/4ygyt9010tjgz7z68qb4skb80000gn/T/corecoder-newline-test-vd8fp3on/sample.txt
+@@ -1,2 +1,2 @@
+ alpha
+-beta
++BETA
+
+编辑前字节: b'alpha\r\nbeta\r\n'
+实际编辑后: b'alpha\nBETA\n'
+预期编辑后: b'alpha\r\nBETA\r\n'
+换行是否保留: False
+撤销恢复原始字节: True

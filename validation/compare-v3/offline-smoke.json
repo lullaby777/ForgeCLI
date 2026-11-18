@@ -1,0 +1,22 @@
+{
+  "real_model_calls": 0,
+  "first_requests_match": true,
+  "recovery_requests_differ": true,
+  "generic_matches_v2_template": true,
+  "results": [
+    {
+      "arm": "generic",
+      "status": "no_progress",
+      "calls": 2,
+      "feedback_kind": "generic",
+      "feedback_chars": 806
+    },
+    {
+      "arm": "staged",
+      "status": "no_progress",
+      "calls": 2,
+      "feedback_kind": "truncated_without_changes",
+      "feedback_chars": 754
+    }
+  ]
+}

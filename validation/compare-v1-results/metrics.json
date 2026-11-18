@@ -1,0 +1,91 @@
+{
+  "rows": [
+    {
+      "task": "task02",
+      "arm": "improved",
+      "functional_passed": true,
+      "model_calls": 30,
+      "prompt_tokens": 704325,
+      "completion_tokens": 21847,
+      "total_tokens": 726172,
+      "execution_seconds": 193.18516287498642,
+      "stop": "passed",
+      "initial_request_hash": "a5e0d543c1b27c89595188d18b32e4186b6c3c10d4894dbdf7eff61724807854",
+      "length_response_indices": [
+        11
+      ],
+      "new_regression_failures": [],
+      "existing_tests_changed": false,
+      "workspace_changed": true,
+      "independent_acceptance_review": {
+        "exit_code": 0,
+        "timeout": false
+      }
+    },
+    {
+      "task": "task02",
+      "arm": "original",
+      "functional_passed": true,
+      "model_calls": 30,
+      "prompt_tokens": 717316,
+      "completion_tokens": 20293,
+      "total_tokens": 737609,
+      "execution_seconds": 175.53532462497242,
+      "stop": "round_limit",
+      "initial_request_hash": "a5e0d543c1b27c89595188d18b32e4186b6c3c10d4894dbdf7eff61724807854",
+      "length_response_indices": [],
+      "new_regression_failures": [],
+      "existing_tests_changed": false,
+      "workspace_changed": true,
+      "independent_acceptance_review": {
+        "exit_code": 0,
+        "timeout": false
+      }
+    },
+    {
+      "task": "task04",
+      "arm": "improved",
+      "functional_passed": false,
+      "model_calls": 10,
+      "prompt_tokens": 143515,
+      "completion_tokens": 14873,
+      "total_tokens": 158388,
+      "execution_seconds": 93.81920929101761,
+      "stop": "no_progress",
+      "initial_request_hash": "2192dfcbdffd88f5a2c2bfc9baffddab5c0313ad2c1502e7a0d2864c88e4f140",
+      "length_response_indices": [
+        8,
+        10
+      ],
+      "new_regression_failures": [],
+      "existing_tests_changed": false,
+      "workspace_changed": false,
+      "independent_acceptance_review": {
+        "exit_code": 1,
+        "timeout": false
+      }
+    },
+    {
+      "task": "task04",
+      "arm": "original",
+      "functional_passed": false,
+      "model_calls": 5,
+      "prompt_tokens": 37580,
+      "completion_tokens": 4785,
+      "total_tokens": 42365,
+      "execution_seconds": 29.958155500004068,
+      "stop": "returned_empty",
+      "initial_request_hash": "2192dfcbdffd88f5a2c2bfc9baffddab5c0313ad2c1502e7a0d2864c88e4f140",
+      "length_response_indices": [],
+      "new_regression_failures": [],
+      "existing_tests_changed": false,
+      "workspace_changed": false,
+      "independent_acceptance_review": {
+        "exit_code": 1,
+        "timeout": false
+      }
+    }
+  ],
+  "original_protected_files_unchanged": 683,
+  "analysis_model_calls": 0
+}

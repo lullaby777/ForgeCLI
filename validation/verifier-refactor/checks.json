@@ -1,0 +1,24 @@
+{
+  "real_model_calls": 0,
+  "full_suite": "479 passed in 33.30s",
+  "new_checker_tests": 10,
+  "focused_existing_tests": "93 passed in 15.58s",
+  "public_checker_tests": "10 passed in 1.83s",
+  "changed_files_lint": "passed",
+  "existing_tests_unchanged": true,
+  "budget_and_recovery_policy_unchanged": true,
+  "old_v1_v2_v3_v4_unchanged": true,
+  "original_resume_suite_unchanged": true,
+  "manual_task_suite_unchanged": true,
+  "five_baselines_unchanged": true,
+  "baseline_unchanged": true,
+  "previous_validation_unchanged": true,
+  "compatibility": "Legacy controller private entry points and command overrides remain adapters; result formats and log names unchanged.",
+  "runtime_identity": "verification.py included in existing runtime fingerprint; no checkpoint migration or ledger reset performed",
+  "source_hashes": {
+    "corecoder/repair.py": "96b4fdaf8e92dbe9150c66a891f69c45185f2f7c08e38ae86a75f974399c1db3",
+    "corecoder/tasks.py": "40f9b33754f1bff33c0a050d15fd310aecaeffda607d259f606356741288e436",
+    "corecoder/verification.py": "ecb6555b053d29afe62913655b40a0dfddc78496044dc1d0158478238f229431",
+    "tests/test_verification_runner.py": "da024efa945595a02de133378b2e10057465edf5e2f6d8ba0a3b1ac8e016cf82"
+  }
+}

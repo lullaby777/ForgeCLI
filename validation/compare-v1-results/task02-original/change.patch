@@ -1,0 +1,118 @@
+diff --git a/README.md b/README.md
+index a6d0781..e68ddb8 100644
+--- a/README.md
++++ b/README.md
+@@ -105,7 +105,7 @@ corecoder/
+ ├── demo.py         offline end-to-end demo                 101 lines
+ └── tools/
+     ├── bash.py       shell + dangerous-command gate + cd  203 lines
+-    ├── edit.py       unique-match search/replace + diff    99 lines
++    ├── edit.py       unique-match search/replace + diff   149 lines
+     ├── grep.py       content search                        93 lines
+     ├── glob_tool.py  filename matching                     52 lines
+     ├── read.py       file read                             56 lines
+diff --git a/README_CN.md b/README_CN.md
+index 69829ce..189d893 100644
+--- a/README_CN.md
++++ b/README_CN.md
+@@ -105,7 +105,7 @@ corecoder/
+ ├── demo.py         离线端到端演示                       101 行
+ └── tools/
+     ├── bash.py       shell + 危险命令闸 + cd 追踪      203 行
+-    ├── edit.py       唯一匹配搜索替换 + diff            99 行
++    ├── edit.py       唯一匹配搜索替换 + diff           149 行
+     ├── grep.py       内容搜索                           93 行
+     ├── glob_tool.py  文件名匹配                         52 行
+     ├── read.py       文件读取                           56 行
+diff --git a/corecoder/tools/edit.py b/corecoder/tools/edit.py
+index e10798f..488d272 100644
+--- a/corecoder/tools/edit.py
++++ b/corecoder/tools/edit.py
+@@ -53,13 +53,20 @@ class EditFileTool(Tool):
+                     return f"Error: {file_path} not found"
+ 
+                 try:
+-                    content = p.read_text(encoding="utf-8")
++                    # read/write raw bytes: text-mode I/O would rewrite the
++                    # file's line endings everywhere, not just where we edit
++                    content = p.read_bytes().decode("utf-8")
+                 except UnicodeDecodeError:
+                     return f"Error: {file_path} is not a UTF-8 text file (edit_file only edits text files)"
+-                occurrences = content.count(old_string)
++
++                # match against an LF-only view so a CRLF file still accepts
++                # LF (or CRLF) old_string, while the untouched bytes stay put
++                haystack = _normalize_newlines(content)
++                old_norm = _normalize_newlines(old_string)
++                occurrences = haystack.count(old_norm)
+ 
+                 if occurrences == 0:
+-                    preview = content[:500] + ("..." if len(content) > 500 else "")
++                    preview = haystack[:500] + ("..." if len(haystack) > 500 else "")
+                     return (
+                         f"Error: old_string not found in {file_path}.\n"
+                         f"File starts with:\n{preview}"
+@@ -70,19 +77,60 @@ class EditFileTool(Tool):
+                         f"Include more surrounding lines to make it unique."
+                     )
+ 
+-                new_content = content.replace(old_string, new_string, 1)
++                start = haystack.find(old_norm)
++                span_start, span_end = _original_span(content, start, len(old_norm))
++
++                # the replacement adopts the file's own line endings, so an LF
++                # new_string lands as CRLF in a CRLF file (and never doubles CR)
++                newline = _detect_newline(content)
++                new_text = _normalize_newlines(new_string).replace("\n", newline)
++                new_content = content[:span_start] + new_text + content[span_end:]
+                 _record_checkpoint(p)
+-                p.write_text(new_content, encoding="utf-8")
++                p.write_bytes(new_content.encode("utf-8"))
+                 _changed_files.add(str(p))
+ 
+             # generate a unified diff so the user/LLM can see exactly what changed
+-            diff = _unified_diff(content, new_content, str(p))
++            diff = _unified_diff(haystack, _normalize_newlines(new_content), str(p))
+             return f"Edited {file_path}\n{diff}"
+         except Exception as e:  # noqa: BLE001
+             # boundary: the agent gets an error string, not a traceback
+             return f"Error: {e}"
+ 
+ 
++def _normalize_newlines(text: str) -> str:
++    """Collapse CRLF (and lone CR) to LF: the form used for matching/diffs."""
++    return text.replace("\r\n", "\n").replace("\r", "\n")
++
++
++def _detect_newline(text: str) -> str:
++    """The file's own newline style: CRLF, lone CR, or plain LF."""
++    if "\r\n" in text:
++        return "\r\n"
++    if "\r" in text:
++        return "\r"
++    return "\n"
++
++
++def _original_span(text: str, start: int, length: int) -> tuple[int, int]:
++    """Map an LF-normalized [start, start+length) range back onto text.
++
++    Inverse of ``_normalize_newlines``: a CRLF pair occupies one normalized
++    character but two characters in the file, so the file-side end can be one
++    byte past the same offset.
++    """
++    i = j = 0
++    orig_start: int | None = None
++    while i < len(text):
++        if j == start:
++            orig_start = i
++        if j == start + length:
++            return (orig_start if orig_start is not None else i), i
++        i += 2 if text[i] == "\r" and text.startswith("\r\n", i) else 1
++        j += 1
++    end = orig_start if orig_start is not None else len(text)
++    return end, len(text)
++
++
+ def _unified_diff(old: str, new: str, filename: str, context: int = 3) -> str:
+     """Generate a compact unified diff between old and new file content."""
+     old_lines = old.splitlines(keepends=True)

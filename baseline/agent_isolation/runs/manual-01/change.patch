@@ -1,0 +1,241 @@
+diff --git a/article/00-index.md b/article/00-index.md
+index 1987dc0..ff8af84 100644
+--- a/article/00-index.md
++++ b/article/00-index.md
+@@ -22,7 +22,7 @@ CoreCoder 做的事，是把这套骨架压到一千四百行出头的纯 Python
+ 
+ 前六篇是「读懂」。每篇盯住 agent 的一个子系统，先讲 Claude Code 在这件事上的做法和取舍，再翻到 CoreCoder 对应的真实代码，看同一个想法被压缩成几十行后长什么样。最后一篇是「自己做」，把前面所有零件接起来，从 fork 到加一个自定义工具到换模型，落到一个能跑的成品。
+ 
+-1. [一个 agent 的本体，是一个 while 循环](01-the-loop.md)。整个 agent 最核心的东西，是一个「问模型、跑工具、把结果喂回去、再问」的循环。我们看 CoreCoder 的 `agent.py`（240 行）怎么把它写明白，以及打断、轮次上限、半截工具调用回填这些真实世界的麻烦各自怎么收场。
++1. [一个 agent 的本体，是一个 while 循环](01-the-loop.md)。整个 agent 最核心的东西，是一个「问模型、跑工具、把结果喂回去、再问」的循环。我们看 CoreCoder 的 `agent.py`（244 行）怎么把它写明白，以及打断、轮次上限、半截工具调用回填这些真实世界的麻烦各自怎么收场。
+ 2. [工具系统：让模型安全地动手](02-tools.md)。模型本身只会吐字，是工具让它能读文件、写文件、跑命令。这篇讲 CoreCoder 的七个工具，重点是那个看似平平无奇、实则是 Claude Code 关键创新的「唯一性搜索替换」编辑，以及 bash 的安全闸。v0.6.0 之后还补了一节「门之外」：plan 模式、hooks、MCP 这三个进阶件怎么挂在一次调用的前后。末尾教你写第一个自己的工具。
+ 3. [接入任意大模型，顺便把钱算清楚](03-llm-and-cost.md)。`llm.py`（364 行，引擎里最大的文件）怎么用一套 OpenAI 兼容接口接住 DeepSeek、Qwen、Kimi、本地 Ollama，怎么做指数退避重试，怎么在流式输出里顺手把 token 和美元成本统计出来。
+ 4. [用有限的窗口扛住一个长任务](04-context.md)。上下文窗口是 agent 的硬约束。`context.py`（220 行）实现了三层压缩，从轻到重。这篇还会讲一个特别容易踩、API 一定报错的坑：孤儿 tool 消息。这是我做这个项目时真改过的 bug。
+diff --git a/article/01-the-loop.md b/article/01-the-loop.md
+index 190656d..d0885de 100644
+--- a/article/01-the-loop.md
++++ b/article/01-the-loop.md
+@@ -2,7 +2,7 @@
+ 
+ 如果只能用一句话解释编码 agent，我会这么说：它是一个循环，反复地问模型「下一步干什么」，照着模型说的去动手，把结果再讲给模型听，直到模型说「不用动手了，我有答案了」。
+ 
+-听起来朴素到有点失望。但这就是真相。Claude Code 把这件事做到了几十万行，可那个最中心的东西，公开拆解里叫 `query.ts`，它的主体是一个一千七百行上下的 `while` 循环。CoreCoder 把同一个循环写在 `corecoder/agent.py`（240 行，连空行带注释）里。两者形状一模一样，区别只是后者你能一眼看完。
++听起来朴素到有点失望。但这就是真相。Claude Code 把这件事做到了几十万行，可那个最中心的东西，公开拆解里叫 `query.ts`，它的主体是一个一千七百行上下的 `while` 循环。CoreCoder 把同一个循环写在 `corecoder/agent.py`（244 行，连空行带注释）里。两者形状一模一样，区别只是后者你能一眼看完。
+ 
+ 这一篇，我们就把这个循环逐段读透。
+ 
+diff --git a/article/05-parallel-and-subagents.md b/article/05-parallel-and-subagents.md
+index 256d3f6..4b86573 100644
+--- a/article/05-parallel-and-subagents.md
++++ b/article/05-parallel-and-subagents.md
+@@ -73,7 +73,7 @@ _local.cwd = running
+ 
+ ## 子 agent：给自己开一个分身
+ 
+-`agent` 工具（`corecoder/tools/agent.py`，224 行）解决的是另一个问题。有些子任务很重，比如「把这个陌生代码库摸一遍，告诉我认证是怎么实现的」。这种活如果让主 agent 自己干，它得读一大堆文件、跑一堆搜索，这些中间过程全堆进主对话的窗口，等它摸清楚了，窗口也被探索垃圾塞得差不多了，真正的任务反而没空间了。
++`agent` 工具（`corecoder/tools/agent.py`，226 行）解决的是另一个问题。有些子任务很重，比如「把这个陌生代码库摸一遍，告诉我认证是怎么实现的」。这种活如果让主 agent 自己干，它得读一大堆文件、跑一堆搜索，这些中间过程全堆进主对话的窗口，等它摸清楚了，窗口也被探索垃圾塞得差不多了，真正的任务反而没空间了。
+ 
+ 子 agent 的思路是：派一个有独立上下文的分身去干这件重活，它在自己的窗口里折腾，干完只把一个精简结论交回来。主 agent 的窗口始终干净，只多了一句「认证是这么实现的」。
+ 
+@@ -90,7 +90,7 @@ def execute(self, task=None, tasks=None):
+     return "\n\n".join(reports)
+ ```
+ 
+-每个 worker 仍是全新的 `Agent`，共享父 agent 的 LLM，但有自己的 `messages` 和空任务清单。工具实例做浅拷贝，`agent` 工具本身则被移除。它跑的是完整且独立的循环（轮次上限 20），不是挂着角色名共用一块草稿板。即使 reviewer 最先完成，汇总报告仍按输入顺序排列；某个 worker 的异常只成为它自己的结果，不会取消其他 worker。
++每个 worker 仍是全新的 `Agent`，共享父 agent 的 LLM，但有自己的 `messages` 和一份全新的空任务清单。其余工具实例直接沿用父 agent 的（它们本身无状态），`agent` 工具本身则被移除。它跑的是完整且独立的循环（轮次上限 20），不是挂着角色名共用一块草稿板。即使 reviewer 最先完成，汇总报告仍按输入顺序排列；某个 worker 的异常只成为它自己的结果，不会取消其他 worker。
+ 
+ 并行 worker 还暴露了两份在串行时代不显眼的状态：LLM 的 token 总数现在在锁内累加，避免并发回包漏记；共享的权限确认回调也串行执行，避免两个 worker 在同一个终端上互相抢话。权限与 hooks 仍沿用父 agent 的，cwd 从父 agent 当前目录开始、每个 worker 结束后恢复。超过 5000 字的结果仍先截断，再送回父上下文。
+ 
+@@ -110,7 +110,7 @@ for t in self.tools:
+ 
+ 上面那行注释 `# no recursive agents` 是这段代码里最重要的一句。
+ 
+-派生子 agent 时，工具实例会浅拷贝，但 `agent` 工具本身被刻意移除。于是子 agent 手里没有「开分身」这个能力，它干不了的事只能自己硬扛，不能再往下派。
++派生子 agent 时，工具实例直接沿用父 agent 的，但 `agent` 工具本身被刻意移除。于是子 agent 手里没有「开分身」这个能力，它干不了的事只能自己硬扛，不能再往下派。
+ 
+ 为什么要禁？因为递归的 agent 是一颗随时会失控的炸弹。设想不禁会怎样：主 agent 派了个子 agent，子 agent 觉得任务还是太大又派了孙 agent，孙 agent 再派……每一层都在烧 token、占线程、加延迟，而且模型对「这个子任务该不该再拆」的判断并不可靠，它完全可能陷进一个越拆越细、永远收不拢的无底洞。一刀切死递归，是最省心的安全策略：分身只能有一层，要么这个子 agent 自己搞定，要么它失败返回，没有第三种走向。
+ 
+diff --git a/article/05-parallel-and-subagents_EN.md b/article/05-parallel-and-subagents_EN.md
+index 5d6badb..8ce6c17 100644
+--- a/article/05-parallel-and-subagents_EN.md
++++ b/article/05-parallel-and-subagents_EN.md
+@@ -73,7 +73,7 @@ I pull this passage out on its own because it's a particularly good teaching poi
+ 
+ ## Sub-agents: spawning a clone of yourself
+ 
+-The `agent` tool (`corecoder/tools/agent.py`, 224 lines) solves a different problem. Some subtasks are heavy, say "go over this unfamiliar codebase and tell me how authentication is implemented." If the main agent does this itself, it has to read a pile of files and run a bunch of searches, and all that intermediate process piles into the main conversation's window; by the time it's figured things out, the window is nearly stuffed with exploration garbage and the real task has no room left.
++The `agent` tool (`corecoder/tools/agent.py`, 226 lines) solves a different problem. Some subtasks are heavy, say "go over this unfamiliar codebase and tell me how authentication is implemented." If the main agent does this itself, it has to read a pile of files and run a bunch of searches, and all that intermediate process piles into the main conversation's window; by the time it's figured things out, the window is nearly stuffed with exploration garbage and the real task has no room left.
+ 
+ The sub-agent's idea is: dispatch a clone with its own independent context to do this heavy work, let it churn in its own window, and hand back only a distilled conclusion when done. The main agent's window stays clean throughout, with just one extra line, "authentication is implemented this way."
+ 
+@@ -90,7 +90,7 @@ def execute(self, task=None, tasks=None):
+     return "\n\n".join(reports)
+ ```
+ 
+-Each worker is still a fresh `Agent` sharing the parent's LLM, but with its own `messages` and an empty checklist. Tool instances are shallow-copied, except that `agent` itself is removed. This gives each worker a complete, independent loop (with a 20-round cap), not a shared scratchpad with role labels. The returned report stays in input order even if the reviewer finishes first. An exception becomes that worker's result instead of cancelling the others.
++Each worker is still a fresh `Agent` sharing the parent's LLM, but with its own `messages` and a brand-new empty checklist. The other tool instances are reused as-is (they carry no per-agent state), except that `agent` itself is removed. This gives each worker a complete, independent loop (with a 20-round cap), not a shared scratchpad with role labels. The returned report stays in input order even if the reviewer finishes first. An exception becomes that worker's result instead of cancelling the others.
+ 
+ Parallel workers also expose two pieces of state that were harmless while sub-agents were serial. The LLM's token totals are now updated under a lock so concurrent responses don't lose usage, and the shared permission callback is serialized so two workers can't ask questions over each other on one terminal. Consent and hooks remain the parent's; cwd starts at the parent's tracked directory and is restored per worker. A result over 5,000 characters is still truncated before it reaches the parent's context.
+ 
+@@ -110,7 +110,7 @@ When constructing the agent, point each `AgentTool`'s "parent pointer" back at i
+ 
+ That comment `# no recursive agents` above is the single most important line in this code.
+ 
+-When spawning a sub-agent, its tools are shallow-copied but the `agent` tool itself is deliberately removed. So the sub-agent doesn't have the "spawn a clone" ability; whatever it can't do it has to tough out itself, and it can't dispatch further down.
++When spawning a sub-agent, its tools are inherited as-is, but the `agent` tool itself is deliberately removed. So the sub-agent doesn't have the "spawn a clone" ability; whatever it can't do it has to tough out itself, and it can't dispatch further down.
+ 
+ Why forbid it? Because a recursive agent is a bomb that can go out of control at any time. Imagine not forbidding it: the main agent dispatches a sub-agent, the sub-agent thinks the task is still too big and dispatches a grand-sub-agent, the grand-sub-agent dispatches again... each layer burns tokens, occupies threads, adds latency, and the model's judgment of "should this subtask be split further" isn't reliable; it can entirely fall into a bottomless pit of ever-finer splitting that never converges. Cutting recursion off cleanly is the most worry-free safety policy: a clone can be only one layer deep, and either this sub-agent handles it itself or it fails and returns, with no third outcome.
+ 
+diff --git a/corecoder/agent.py b/corecoder/agent.py
+index 70d7e57..9164ca8 100644
+--- a/corecoder/agent.py
++++ b/corecoder/agent.py
+@@ -16,7 +16,7 @@ from .context import ContextManager
+ from .llm import LLM
+ from .permissions import Permission
+ from .prompt import PLAN_MODE_PROMPT, system_prompt
+-from .tools import ALL_TOOLS
++from .tools import default_tools
+ from .tools.agent import AgentTool
+ from .tools.base import Tool
+ from .tools.todo import TodoWriteTool
+@@ -33,7 +33,12 @@ class Agent:
+         hooks=None,
+     ):
+         self.llm = llm
+-        self.tools = tools if tools is not None else ALL_TOOLS
++        # A default construction gets its own freshly built tool set: the task
++        # list and the sub-agent handle are per-agent state, and a shared
++        # registry would leak one agent's checklist into the next agent's
++        # system prompt and re-point its sub-agents at the newest agent.
++        # Callers that pass tools keep exactly the objects they handed in.
++        self.tools = tools if tools is not None else default_tools()
+         self.permission = permission
+         self.hooks = hooks
+         self._tool_by_name = {t.name: t for t in self.tools}
+@@ -235,6 +240,5 @@ class Agent:
+         self.messages.clear()
+         # a user-visible reset must not leak the dead conversation's checklist
+         # into the next system prompt
+-        todo = self._tool_by_name.get("todo_write")
+-        if isinstance(todo, TodoWriteTool):
+-            todo._tasks = []
++        if isinstance(self._todo, TodoWriteTool):
++            self._todo._tasks = []
+diff --git a/corecoder/tools/__init__.py b/corecoder/tools/__init__.py
+index 9763607..0edd417 100644
+--- a/corecoder/tools/__init__.py
++++ b/corecoder/tools/__init__.py
+@@ -1,26 +1,48 @@
+-"""Tool registry."""
++"""Tool registry.
++
++The built-in tools are stateless except for two the framework owns: the task
++list (todo_write) and the sub-agent handle (agent). Sharing one instance of
++those across agents would leak a checklist from one agent into another's
++system prompt and re-point a sub-agent tool at whichever agent was built
++last, so a default agent gets its own freshly built set (see
++``default_tools``). ``ALL_TOOLS`` stays as the canonical shared registry for
++callers that want the plain objects.
++"""
+ 
+ from .agent import AgentTool
++from .base import Tool
+ from .bash import BashTool
+ from .edit import EditFileTool
++from .fetch import FetchUrlTool
+ from .glob_tool import GlobTool
+ from .grep import GrepTool
++from .now import NowTool
+ from .read import ReadFileTool
+ from .todo import TodoWriteTool
+ from .write import WriteFileTool
+-from .now import NowTool
+-from .fetch import FetchUrlTool
+ 
+-ALL_TOOLS = [
+-    BashTool(),
+-    ReadFileTool(),
+-    WriteFileTool(),
+-    EditFileTool(),
+-    GlobTool(),
+-    GrepTool(),
+-    TodoWriteTool(),
+-    AgentTool(),
+-    NowTool(),
+-    FetchUrlTool(),
++# One entry per built-in capability, in the order they are offered to the model.
++_TOOL_TYPES = [
++    BashTool,
++    ReadFileTool,
++    WriteFileTool,
++    EditFileTool,
++    GlobTool,
++    GrepTool,
++    TodoWriteTool,
++    AgentTool,
++    NowTool,
++    FetchUrlTool,
+ ]
+ 
++
++def default_tools() -> list[Tool]:
++    """A brand-new set of built-in tools for a single agent.
++
++    Every call builds fresh instances, so per-agent state (the task list, the
++    sub-agent's parent link) can never be shared between agents.
++    """
++    return [tool_type() for tool_type in _TOOL_TYPES]
++
++
++ALL_TOOLS = default_tools()
+diff --git a/corecoder/tools/agent.py b/corecoder/tools/agent.py
+index 95862d0..b13ea06 100644
+--- a/corecoder/tools/agent.py
++++ b/corecoder/tools/agent.py
+@@ -10,7 +10,6 @@ message history or checklist state between its workers.
+ """
+ 
+ import concurrent.futures
+-import copy
+ from typing import ClassVar
+ 
+ from .base import Tool
+@@ -75,12 +74,15 @@ class AgentTool(Tool):
+         parent = self._parent_agent
+         tools = []
+         for original in parent.tools:
+-            if original.name == "agent":
++            if isinstance(original, AgentTool) or original.name == "agent":
+                 continue  # no recursive agents
+-            tool = copy.copy(original)
+-            if isinstance(tool, TodoWriteTool):
+-                tool._tasks = []
+-            tools.append(tool)
++            if isinstance(original, TodoWriteTool):
++                # a fresh list, so the worker never edits the parent's checklist
++                tools.append(TodoWriteTool())
++                continue
++            # everything else is handed over as-is: caller-supplied tools keep
++            # their own object and resources, and the built-ins are stateless
++            tools.append(original)
+         return Agent(
+             llm=parent.llm,
+             tools=tools,
+diff --git a/corecoder/tools/todo.py b/corecoder/tools/todo.py
+index f1fc040..d54d21e 100644
+--- a/corecoder/tools/todo.py
++++ b/corecoder/tools/todo.py
+@@ -7,9 +7,9 @@ system context on every round (see agent._full_messages), so the model
+ always works from the current state instead of digging it out of old tool
+ results.
+ 
+-Sub-agents receive shallow copies of the parent's tools minus `agent`, with
+-their own empty checklist. Parent and worker lists therefore stay independent
+-without duplicating the tool implementation.
++Sub-agents receive the parent's tools minus `agent`, with a fresh instance of
++this tool and therefore their own empty checklist. Parent and worker lists
++therefore stay independent without duplicating the tool implementation.
+ """
+ 
+ from typing import ClassVar

@@ -1,0 +1,128 @@
+diff --git a/article/06-session-and-cli.md b/article/06-session-and-cli.md
+index d19fd2d..672cf70 100644
+--- a/article/06-session-and-cli.md
++++ b/article/06-session-and-cli.md
+@@ -1,6 +1,6 @@
+ # 把它跑成一个真正的命令行工具
+ 
+-前五篇拆的是 agent 的内脏：循环、工具、模型接口、上下文压缩、并发与子 agent。这些零件再漂亮，你也没法直接用，因为还缺一层皮，一个让人能坐下来跟它对话、能存盘、能续聊、能查状态的命令行界面。这一篇讲这层皮，对应 `cli.py`（393 行）和 `session.py`（97 行）。
++前五篇拆的是 agent 的内脏：循环、工具、模型接口、上下文压缩、并发与子 agent。这些零件再漂亮，你也没法直接用，因为还缺一层皮，一个让人能坐下来跟它对话、能存盘、能续聊、能查状态的命令行界面。这一篇讲这层皮，对应 `cli.py`（393 行）和 `session.py`（155 行）。
+ 
+ 它不光是「锦上添花的 UI」。这层皮里藏着一个很值得讲的安全细节，我们留到后面压轴。
+ 
+diff --git a/corecoder/session.py b/corecoder/session.py
+index d03562b..532cb24 100644
+--- a/corecoder/session.py
++++ b/corecoder/session.py
+@@ -56,6 +56,58 @@ def save_session(messages: list[dict], model: str, session_id: str | None = None
+     return session_id
+ 
+ 
++def _is_valid_message(message: object) -> bool:
++    """A message must be an object with a non-empty str role.
++
++    ``content`` is optional, but when present it has to be a str or null
++    (assistant turns with tool_calls legitimately carry ``content: None``).
++    """
++    if not isinstance(message, dict):
++        return False
++
++    role = message.get("role")
++    if not isinstance(role, str) or not role:
++        return False
++
++    if "content" in message:
++        content = message["content"]
++        if content is not None and not isinstance(content, str):
++            return False
++
++    return True
++
++
++def _validate_session_data(data: object) -> tuple[list[dict], str] | None:
++    """Return ``(messages, model)`` for a well-formed session, else None.
++
++    A valid session has an object at the top level, a non-empty string model
++    and a list of well-formed messages (an empty list is fine).
++    """
++    if not isinstance(data, dict):
++        return None
++
++    model = data.get("model")
++    if not isinstance(model, str) or not model:
++        return None
++
++    messages = data.get("messages")
++    if not isinstance(messages, list):
++        return None
++
++    if not all(_is_valid_message(m) for m in messages):
++        return None
++
++    return messages, model
++
++
++def _session_preview(messages: list[dict]) -> str:
++    """First non-empty user message, truncated - used by ``/sessions``."""
++    for message in messages:
++        if message.get("role") == "user" and message.get("content"):
++            return message["content"][:80]
++    return ""
++
++
+ def load_session(session_id: str) -> tuple[list[dict], str] | None:
+     """Load a saved session. Returns (messages, model) or None."""
+     path = _session_path(session_id)
+@@ -64,11 +116,14 @@ def load_session(session_id: str) -> tuple[list[dict], str] | None:
+ 
+     try:
+         data = json.loads(path.read_text(encoding="utf-8"))
+-        return data["messages"], data["model"]
+-    except (json.JSONDecodeError, UnicodeDecodeError, KeyError, OSError):
++    except (json.JSONDecodeError, UnicodeDecodeError, OSError):
+         # a corrupt or truncated session file shouldn't crash resume
+         return None
+ 
++    # malformed structure (e.g. a JSON list or a missing model) is just as
++    # unresumable as unparsable bytes; never touch the file on disk
++    return _validate_session_data(data)
++
+ 
+ def list_sessions() -> list[dict]:
+     """List available sessions, newest first."""
+@@ -79,19 +134,22 @@ def list_sessions() -> list[dict]:
+     for f in sorted(SESSIONS_DIR.glob("*.json"), reverse=True):
+         try:
+             data = json.loads(f.read_text(encoding="utf-8"))
+-            # grab first user message as preview
+-            preview = ""
+-            for m in data.get("messages", []):
+-                if m.get("role") == "user" and m.get("content"):
+-                    preview = m["content"][:80]
+-                    break
+-            sessions.append({
+-                "id": data.get("id", f.stem),
+-                "model": data.get("model", "?"),
+-                "saved_at": data.get("saved_at", "?"),
+-                "preview": preview,
+-            })
+-        except (json.JSONDecodeError, UnicodeDecodeError, KeyError):
++        except (json.JSONDecodeError, UnicodeDecodeError, OSError):
+             continue
+ 
++        validated = _validate_session_data(data)
++        if validated is None:
++            # skip broken files instead of hiding the healthy ones
++            continue
++
++        messages, model = validated
++        session_id = data.get("id")
++        saved_at = data.get("saved_at")
++        sessions.append({
++            "id": session_id if isinstance(session_id, str) and session_id else f.stem,
++            "model": model,
++            "saved_at": saved_at if isinstance(saved_at, str) else "?",
++            "preview": _session_preview(messages),
++        })
++
+     return sessions[:20]  # cap at 20

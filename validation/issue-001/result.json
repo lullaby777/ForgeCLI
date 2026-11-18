@@ -1,0 +1,17 @@
+{
+  "issue": "ISSUE-001",
+  "offline_tests": {
+    "passed": 376,
+    "failed": 0,
+    "new_simulated_test_items": 23,
+    "live_smoke_explicitly_excluded": true
+  },
+  "compileall": "passed",
+  "changed_file_ruff": "passed",
+  "repository_ruff": "6 pre-existing errors in tools/__init__.py, fetch.py, now.py",
+  "protected_baseline_files": 683,
+  "protected_files_changed": [],
+  "existing_test_files_changed_since_baseline": [],
+  "real_model_calls": 0,
+  "environment": "/tmp/corecoder-issue001/venv"
+}

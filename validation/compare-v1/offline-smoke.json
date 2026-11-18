@@ -1,0 +1,16 @@
+{
+  "real_model_calls": 0,
+  "initial_requests_match": true,
+  "results": [
+    {
+      "arm": "original",
+      "calls": 1,
+      "status": "returned_empty"
+    },
+    {
+      "arm": "improved",
+      "calls": 3,
+      "status": "no_progress"
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "real_model_calls": 0,
+  "cases": {
+    "generic": {
+      "ready": true,
+      "workspace_digest": "c75cda1710e195df45120692ef5b9e7fe6d1112ee9747a734a12d4a3d2940361",
+      "runtime_digest": "1f10b5bddc65290a43fbbf11817b788895646fc08d1e43544e2cab13062305c7",
+      "task_digest": "1f99b48e213b93cb2f07ee0e3439f769a3fd07630745ce25205954a85642ed54",
+      "recovery_strategy": "generic",
+      "live_result": false
+    },
+    "staged": {
+      "ready": true,
+      "workspace_digest": "c75cda1710e195df45120692ef5b9e7fe6d1112ee9747a734a12d4a3d2940361",
+      "runtime_digest": "1f10b5bddc65290a43fbbf11817b788895646fc08d1e43544e2cab13062305c7",
+      "task_digest": "1f99b48e213b93cb2f07ee0e3439f769a3fd07630745ce25205954a85642ed54",
+      "recovery_strategy": "staged",
+      "live_result": false
+    }
+  },
+  "all_previous_experiments_and_results_unchanged": true,
+  "only_between_arm_treatment": "feedback construction; same runtime/facts/limits/model/task",
+  "preflight": {
+    "task04-generic": {
+      "expected_acceptance_failures": 9,
+      "workspace_matches": true
+    },
+    "task04-staged": {
+      "expected_acceptance_failures": 9,
+      "workspace_matches": true
+    },
+    "regression": {
+      "passed": 352,
+      "known_failed": 1,
+      "live_smoke_excluded": true
+    },
+    "real_model_calls": 0
+  },
+  "smoke": {
+    "real_model_calls": 0,
+    "first_requests_match": true,
+    "recovery_requests_differ": true,
+    "generic_matches_v2_template": true,
+    "results": [
+      {
+        "arm": "generic",
+        "status": "no_progress",
+        "calls": 2,
+        "feedback_kind": "generic",
+        "feedback_chars": 806
+      },
+      {
+        "arm": "staged",
+        "status": "no_progress",
+        "calls": 2,
+        "feedback_kind": "truncated_without_changes",
+        "feedback_chars": 754
+      }
+    ]
+  }
+}

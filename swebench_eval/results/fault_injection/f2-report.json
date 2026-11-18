@@ -1,0 +1,143 @@
+{
+  "summary": {
+    "instances": 8,
+    "killed": 7,
+    "kill_landed_in": {
+      "tools": 7
+    },
+    "resume_outcome": {
+      "passed": 5,
+      "refused_protected_inputs_changed": 2
+    },
+    "resumed_and_continued": 5,
+    "blocked_by_unknown_side_effect": 0,
+    "refused_agent_tampered_protected_inputs": 2,
+    "resolved_nofault": 7,
+    "resolved_kill_resume": 4,
+    "tokens_kill_resume": 3871944,
+    "tokens_restart_from_scratch_est": 3941570,
+    "token_saving_vs_restart": 0.018
+  },
+  "rows": [
+    {
+      "instance_id": "pallets__flask-4992",
+      "killed": true,
+      "landed_in": "tools",
+      "phase_at_kill": "agent",
+      "resume_stop": "passed",
+      "resumed_with_history_msgs": null,
+      "lost_inflight_requests": 0,
+      "kill_resolved": true,
+      "nofault_resolved": true,
+      "tokens_kill_total": 46452,
+      "tokens_pre_kill": 46452,
+      "tokens_restart_estimate": 146384,
+      "tokens_nofault": 99932
+    },
+    {
+      "instance_id": "pytest-dev__pytest-5103",
+      "killed": true,
+      "landed_in": "tools",
+      "phase_at_kill": "agent",
+      "resume_stop": "passed",
+      "resumed_with_history_msgs": 51,
+      "lost_inflight_requests": 0,
+      "kill_resolved": true,
+      "nofault_resolved": false,
+      "tokens_kill_total": 1283163,
+      "tokens_pre_kill": 341220,
+      "tokens_restart_estimate": 1199418,
+      "tokens_nofault": 858198
+    },
+    {
+      "instance_id": "pytest-dev__pytest-5692",
+      "killed": true,
+      "landed_in": "tools",
+      "phase_at_kill": "agent",
+      "resume_stop": "passed",
+      "resumed_with_history_msgs": null,
+      "lost_inflight_requests": 0,
+      "kill_resolved": false,
+      "nofault_resolved": true,
+      "tokens_kill_total": 156615,
+      "tokens_pre_kill": 156615,
+      "tokens_restart_estimate": 355576,
+      "tokens_nofault": 198961
+    },
+    {
+      "instance_id": "pytest-dev__pytest-7373",
+      "killed": true,
+      "landed_in": "tools",
+      "phase_at_kill": "agent",
+      "resume_stop": "refused_protected_inputs_changed",
+      "resumed_with_history_msgs": null,
+      "lost_inflight_requests": 0,
+      "kill_resolved": false,
+      "nofault_resolved": true,
+      "tokens_kill_total": 102518,
+      "tokens_pre_kill": 102518,
+      "tokens_restart_estimate": 344331,
+      "tokens_nofault": 241813
+    },
+    {
+      "instance_id": "pytest-dev__pytest-7432",
+      "killed": false,
+      "landed_in": "not_killed",
+      "phase_at_kill": null,
+      "resume_stop": null,
+      "resumed_with_history_msgs": null,
+      "lost_inflight_requests": 0,
+      "kill_resolved": true,
+      "nofault_resolved": true,
+      "tokens_kill_total": 199551,
+      "tokens_pre_kill": 199551,
+      "tokens_restart_estimate": 410410,
+      "tokens_nofault": 210859
+    },
+    {
+      "instance_id": "pytest-dev__pytest-7490",
+      "killed": true,
+      "landed_in": "tools",
+      "phase_at_kill": "agent",
+      "resume_stop": "passed",
+      "resumed_with_history_msgs": 40,
+      "lost_inflight_requests": 0,
+      "kill_resolved": true,
+      "nofault_resolved": true,
+      "tokens_kill_total": 1524439,
+      "tokens_pre_kill": 305931,
+      "tokens_restart_estimate": 951629,
+      "tokens_nofault": 645698
+    },
+    {
+      "instance_id": "pytest-dev__pytest-8906",
+      "killed": true,
+      "landed_in": "tools",
+      "phase_at_kill": "agent",
+      "resume_stop": "passed",
+      "resumed_with_history_msgs": 51,
+      "lost_inflight_requests": 0,
+      "kill_resolved": false,
+      "nofault_resolved": true,
+      "tokens_kill_total": 575302,
+      "tokens_pre_kill": 226065,
+      "tokens_restart_estimate": 412920,
+      "tokens_nofault": 186855
+    },
+    {
+      "instance_id": "pytest-dev__pytest-9359",
+      "killed": true,
+      "landed_in": "tools",
+      "phase_at_kill": "agent",
+      "resume_stop": "refused_protected_inputs_changed",
+      "resumed_with_history_msgs": null,
+      "lost_inflight_requests": 0,
+      "kill_resolved": true,
+      "nofault_resolved": true,
+      "tokens_kill_total": 183455,
+      "tokens_pre_kill": 183455,
+      "tokens_restart_estimate": 531312,
+      "tokens_nofault": 347857
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "definition": "Used = model entry requested with this feedback as the latest user message; not proof of model comprehension.",
+  "feedback_generated_count": 1,
+  "feedback_submitted_count": 1,
+  "feedback_used_count": 1,
+  "feedback_response_count": 1,
+  "records": [
+    {
+      "source_attempt": 1,
+      "kind": "truncated_without_changes",
+      "message_hash": "4a30a4078f7b9f38f420f2e6c8ad33815991ec1eaf29751b2aeb987428a87673",
+      "submitted_to_agent": true,
+      "model_requested_with_feedback": true,
+      "response_returned_with_feedback": true,
+      "request_indexes": [
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16
+      ],
+      "response_indexes": [
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16
+      ],
+      "next_attempt": 2,
+      "next_attempt_model_calls": 10,
+      "next_verification": "passed",
+      "next_files_changed": true
+    }
+  ]
+}

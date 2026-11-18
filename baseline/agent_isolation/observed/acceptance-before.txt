@@ -1,0 +1,73 @@
+test_child_cannot_recursively_spawn (test_acceptance.AgentIsolationAcceptance.test_child_cannot_recursively_spawn) ... ok
+test_child_todo_is_empty_and_independent (test_acceptance.AgentIsolationAcceptance.test_child_todo_is_empty_and_independent) ... ok
+test_child_uses_actual_parent_configuration (test_acceptance.AgentIsolationAcceptance.test_child_uses_actual_parent_configuration) ... FAIL
+test_clearing_a_does_not_clear_b (test_acceptance.AgentIsolationAcceptance.test_clearing_a_does_not_clear_b) ... FAIL
+test_default_tool_schemas_remain_compatible (test_acceptance.AgentIsolationAcceptance.test_default_tool_schemas_remain_compatible) ... ok
+test_explicit_custom_tools_keep_caller_owned_objects (test_acceptance.AgentIsolationAcceptance.test_explicit_custom_tools_keep_caller_owned_objects) ... ok
+test_explicit_empty_tools_stays_empty (test_acceptance.AgentIsolationAcceptance.test_explicit_empty_tools_stays_empty) ... ok
+test_message_histories_remain_separate (test_acceptance.AgentIsolationAcceptance.test_message_histories_remain_separate) ... ok
+test_new_agent_has_empty_todo (test_acceptance.AgentIsolationAcceptance.test_new_agent_has_empty_todo) ... FAIL
+test_prompt_does_not_leak_other_agents_todo (test_acceptance.AgentIsolationAcceptance.test_prompt_does_not_leak_other_agents_todo) ... FAIL
+test_updating_b_does_not_replace_a_todo (test_acceptance.AgentIsolationAcceptance.test_updating_b_does_not_replace_a_todo) ... FAIL
+test_worker_ownership_survives_second_agent (test_acceptance.AgentIsolationAcceptance.test_worker_ownership_survives_second_agent) ... FAIL
+
+======================================================================
+FAIL: test_child_uses_actual_parent_configuration (test_acceptance.AgentIsolationAcceptance.test_child_uses_actual_parent_configuration)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/agent_isolation/test_acceptance.py", line 100, in test_child_uses_actual_parent_configuration
+    self.assertIs(child.llm, a.llm)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+AssertionError: <test_acceptance.OfflineModel object at 0x1083ff5c0> is not <test_acceptance.OfflineModel object at 0x1084b8910>
+
+======================================================================
+FAIL: test_clearing_a_does_not_clear_b (test_acceptance.AgentIsolationAcceptance.test_clearing_a_does_not_clear_b)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/agent_isolation/test_acceptance.py", line 82, in test_clearing_a_does_not_clear_b
+    self.assertIn("B-private", todo(b).render())
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'B-private' not found in ''
+
+======================================================================
+FAIL: test_new_agent_has_empty_todo (test_acceptance.AgentIsolationAcceptance.test_new_agent_has_empty_todo)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/agent_isolation/test_acceptance.py", line 68, in test_new_agent_has_empty_todo
+    self.assertEqual(todo(b).render(), "")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '1. [pending] A-private' != ''
+- 1. [pending] A-private
+
+
+======================================================================
+FAIL: test_prompt_does_not_leak_other_agents_todo (test_acceptance.AgentIsolationAcceptance.test_prompt_does_not_leak_other_agents_todo)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/agent_isolation/test_acceptance.py", line 87, in test_prompt_does_not_leak_other_agents_todo
+    self.assertNotIn("UNIQUE-A-ONLY-452", b._full_messages()[0]["content"])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'UNIQUE-A-ONLY-452' unexpectedly found in "You are CoreCoder, an AI coding assistant running in the user's terminal.\nYou help with software engineering: writing code, fixing bugs, refactoring, explaining code, running commands, and more.\n\n# Environment\n- Working directory: /private/tmp/corecoder-agent-isolation-baseline-01/candidate\n- OS: Darwin 25.4.0 (arm64)\n- Python: 3.14.6\n\n# Tools\n- **bash**: Execute a shell command. Returns stdout, stderr, and exit code. Use this for running tests, installing packages, git operations, etc.\n- **read_file**: Read a file's contents with line numbers. Always read a file before editing it.\n- **write_file**: Create a new file or completely overwrite an existing one. For small edits to existing files, prefer edit_file instead.\n- **edit_file**: Edit a file by replacing an exact string match. old_string must appear exactly once in the file for safety. Include enough surrounding context to ensure uniqueness.\n- **glob**: Find files matching a glob pattern. Supports ** for recursive matching (e.g. '**/*.py').\n- **grep**: Search file contents with regex. Returns matching lines with file path and line number.\n- **todo_write**: Manage the session task checklist. Pass the complete list every time; it fully replaces the old one. Use it to plan multi-step work: write the list up front, keep one task in_progress while you work on it, and mark it done the moment it finishes. The current list is re-shown in the system context every round.\n- **agent**: Spawn a sub-agent to handle a complex sub-task independently. The sub-agent has its own context and tool access. Use this for: researching a codebase, implementing a multi-step change in isolation, or any task that would benefit from a fresh context window. For independent work, pass named tasks to run a small team concurrently.\n- **now**: Get the current local date and time. Use this when the user asks about the current time or you need a timestamp.\n- **fetch_url**: Fetch the text content of an http(s) URL. Use this to read documentation, API responses, or web pages.\n\n# Rules\n1. **Read before edit.** Always read a file before modifying it.\n2. **edit_file for small changes.** Use edit_file for targeted edits; write_file only for new files or complete rewrites.\n3. **Verify your work.** After making changes, run relevant tests or commands to confirm correctness.\n4. **Be concise.** Show code over prose. Explain only what's necessary.\n5. **One step at a time.** For multi-step tasks, execute them sequentially.\n6. **edit_file uniqueness.** When using edit_file, include enough surrounding context in old_string to guarantee a unique match.\n7. **Respect existing style.** Match the project's coding conventions.\n8. **Ask when unsure.** If the request is ambiguous, ask for clarification rather than guessing.\n\n\n# Current task list\n1. [pending] UNIQUE-A-ONLY-452"
+
+======================================================================
+FAIL: test_updating_b_does_not_replace_a_todo (test_acceptance.AgentIsolationAcceptance.test_updating_b_does_not_replace_a_todo)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/agent_isolation/test_acceptance.py", line 75, in test_updating_b_does_not_replace_a_todo
+    self.assertIn("A-private", todo(a).render())
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'A-private' not found in '1. [pending] B-private'
+
+======================================================================
+FAIL: test_worker_ownership_survives_second_agent (test_acceptance.AgentIsolationAcceptance.test_worker_ownership_survives_second_agent)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/agent_isolation/test_acceptance.py", line 91, in test_worker_ownership_survives_second_agent
+    self.assertIs(worker(a)._parent_agent, a)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: <corecoder.agent.Agent object at 0x1084c3800> is not <corecoder.agent.Agent object at 0x1084c36a0>
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.001s
+
+FAILED (failures=6)

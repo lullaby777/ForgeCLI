@@ -1,0 +1,149 @@
+"""edit_file must not rewrite a file's line-ending style.
+
+Reading with ``read_text`` and writing with ``write_text`` silently translated
+a CRLF file to LF on every edit; these tests pin the byte-level contract for
+the two supported uniform styles (all-CRLF and all-LF).
+"""
+
+from __future__ import annotations
+
+from corecoder import checkpoints
+from corecoder.tools.edit import EditFileTool
+
+
+def _edit(path, old, new):
+    return EditFileTool().execute(file_path=str(path), old_string=old, new_string=new)
+
+
+def _restart():
+    checkpoints._stack.clear()
+    checkpoints._loaded = False
+
+
+# --- CRLF files ---
+
+def test_crlf_single_word_edit_keeps_crlf(tmp_path):
+    f = tmp_path / "crlf.txt"
+    f.write_bytes(b"alpha\r\nbeta\r\n")
+    assert _edit(f, "beta", "BETA").startswith("Edited")
+    assert f.read_bytes() == b"alpha\r\nBETA\r\n"
+
+
+def test_crlf_multiline_old_string_written_with_lf_still_matches(tmp_path):
+    f = tmp_path / "crlf.txt"
+    f.write_bytes(b"one\r\ntwo\r\nthree\r\n")
+    assert _edit(f, "one\ntwo", "1\n2").startswith("Edited")
+    assert f.read_bytes() == b"1\r\n2\r\nthree\r\n"
+
+
+def test_crlf_multiline_old_string_written_with_crlf_still_matches(tmp_path):
+    f = tmp_path / "crlf.txt"
+    f.write_bytes(b"one\r\ntwo\r\nthree\r\n")
+    assert _edit(f, "two\r\nthree", "2\r\n3").startswith("Edited")
+    assert f.read_bytes() == b"one\r\n2\r\n3\r\n"
+
+
+def test_crlf_new_string_with_crlf_never_doubles_cr(tmp_path):
+    f = tmp_path / "crlf.txt"
+    f.write_bytes(b"a\r\nb\r\n")
+    assert _edit(f, "b", "x\r\ny").startswith("Edited")
+    assert f.read_bytes() == b"a\r\nx\r\ny\r\n"
+    assert b"\r\r\n" not in f.read_bytes()
+
+
+def test_crlf_blank_lines_and_trailing_newline_preserved(tmp_path):
+    f = tmp_path / "crlf.txt"
+    f.write_bytes(b"alpha\r\n\r\nbeta\r\n\r\n")
+    assert _edit(f, "beta", "BETA").startswith("Edited")
+    assert f.read_bytes() == b"alpha\r\n\r\nBETA\r\n\r\n"
+
+
+def test_crlf_missing_trailing_newline_is_not_added(tmp_path):
+    f = tmp_path / "crlf.txt"
+    f.write_bytes(b"alpha\r\nbeta")  # no trailing newline
+    assert _edit(f, "beta", "BETA").startswith("Edited")
+    assert f.read_bytes() == b"alpha\r\nBETA"
+
+
+def test_crlf_edit_does_not_touch_bytes_outside_the_match(tmp_path):
+    f = tmp_path / "crlf.txt"
+    original = "héllo\r\nwörld\r\nβeta\r\n".encode()
+    f.write_bytes(original)
+    assert _edit(f, "βeta", "beta").startswith("Edited")
+    assert f.read_bytes() == original.replace("βeta".encode(), b"beta")
+
+
+# --- LF files ---
+
+def test_lf_single_line_edit_is_unchanged(tmp_path):
+    f = tmp_path / "lf.txt"
+    f.write_bytes(b"alpha\nbeta\n")
+    assert _edit(f, "beta", "BETA").startswith("Edited")
+    assert f.read_bytes() == b"alpha\nBETA\n"
+
+
+def test_lf_multiline_edit_is_unchanged(tmp_path):
+    f = tmp_path / "lf.txt"
+    f.write_bytes(b"one\ntwo\nthree\n")
+    assert _edit(f, "one\ntwo", "1\n2").startswith("Edited")
+    assert f.read_bytes() == b"1\n2\nthree\n"
+
+
+def test_lf_new_string_crlf_is_written_as_lf(tmp_path):
+    f = tmp_path / "lf.txt"
+    f.write_bytes(b"a\nb\n")
+    assert _edit(f, "b", "x\r\ny").startswith("Edited")
+    assert f.read_bytes() == b"a\nx\ny\n"
+
+
+# --- matching, refusal, diff, undo ---
+
+def test_crlf_uniqueness_still_enforced(tmp_path):
+    f = tmp_path / "crlf.txt"
+    f.write_bytes(b"dup\r\ndup\r\n")
+    r = _edit(f, "dup", "x")
+    assert "2 times" in r
+    assert f.read_bytes() == b"dup\r\ndup\r\n"
+    assert checkpoints.pending() == 0
+
+
+def test_crlf_missing_string_is_refused(tmp_path):
+    f = tmp_path / "crlf.txt"
+    f.write_bytes(b"alpha\r\nbeta\r\n")
+    r = _edit(f, "gamma", "x")
+    assert "not found" in r.lower()
+    assert f.read_bytes() == b"alpha\r\nbeta\r\n"
+    assert checkpoints.pending() == 0
+
+
+def test_crlf_diff_shows_only_the_edited_line(tmp_path):
+    f = tmp_path / "crlf.txt"
+    f.write_bytes(b"alpha\r\nbeta\r\ngamma\r\n")
+    r = _edit(f, "beta", "BETA")
+    changed = [line for line in r.splitlines() if line.startswith(("-beta", "+BETA"))]
+    assert changed == ["-beta", "+BETA"]
+    # unchanged lines never show up as removals/additions
+    assert "-alpha" not in r and "-gamma" not in r
+    assert "+alpha" not in r and "+gamma" not in r
+    assert "\r" not in r  # the diff itself stays plain LF for readability
+
+
+def test_crlf_undo_restores_original_bytes_after_restart(tmp_path):
+    f = tmp_path / "crlf.txt"
+    original = b"alpha\r\nbeta\r\ngamma\r\n"
+    f.write_bytes(original)
+    assert _edit(f, "beta", "BETA").startswith("Edited")
+    assert f.read_bytes() != original
+
+    _restart()
+    assert checkpoints.pending() == 1
+    assert checkpoints.undo() == f"Restored {f}."
+    assert f.read_bytes() == original
+
+
+def test_non_utf8_file_is_still_refused(tmp_path):
+    f = tmp_path / "latin.txt"
+    f.write_bytes("café\r\n".encode("latin-1"))
+    r = _edit(f, "caf", "x")
+    assert "not a UTF-8 text file" in r
+    assert checkpoints.pending() == 0

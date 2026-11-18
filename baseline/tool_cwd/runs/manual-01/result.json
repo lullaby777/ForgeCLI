@@ -1,0 +1,31 @@
+{
+  "task": "tool-cwd",
+  "run": "manual-01",
+  "model": "deepseek-flash",
+  "user_turns": 1,
+  "verdict": "functional_acceptance_passed",
+  "assistant_rounds": 50,
+  "last_message_role": "tool",
+  "execution_note": "Consistent with default round cap; no final assistant summary",
+  "acceptance": {
+    "methods": 15,
+    "failures": 0,
+    "independent_review_exit": 0
+  },
+  "regression": {
+    "passed_before": 352,
+    "passed_after": 367,
+    "known_failed": 1,
+    "new_failed": 0
+  },
+  "existing_tests_modified": false,
+  "new_test_items": 15,
+  "usage_from_screenshot": {
+    "prompt": 1613576,
+    "completion": 20116,
+    "total": 1633692
+  },
+  "cost": null,
+  "agent_elapsed_seconds": null,
+  "start_commit": "5eab08e63ad45492acaccdfba3765993917d680b"
+}

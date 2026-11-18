@@ -1,0 +1,23 @@
+{
+  "payload": {
+    "config_hash": "fe2fa2f0ce8ab80006fc80162716bee3d2672ff5ff32dc4f8164b4c2441a22d3",
+    "workspace_start": "dc8be30b78091d82f2530b4eb0fb57fd91d1c78979c5cdb48c69772888f96259",
+    "result": {
+      "status": "passed",
+      "exit_code": 0,
+      "feedback": "Exit code: 0\n.                                                                        [100%]\n1 passed in 0.00s\n",
+      "output": "/private/tmp/corecoder-task-checkpoint-check/demo-final/task/regression-task-1.txt",
+      "phase": "regression",
+      "report": "/private/tmp/corecoder-task-checkpoint-check/demo-final/task/regression-task-1.xml",
+      "tests": {
+        "tests.test_old::test_legacy": "passed"
+      },
+      "failures": [],
+      "new_failures": [],
+      "lost_tests": [],
+      "known_failures_present": [],
+      "input_hash": "dc8be30b78091d82f2530b4eb0fb57fd91d1c78979c5cdb48c69772888f96259"
+    }
+  },
+  "checksum": "fb80cc42023fcf95a9ab258d623b151c07c6034912a2964d389d4c48dc385455"
+}

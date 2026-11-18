@@ -1,0 +1,235 @@
+{
+  "payload": {
+    "version": 1,
+    "id": "5262839d854b47058371db65e74d40d8",
+    "task": "Fix answer and preserve legacy",
+    "config": {
+      "workspace": "/private/tmp/corecoder-task-checkpoint-check/demo-final/workspace",
+      "verification": {
+        "argv": [
+          "/private/tmp/corecoder-issue001/venv/bin/python",
+          "/private/tmp/corecoder-task-checkpoint-check/demo-final/accept.py"
+        ],
+        "protected_paths": [
+          "tests"
+        ],
+        "failure_codes": [
+          1
+        ]
+      },
+      "regression": {
+        "argv": [
+          "/private/tmp/corecoder-issue001/venv/bin/python",
+          "-m",
+          "pytest",
+          "tests",
+          "-q"
+        ],
+        "protected_paths": [
+          "tests"
+        ]
+      },
+      "limits": {
+        "max_attempts": 3,
+        "max_model_calls": 30,
+        "rounds_per_attempt": 2,
+        "max_seconds": 300,
+        "verifier_seconds": 30,
+        "max_stagnant_attempts": 2
+      },
+      "protected": [
+        "tests",
+        "pyproject.toml",
+        "pytest.ini",
+        "conftest.py",
+        "setup.cfg",
+        "tox.ini",
+        "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3.14",
+        "/private/tmp/corecoder-task-checkpoint-check/demo-final/accept.py"
+      ],
+      "agent": {
+        "model": null,
+        "temperature": null,
+        "max_tokens": null,
+        "endpoint_hash": "12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126",
+        "context_tokens": 128000,
+        "empty_retries": 1,
+        "hooks": "959bb2e0f98b071aafc94baaf051417ea55913a31981a74570080ec88a45dd5e",
+        "python": "3.14.6 (v3.14.6:c63aec69bd5, Jun 10 2026, 08:07:54) [Clang 21.0.0 (clang-2100.1.1.101)]",
+        "tools": "adf83d71da651135e8efe019fa8988e921880543189b2fef0fed017534f215cf",
+        "system": "4fdd6db6639ca507d7192a45d101670fa24ebfd5d681598a633431e7be3556c0",
+        "engine": {
+          "agent.py": "d255751eadd39b97b65a5362da0ca4b141774f7a1dd10bc2df09032d46265227",
+          "repair.py": "e645835ba4b443f4b5f8b61cb57835d5285e1bfcee7808f4d8421c64fc385f7d",
+          "tasks.py": "7a7a9090c85b2927436b3a19cb97ba4d199c4ee4a8d5944cfe5d6b85a907ee6d",
+          "task_store.py": "132ad65e4ba477212601988c9f214c367c2c0cf846931275ccc4236a15e2764f",
+          "prompt.py": "c57bae9a49067ab426987288c8b1941adec550c108de82f258a7de9ca3571fb3"
+        }
+      }
+    },
+    "config_hash": "fe2fa2f0ce8ab80006fc80162716bee3d2672ff5ff32dc4f8164b4c2441a22d3",
+    "status": "passed",
+    "phase": "done",
+    "completed": true,
+    "baseline_hash": "fb80cc42023fcf95a9ab258d623b151c07c6034912a2964d389d4c48dc385455",
+    "initial_workspace": "dc8be30b78091d82f2530b4eb0fb57fd91d1c78979c5cdb48c69772888f96259",
+    "workspace_hash": "079e48b2dc3bd43a82a6aae1628fbbb5d3cc901c1887094615b26d64ff95b66c",
+    "protected_hash": "6f22709bf7dd8b954ecc59ab2328cc8781669732e513fd606f7434cf2aee6b30",
+    "ledger": {
+      "model_calls": 4,
+      "attempts": 2,
+      "rounds": 2,
+      "active_seconds": 0.46136408403981477,
+      "stagnant": 0,
+      "previous_failure": "35833fedb143f620fc93c07b5cb9fd444ff0494265c1938f569b4b9b8ad638ec",
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "unknown_usage_requests": 1
+    },
+    "attempt_open": false,
+    "attempt_finished": true,
+    "checks": {
+      "baseline": {
+        "status": "passed",
+        "exit_code": 0,
+        "feedback": "Exit code: 0\n.                                                                        [100%]\n1 passed in 0.00s\n",
+        "output": "/private/tmp/corecoder-task-checkpoint-check/demo-final/task/regression-task-1.txt",
+        "phase": "regression",
+        "report": "/private/tmp/corecoder-task-checkpoint-check/demo-final/task/regression-task-1.xml",
+        "tests": {
+          "tests.test_old::test_legacy": "passed"
+        },
+        "failures": [],
+        "new_failures": [],
+        "lost_tests": [],
+        "known_failures_present": [],
+        "input_hash": "dc8be30b78091d82f2530b4eb0fb57fd91d1c78979c5cdb48c69772888f96259"
+      },
+      "acceptance": {
+        "status": "passed",
+        "exit_code": 0,
+        "feedback": "Exit code: 0\n",
+        "output": "/private/tmp/corecoder-task-checkpoint-check/demo-final/task/verification-task-4.txt",
+        "input_hash": "079e48b2dc3bd43a82a6aae1628fbbb5d3cc901c1887094615b26d64ff95b66c"
+      },
+      "regression": {
+        "status": "passed",
+        "exit_code": 0,
+        "feedback": "Task acceptance passed. Regression comparison against the frozen pre-edit baseline:",
+        "output": "/private/tmp/corecoder-task-checkpoint-check/demo-final/task/regression-task-5.txt",
+        "phase": "regression",
+        "report": "/private/tmp/corecoder-task-checkpoint-check/demo-final/task/regression-task-5.xml",
+        "tests": {
+          "tests.test_old::test_legacy": "passed"
+        },
+        "failures": [],
+        "new_failures": [],
+        "lost_tests": [],
+        "known_failures_present": [],
+        "input_hash": "079e48b2dc3bd43a82a6aae1628fbbb5d3cc901c1887094615b26d64ff95b66c"
+      }
+    },
+    "check_sequence": 5,
+    "messages": [
+      {
+        "role": "user",
+        "content": "Workspace: /private/tmp/corecoder-task-checkpoint-check/demo-final/workspace. Use absolute paths for file tools.\nDo not change protected verification inputs: [PosixPath('/private/tmp/corecoder-task-checkpoint-check/demo-final/workspace/tests'), PosixPath('/private/tmp/corecoder-task-checkpoint-check/demo-final/workspace/pyproject.toml'), PosixPath('/private/tmp/corecoder-task-checkpoint-check/demo-final/workspace/pytest.ini'), PosixPath('/private/tmp/corecoder-task-checkpoint-check/demo-final/workspace/conftest.py'), PosixPath('/private/tmp/corecoder-task-checkpoint-check/demo-final/workspace/setup.cfg'), PosixPath('/private/tmp/corecoder-task-checkpoint-check/demo-final/workspace/tox.ini'), PosixPath('/Library/Frameworks/Python.framework/Versions/3.14/bin/python3.14'), PosixPath('/private/tmp/corecoder-task-checkpoint-check/demo-final/accept.py')].\nDo not read or edit task checkpoint/baseline artifacts. Completion requires both acceptance and regression gates.\nFix answer and preserve legacy"
+      },
+      {
+        "role": "assistant",
+        "content": null,
+        "tool_calls": [
+          {
+            "id": "target",
+            "type": "function",
+            "function": {
+              "name": "write_file",
+              "arguments": "{\"file_path\": \"/private/tmp/corecoder-task-checkpoint-check/demo-final/workspace/answer.txt\", \"content\": \"fixed\"}"
+            }
+          },
+          {
+            "id": "regression",
+            "type": "function",
+            "function": {
+              "name": "write_file",
+              "arguments": "{\"file_path\": \"/private/tmp/corecoder-task-checkpoint-check/demo-final/workspace/legacy.txt\", \"content\": \"broken\"}"
+            }
+          }
+        ]
+      },
+      {
+        "role": "tool",
+        "tool_call_id": "target",
+        "content": "Wrote 1 lines to /private/tmp/corecoder-task-checkpoint-check/demo-final/workspace/answer.txt"
+      },
+      {
+        "role": "tool",
+        "tool_call_id": "regression",
+        "content": "Wrote 1 lines to /private/tmp/corecoder-task-checkpoint-check/demo-final/workspace/legacy.txt"
+      },
+      {
+        "role": "user",
+        "content": "Workspace: /private/tmp/corecoder-task-checkpoint-check/demo-final/workspace. Use absolute paths for file tools.\nDo not change protected verification inputs: [PosixPath('/private/tmp/corecoder-task-checkpoint-check/demo-final/workspace/tests'), PosixPath('/private/tmp/corecoder-task-checkpoint-check/demo-final/workspace/pyproject.toml'), PosixPath('/private/tmp/corecoder-task-checkpoint-check/demo-final/workspace/pytest.ini'), PosixPath('/private/tmp/corecoder-task-checkpoint-check/demo-final/workspace/conftest.py'), PosixPath('/private/tmp/corecoder-task-checkpoint-check/demo-final/workspace/setup.cfg'), PosixPath('/private/tmp/corecoder-task-checkpoint-check/demo-final/workspace/tox.ini'), PosixPath('/Library/Frameworks/Python.framework/Versions/3.14/bin/python3.14'), PosixPath('/private/tmp/corecoder-task-checkpoint-check/demo-final/accept.py')].\nDo not read or edit task checkpoint/baseline artifacts. Completion requires both acceptance and regression gates.\nOriginal task: Fix answer and preserve legacy\nRecovery stage: regression_failed\nObserved execution facts (read requests are not proof of current correctness): {\"agent_status\": \"interrupted\", \"finish_reason\": null, \"files_changed\": true, \"changed_file_count\": 2, \"changed_files\": [\"answer.txt\", \"legacy.txt\"], \"successful_read_requests\": [], \"verification_status\": \"failed\", \"verification_exit_code\": 1, \"new_regression_failures\": [\"tests.test_old::test_legacy\"], \"missing_or_skipped_tests\": []}\nNext action: Task acceptance passed, but regression checks found new failures or lost test coverage. Repair these failures without undoing the target fix. Do not modify tests, suppress collection, or expand the frozen baseline failure list. Completion requires both checks to pass.\nDo not change acceptance criteria or protected tests.\nKey verification evidence:\nFAILED tests.test_old::test_legacy: AssertionError: assert 'broken' == 'ok'\nFAILED tests.test_old::test_legacy: AssertionError: assert 'broken' == 'ok'"
+      },
+      {
+        "role": "assistant",
+        "content": null,
+        "tool_calls": [
+          {
+            "id": "repair",
+            "type": "function",
+            "function": {
+              "name": "write_file",
+              "arguments": "{\"file_path\": \"/private/tmp/corecoder-task-checkpoint-check/demo-final/workspace/legacy.txt\", \"content\": \"ok\"}"
+            }
+          }
+        ]
+      },
+      {
+        "role": "tool",
+        "tool_call_id": "repair",
+        "content": "Wrote 1 lines to /private/tmp/corecoder-task-checkpoint-check/demo-final/workspace/legacy.txt"
+      },
+      {
+        "role": "assistant",
+        "content": "ready"
+      }
+    ],
+    "todo": [],
+    "plan_mode": false,
+    "agent_run": {
+      "status": "responded",
+      "rounds": 2,
+      "empty_retries": 0,
+      "finish_reason": null,
+      "error_type": null
+    },
+    "cwd": "/private/tmp/corecoder-task-checkpoint-check/demo-final/workspace",
+    "pending": null,
+    "feedback": {
+      "kind": "regression_failed",
+      "next_action": "Task acceptance passed, but regression checks found new failures or lost test coverage. Repair these failures without undoing the target fix. Do not modify tests, suppress collection, or expand the frozen baseline failure list. Completion requires both checks to pass.",
+      "failure_excerpt": "FAILED tests.test_old::test_legacy: AssertionError: assert 'broken' == 'ok'\nFAILED tests.test_old::test_legacy: AssertionError: assert 'broken' == 'ok'",
+      "message": "Original task: Fix answer and preserve legacy\nRecovery stage: regression_failed\nObserved execution facts (read requests are not proof of current correctness): {\"agent_status\": \"interrupted\", \"finish_reason\": null, \"files_changed\": true, \"changed_file_count\": 2, \"changed_files\": [\"answer.txt\", \"legacy.txt\"], \"successful_read_requests\": [], \"verification_status\": \"failed\", \"verification_exit_code\": 1, \"new_regression_failures\": [\"tests.test_old::test_legacy\"], \"missing_or_skipped_tests\": []}\nNext action: Task acceptance passed, but regression checks found new failures or lost test coverage. Repair these failures without undoing the target fix. Do not modify tests, suppress collection, or expand the frozen baseline failure list. Completion requires both checks to pass.\nDo not change acceptance criteria or protected tests.\nKey verification evidence:\nFAILED tests.test_old::test_legacy: AssertionError: assert 'broken' == 'ok'\nFAILED tests.test_old::test_legacy: AssertionError: assert 'broken' == 'ok'",
+      "message_chars": 1009
+    },
+    "next_prompt": "Original task: Fix answer and preserve legacy\nRecovery stage: regression_failed\nObserved execution facts (read requests are not proof of current correctness): {\"agent_status\": \"interrupted\", \"finish_reason\": null, \"files_changed\": true, \"changed_file_count\": 2, \"changed_files\": [\"answer.txt\", \"legacy.txt\"], \"successful_read_requests\": [], \"verification_status\": \"failed\", \"verification_exit_code\": 1, \"new_regression_failures\": [\"tests.test_old::test_legacy\"], \"missing_or_skipped_tests\": []}\nNext action: Task acceptance passed, but regression checks found new failures or lost test coverage. Repair these failures without undoing the target fix. Do not modify tests, suppress collection, or expand the frozen baseline failure list. Completion requires both checks to pass.\nDo not change acceptance criteria or protected tests.\nKey verification evidence:\nFAILED tests.test_old::test_legacy: AssertionError: assert 'broken' == 'ok'\nFAILED tests.test_old::test_legacy: AssertionError: assert 'broken' == 'ok'",
+    "history": [
+      {
+        "phase": "regression",
+        "status": "failed",
+        "input_hash": "595e0cb96afe76299f59bd1dac033a5a1f30e784a9311f28a7f122f9e1a4dbb8",
+        "attempt": 1,
+        "model_calls": 2
+      }
+    ],
+    "agent_error": false,
+    "attempt_before": "595e0cb96afe76299f59bd1dac033a5a1f30e784a9311f28a7f122f9e1a4dbb8",
+    "before_files": {
+      "answer.txt": "2c6107652faf77b0a35c0f05c9aa1eeb3859a238f739428805b23f1eb56befaf",
+      "legacy.txt": "49fd90fd91e4e3b5cb8aed9ca878273ad128a8c59975ce173a6961f15118304b",
+      "tests/test_old.py": "ff96f6cbc9cfbe1b78d6eede2eff83fa8b297f8f49de34a30aae17289c26ed14"
+    }
+  },
+  "checksum": "b629e0c206fafc5ad3616189cbd22698f58b73406902678723a01169be61221f"
+}

@@ -1,0 +1,31 @@
+离线预览：未发送给模型，未修改旧实验。
+
+Original task: 修复 BashTool 在组合命令中跟踪工作目录不正确的问题。
+
+复现一：临时根目录下有 sub，执行 `cd sub && false`。
+cd 已成功，后面的 false 退出码为 1；下一次调用 pwd 应在 sub，目前却仍在根目录。
+
+复现二：执行 `false && cd sub; true`。
+cd 因条件不满足从未执行，下一次 pwd 应仍在根目录，目前却可能错误进入 sub。
+
+要求：
+1. 跟踪同一次 shell 执行中最终实际到达的目录，不能用整条命令成功与否判断所有 cd 是否执行。
+2. 覆盖 && 和分号串联：先 cd 成功再失败、cd 被跳过、多次 cd、后续 cd 失败。
+3. 括号子 shell 的目录变化不能影响后续调用；引号内的 cd 文本不应当成命令；带空格路径正常。
+4. 原 stdout、stderr、失败退出码和截断/超时/危险命令检查仍保留。内部目录信息不得混入用户正常输出。
+5. 不修改 Python 进程的全局 cwd。保持线程局部隔离和 Agent 并行批次的契约：
+   各工具从批次开始目录执行，真实发生的目录变化按已有规则合并，即使命令最后失败。
+6. 本题验收是 macOS/POSIX 下正常完成的命令；超时或显式 exit 时新目录恢复、完整 shell 语法解析不作为新增要求。
+   不应顺带删除或破坏项目已有的 Windows 路由和辅助函数兼容性。
+7. 使用本地临时目录写开发测试，不调用真实模型；可新增测试，不修改或删除已有测试。
+8. 不读取或修改原项目 baseline 中的外部验收材料。不修复跨文件工具相对路径、空回复、会话、换行或 Agent 实例隔离等其他题。
+9. 已有 README 总行数失败不处理；源码变动导致具体文档引用失效时可同步，不改测试放宽标准。
+
+请阅读代码、修复并运行相关测试，最后说明改动、测试结果与未解决限制。
+
+实验约束：仅操作指定 workspace。不要读取运行时、实验配置、外部验收、其他实验目录或历史修复补丁。不改删已有测试，可新增开发测试；不新增 conftest.py/pytest.ini 等改变验收行为的配置。
+
+Recovery stage: truncated_without_changes
+Observed execution facts (read requests are not proof of current correctness): {"agent_status": "output_limit", "finish_reason": "length", "files_changed": false, "changed_file_count": 0, "changed_files": [], "successful_read_requests": ["corecoder/tools/bash.py", "corecoder/shell.py", "corecoder/agent.py", "tests/test_tools.py"], "verification_status": "failed", "verification_exit_code": 1}
+Next action: The previous response hit the output limit and no file changes landed. Do not repeat a full analysis. Use the available read evidence; next perform one minimal tool action that advances the repair, such as a focused edit or a small reproduction. Do not claim completion without verification.
+Do not change acceptance criteria or protected tests.

@@ -1,0 +1,40 @@
+{
+  "task_id": "89e56e4d7cd141cd8374d84c9fad2afd",
+  "status": "paused",
+  "phase": "acceptance",
+  "completed": false,
+  "ledger": {
+    "model_calls": 7,
+    "attempts": 1,
+    "rounds": 7,
+    "active_seconds": 41.19454250007402,
+    "stagnant": 0,
+    "previous_failure": null,
+    "prompt_tokens": 49730,
+    "completion_tokens": 908,
+    "unknown_usage_requests": 1
+  },
+  "limits": {
+    "max_attempts": 3,
+    "max_model_calls": 30,
+    "rounds_per_attempt": 10,
+    "max_seconds": 900,
+    "verifier_seconds": 60,
+    "max_stagnant_attempts": 2
+  },
+  "config_hash": "5ddca0aa745fa7f4098ce006748a08ac1b70bafd9adb8c7de1b2629084bf9512",
+  "baseline_hash": "29cc1802b546b3d92ec654539fc155db217129c0a759f2122840247f1e5ff82d",
+  "baseline_file_sha256": "5bd7963a46d2515bb4e5176cd424b042338db3a736bcf6ed8175aabb3f670b32",
+  "original_failures": [
+    "tests.test_core::test_readme_line_counts_are_current"
+  ],
+  "pending": null,
+  "acceptance": null,
+  "regression": null,
+  "new_failures": null,
+  "session_ids": [
+    "session_20261117_123322_c540528c"
+  ],
+  "baseline_matches_preflight": true,
+  "comparison_to_paused": "passed"
+}

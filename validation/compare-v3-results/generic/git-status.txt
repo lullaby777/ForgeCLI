@@ -1,0 +1,2 @@
+ M corecoder/shell.py
+ M corecoder/tools/bash.py

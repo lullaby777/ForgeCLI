@@ -1,0 +1,21 @@
+{
+  "RepairController.run_unchanged": true,
+  "moved_check_bodies_identical_except_names": true,
+  "RepairTask_methods_unchanged": [
+    "__init__",
+    "create",
+    "info",
+    "_save",
+    "_remaining",
+    "_hook",
+    "_time_check",
+    "_model_call",
+    "_baseline",
+    "_failure",
+    "_execute",
+    "run"
+  ],
+  "RepairTask._check_only_public_call_names_changed": true,
+  "RepairTask._run_locked_only_checker_construction_changed": true,
+  "runtime_fingerprint_dependency_added": "verification.py"
+}

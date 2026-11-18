@@ -1,0 +1,417 @@
+test_empty_conversation_is_valid (test_acceptance.SessionAcceptance.test_empty_conversation_is_valid) ... ok
+test_invalid_json_and_encoding (test_acceptance.SessionAcceptance.test_invalid_json_and_encoding) ... ok
+test_invalid_message_entries (test_acceptance.SessionAcceptance.test_invalid_message_entries) ... 
+  test_invalid_message_entries (test_acceptance.SessionAcceptance.test_invalid_message_entries) (message=None) ... FAIL
+  test_invalid_message_entries (test_acceptance.SessionAcceptance.test_invalid_message_entries) (message=42) ... FAIL
+  test_invalid_message_entries (test_acceptance.SessionAcceptance.test_invalid_message_entries) (message='text') ... FAIL
+  test_invalid_message_entries (test_acceptance.SessionAcceptance.test_invalid_message_entries) (message={}) ... FAIL
+  test_invalid_message_entries (test_acceptance.SessionAcceptance.test_invalid_message_entries) (message={'role': 42, 'content': 'x'}) ... FAIL
+  test_invalid_message_entries (test_acceptance.SessionAcceptance.test_invalid_message_entries) (message={'role': 'user', 'content': 42}) ... FAIL
+test_invalid_required_fields (test_acceptance.SessionAcceptance.test_invalid_required_fields) ... 
+  test_invalid_required_fields (test_acceptance.SessionAcceptance.test_invalid_required_fields) (value={}) ... FAIL
+  test_invalid_required_fields (test_acceptance.SessionAcceptance.test_invalid_required_fields) (value={'model': 'm'}) ... FAIL
+  test_invalid_required_fields (test_acceptance.SessionAcceptance.test_invalid_required_fields) (value={'messages': []}) ... FAIL
+  test_invalid_required_fields (test_acceptance.SessionAcceptance.test_invalid_required_fields) (value={'model': None, 'messages': []}) ... FAIL
+  test_invalid_required_fields (test_acceptance.SessionAcceptance.test_invalid_required_fields) (value={'model': '', 'messages': []}) ... FAIL
+  test_invalid_required_fields (test_acceptance.SessionAcceptance.test_invalid_required_fields) (value={'model': 'm', 'messages': 'text'}) ... FAIL
+  test_invalid_required_fields (test_acceptance.SessionAcceptance.test_invalid_required_fields) (value={'model': 'm', 'messages': None}) ... FAIL
+test_invalid_top_level (test_acceptance.SessionAcceptance.test_invalid_top_level) ... 
+  test_invalid_top_level (test_acceptance.SessionAcceptance.test_invalid_top_level) (value=[]) ... ERROR
+  test_invalid_top_level (test_acceptance.SessionAcceptance.test_invalid_top_level) (value=None) ... ERROR
+  test_invalid_top_level (test_acceptance.SessionAcceptance.test_invalid_top_level) (value=42) ... ERROR
+  test_invalid_top_level (test_acceptance.SessionAcceptance.test_invalid_top_level) (value='text') ... ERROR
+  test_invalid_top_level (test_acceptance.SessionAcceptance.test_invalid_top_level) (value=True) ... ERROR
+test_listing_skips_each_invalid_structure (test_acceptance.SessionAcceptance.test_listing_skips_each_invalid_structure) ... 
+  test_listing_skips_each_invalid_structure (test_acceptance.SessionAcceptance.test_listing_skips_each_invalid_structure) (value=[]) ... ERROR
+  test_listing_skips_each_invalid_structure (test_acceptance.SessionAcceptance.test_listing_skips_each_invalid_structure) (value=None) ... ERROR
+  test_listing_skips_each_invalid_structure (test_acceptance.SessionAcceptance.test_listing_skips_each_invalid_structure) (value=42) ... ERROR
+  test_listing_skips_each_invalid_structure (test_acceptance.SessionAcceptance.test_listing_skips_each_invalid_structure) (value='text') ... ERROR
+  test_listing_skips_each_invalid_structure (test_acceptance.SessionAcceptance.test_listing_skips_each_invalid_structure) (value={}) ... FAIL
+  test_listing_skips_each_invalid_structure (test_acceptance.SessionAcceptance.test_listing_skips_each_invalid_structure) (value={'model': 'm'}) ... FAIL
+  test_listing_skips_each_invalid_structure (test_acceptance.SessionAcceptance.test_listing_skips_each_invalid_structure) (value={'model': 'm', 'messages': 'text'}) ... ERROR
+  test_listing_skips_each_invalid_structure (test_acceptance.SessionAcceptance.test_listing_skips_each_invalid_structure) (value={'model': 'm', 'messages': [None]}) ... ERROR
+test_missing_session (test_acceptance.SessionAcceptance.test_missing_session) ... ok
+test_path_normalization_still_works (test_acceptance.SessionAcceptance.test_path_normalization_still_works) ... ok
+test_tool_call_message_with_null_content_is_valid (test_acceptance.SessionAcceptance.test_tool_call_message_with_null_content_is_valid) ... ok
+test_valid_unicode_roundtrip_and_preview (test_acceptance.SessionAcceptance.test_valid_unicode_roundtrip_and_preview) ... ok
+
+======================================================================
+ERROR: test_invalid_top_level (test_acceptance.SessionAcceptance.test_invalid_top_level) (value=[])
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/session_corruption/test_acceptance.py", line 64, in test_invalid_top_level
+    self.assert_invalid(json.dumps(value).encode())
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/session_corruption/test_acceptance.py", line 37, in assert_invalid
+    self.assertIsNone(session.load_session("zz_bad"))
+                      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/private/tmp/corecoder-session-baseline-01/candidate/corecoder/session.py", line 67, in load_session
+    return data["messages"], data["model"]
+           ~~~~^^^^^^^^^^^^
+TypeError: list indices must be integers or slices, not str
+
+======================================================================
+ERROR: test_invalid_top_level (test_acceptance.SessionAcceptance.test_invalid_top_level) (value=None)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/session_corruption/test_acceptance.py", line 64, in test_invalid_top_level
+    self.assert_invalid(json.dumps(value).encode())
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/session_corruption/test_acceptance.py", line 37, in assert_invalid
+    self.assertIsNone(session.load_session("zz_bad"))
+                      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/private/tmp/corecoder-session-baseline-01/candidate/corecoder/session.py", line 67, in load_session
+    return data["messages"], data["model"]
+           ~~~~^^^^^^^^^^^^
+TypeError: 'NoneType' object is not subscriptable
+
+======================================================================
+ERROR: test_invalid_top_level (test_acceptance.SessionAcceptance.test_invalid_top_level) (value=42)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/session_corruption/test_acceptance.py", line 64, in test_invalid_top_level
+    self.assert_invalid(json.dumps(value).encode())
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/session_corruption/test_acceptance.py", line 37, in assert_invalid
+    self.assertIsNone(session.load_session("zz_bad"))
+                      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/private/tmp/corecoder-session-baseline-01/candidate/corecoder/session.py", line 67, in load_session
+    return data["messages"], data["model"]
+           ~~~~^^^^^^^^^^^^
+TypeError: 'int' object is not subscriptable
+
+======================================================================
+ERROR: test_invalid_top_level (test_acceptance.SessionAcceptance.test_invalid_top_level) (value='text')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/session_corruption/test_acceptance.py", line 64, in test_invalid_top_level
+    self.assert_invalid(json.dumps(value).encode())
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/session_corruption/test_acceptance.py", line 37, in assert_invalid
+    self.assertIsNone(session.load_session("zz_bad"))
+                      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/private/tmp/corecoder-session-baseline-01/candidate/corecoder/session.py", line 67, in load_session
+    return data["messages"], data["model"]
+           ~~~~^^^^^^^^^^^^
+TypeError: string indices must be integers, not 'str'
+
+======================================================================
+ERROR: test_invalid_top_level (test_acceptance.SessionAcceptance.test_invalid_top_level) (value=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/session_corruption/test_acceptance.py", line 64, in test_invalid_top_level
+    self.assert_invalid(json.dumps(value).encode())
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/session_corruption/test_acceptance.py", line 37, in assert_invalid
+    self.assertIsNone(session.load_session("zz_bad"))
+                      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/private/tmp/corecoder-session-baseline-01/candidate/corecoder/session.py", line 67, in load_session
+    return data["messages"], data["model"]
+           ~~~~^^^^^^^^^^^^
+TypeError: 'bool' object is not subscriptable
+
+======================================================================
+ERROR: test_listing_skips_each_invalid_structure (test_acceptance.SessionAcceptance.test_listing_skips_each_invalid_structure) (value=[])
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/session_corruption/test_acceptance.py", line 72, in test_listing_skips_each_invalid_structure
+    self.assertEqual([s["id"] for s in session.list_sessions()], [self.good_id])
+                                       ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/private/tmp/corecoder-session-baseline-01/candidate/corecoder/session.py", line 84, in list_sessions
+    for m in data.get("messages", []):
+             ^^^^^^^^
+AttributeError: 'list' object has no attribute 'get'
+
+======================================================================
+ERROR: test_listing_skips_each_invalid_structure (test_acceptance.SessionAcceptance.test_listing_skips_each_invalid_structure) (value=None)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/session_corruption/test_acceptance.py", line 72, in test_listing_skips_each_invalid_structure
+    self.assertEqual([s["id"] for s in session.list_sessions()], [self.good_id])
+                                       ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/private/tmp/corecoder-session-baseline-01/candidate/corecoder/session.py", line 84, in list_sessions
+    for m in data.get("messages", []):
+             ^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'get'
+
+======================================================================
+ERROR: test_listing_skips_each_invalid_structure (test_acceptance.SessionAcceptance.test_listing_skips_each_invalid_structure) (value=42)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/session_corruption/test_acceptance.py", line 72, in test_listing_skips_each_invalid_structure
+    self.assertEqual([s["id"] for s in session.list_sessions()], [self.good_id])
+                                       ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/private/tmp/corecoder-session-baseline-01/candidate/corecoder/session.py", line 84, in list_sessions
+    for m in data.get("messages", []):
+             ^^^^^^^^
+AttributeError: 'int' object has no attribute 'get'
+
+======================================================================
+ERROR: test_listing_skips_each_invalid_structure (test_acceptance.SessionAcceptance.test_listing_skips_each_invalid_structure) (value='text')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/session_corruption/test_acceptance.py", line 72, in test_listing_skips_each_invalid_structure
+    self.assertEqual([s["id"] for s in session.list_sessions()], [self.good_id])
+                                       ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/private/tmp/corecoder-session-baseline-01/candidate/corecoder/session.py", line 84, in list_sessions
+    for m in data.get("messages", []):
+             ^^^^^^^^
+AttributeError: 'str' object has no attribute 'get'
+
+======================================================================
+ERROR: test_listing_skips_each_invalid_structure (test_acceptance.SessionAcceptance.test_listing_skips_each_invalid_structure) (value={'model': 'm', 'messages': 'text'})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/session_corruption/test_acceptance.py", line 72, in test_listing_skips_each_invalid_structure
+    self.assertEqual([s["id"] for s in session.list_sessions()], [self.good_id])
+                                       ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/private/tmp/corecoder-session-baseline-01/candidate/corecoder/session.py", line 85, in list_sessions
+    if m.get("role") == "user" and m.get("content"):
+       ^^^^^
+AttributeError: 'str' object has no attribute 'get'
+
+======================================================================
+ERROR: test_listing_skips_each_invalid_structure (test_acceptance.SessionAcceptance.test_listing_skips_each_invalid_structure) (value={'model': 'm', 'messages': [None]})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/session_corruption/test_acceptance.py", line 72, in test_listing_skips_each_invalid_structure
+    self.assertEqual([s["id"] for s in session.list_sessions()], [self.good_id])
+                                       ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/private/tmp/corecoder-session-baseline-01/candidate/corecoder/session.py", line 85, in list_sessions
+    if m.get("role") == "user" and m.get("content"):
+       ^^^^^
+AttributeError: 'NoneType' object has no attribute 'get'
+
+======================================================================
+FAIL: test_invalid_message_entries (test_acceptance.SessionAcceptance.test_invalid_message_entries) (message=None)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/session_corruption/test_acceptance.py", line 88, in test_invalid_message_entries
+    self.assert_invalid(json.dumps({"model": "m", "messages": [message]}).encode())
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/session_corruption/test_acceptance.py", line 37, in assert_invalid
+    self.assertIsNone(session.load_session("zz_bad"))
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ([None], 'm') is not None
+
+======================================================================
+FAIL: test_invalid_message_entries (test_acceptance.SessionAcceptance.test_invalid_message_entries) (message=42)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/session_corruption/test_acceptance.py", line 88, in test_invalid_message_entries
+    self.assert_invalid(json.dumps({"model": "m", "messages": [message]}).encode())
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/session_corruption/test_acceptance.py", line 37, in assert_invalid
+    self.assertIsNone(session.load_session("zz_bad"))
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ([42], 'm') is not None
+
+======================================================================
+FAIL: test_invalid_message_entries (test_acceptance.SessionAcceptance.test_invalid_message_entries) (message='text')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/session_corruption/test_acceptance.py", line 88, in test_invalid_message_entries
+    self.assert_invalid(json.dumps({"model": "m", "messages": [message]}).encode())
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/session_corruption/test_acceptance.py", line 37, in assert_invalid
+    self.assertIsNone(session.load_session("zz_bad"))
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: (['text'], 'm') is not None
+
+======================================================================
+FAIL: test_invalid_message_entries (test_acceptance.SessionAcceptance.test_invalid_message_entries) (message={})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/session_corruption/test_acceptance.py", line 88, in test_invalid_message_entries
+    self.assert_invalid(json.dumps({"model": "m", "messages": [message]}).encode())
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/session_corruption/test_acceptance.py", line 37, in assert_invalid
+    self.assertIsNone(session.load_session("zz_bad"))
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ([{}], 'm') is not None
+
+======================================================================
+FAIL: test_invalid_message_entries (test_acceptance.SessionAcceptance.test_invalid_message_entries) (message={'role': 42, 'content': 'x'})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/session_corruption/test_acceptance.py", line 88, in test_invalid_message_entries
+    self.assert_invalid(json.dumps({"model": "m", "messages": [message]}).encode())
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/session_corruption/test_acceptance.py", line 37, in assert_invalid
+    self.assertIsNone(session.load_session("zz_bad"))
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ([{'role': 42, 'content': 'x'}], 'm') is not None
+
+======================================================================
+FAIL: test_invalid_message_entries (test_acceptance.SessionAcceptance.test_invalid_message_entries) (message={'role': 'user', 'content': 42})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/session_corruption/test_acceptance.py", line 88, in test_invalid_message_entries
+    self.assert_invalid(json.dumps({"model": "m", "messages": [message]}).encode())
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/session_corruption/test_acceptance.py", line 37, in assert_invalid
+    self.assertIsNone(session.load_session("zz_bad"))
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ([{'role': 'user', 'content': 42}], 'm') is not None
+
+======================================================================
+FAIL: test_invalid_required_fields (test_acceptance.SessionAcceptance.test_invalid_required_fields) (value={})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/session_corruption/test_acceptance.py", line 82, in test_invalid_required_fields
+    self.assert_invalid(json.dumps(value).encode())
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/session_corruption/test_acceptance.py", line 39, in assert_invalid
+    self.assertEqual([item["id"] for item in listed], [self.good_id])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['zz_bad', 'good'] != ['good']
+
+First differing element 0:
+'zz_bad'
+'good'
+
+First list contains 1 additional elements.
+First extra element 1:
+'good'
+
+- ['zz_bad', 'good']
++ ['good']
+
+======================================================================
+FAIL: test_invalid_required_fields (test_acceptance.SessionAcceptance.test_invalid_required_fields) (value={'model': 'm'})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/session_corruption/test_acceptance.py", line 82, in test_invalid_required_fields
+    self.assert_invalid(json.dumps(value).encode())
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/session_corruption/test_acceptance.py", line 39, in assert_invalid
+    self.assertEqual([item["id"] for item in listed], [self.good_id])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['zz_bad', 'good'] != ['good']
+
+First differing element 0:
+'zz_bad'
+'good'
+
+First list contains 1 additional elements.
+First extra element 1:
+'good'
+
+- ['zz_bad', 'good']
++ ['good']
+
+======================================================================
+FAIL: test_invalid_required_fields (test_acceptance.SessionAcceptance.test_invalid_required_fields) (value={'messages': []})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/session_corruption/test_acceptance.py", line 82, in test_invalid_required_fields
+    self.assert_invalid(json.dumps(value).encode())
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/session_corruption/test_acceptance.py", line 39, in assert_invalid
+    self.assertEqual([item["id"] for item in listed], [self.good_id])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['zz_bad', 'good'] != ['good']
+
+First differing element 0:
+'zz_bad'
+'good'
+
+First list contains 1 additional elements.
+First extra element 1:
+'good'
+
+- ['zz_bad', 'good']
++ ['good']
+
+======================================================================
+FAIL: test_invalid_required_fields (test_acceptance.SessionAcceptance.test_invalid_required_fields) (value={'model': None, 'messages': []})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/session_corruption/test_acceptance.py", line 82, in test_invalid_required_fields
+    self.assert_invalid(json.dumps(value).encode())
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/session_corruption/test_acceptance.py", line 37, in assert_invalid
+    self.assertIsNone(session.load_session("zz_bad"))
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ([], None) is not None
+
+======================================================================
+FAIL: test_invalid_required_fields (test_acceptance.SessionAcceptance.test_invalid_required_fields) (value={'model': '', 'messages': []})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/session_corruption/test_acceptance.py", line 82, in test_invalid_required_fields
+    self.assert_invalid(json.dumps(value).encode())
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/session_corruption/test_acceptance.py", line 37, in assert_invalid
+    self.assertIsNone(session.load_session("zz_bad"))
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ([], '') is not None
+
+======================================================================
+FAIL: test_invalid_required_fields (test_acceptance.SessionAcceptance.test_invalid_required_fields) (value={'model': 'm', 'messages': 'text'})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/session_corruption/test_acceptance.py", line 82, in test_invalid_required_fields
+    self.assert_invalid(json.dumps(value).encode())
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/session_corruption/test_acceptance.py", line 37, in assert_invalid
+    self.assertIsNone(session.load_session("zz_bad"))
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ('text', 'm') is not None
+
+======================================================================
+FAIL: test_invalid_required_fields (test_acceptance.SessionAcceptance.test_invalid_required_fields) (value={'model': 'm', 'messages': None})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/session_corruption/test_acceptance.py", line 82, in test_invalid_required_fields
+    self.assert_invalid(json.dumps(value).encode())
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/session_corruption/test_acceptance.py", line 37, in assert_invalid
+    self.assertIsNone(session.load_session("zz_bad"))
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: (None, 'm') is not None
+
+======================================================================
+FAIL: test_listing_skips_each_invalid_structure (test_acceptance.SessionAcceptance.test_listing_skips_each_invalid_structure) (value={})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/session_corruption/test_acceptance.py", line 72, in test_listing_skips_each_invalid_structure
+    self.assertEqual([s["id"] for s in session.list_sessions()], [self.good_id])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['zz_bad', 'good'] != ['good']
+
+First differing element 0:
+'zz_bad'
+'good'
+
+First list contains 1 additional elements.
+First extra element 1:
+'good'
+
+- ['zz_bad', 'good']
++ ['good']
+
+======================================================================
+FAIL: test_listing_skips_each_invalid_structure (test_acceptance.SessionAcceptance.test_listing_skips_each_invalid_structure) (value={'model': 'm'})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/session_corruption/test_acceptance.py", line 72, in test_listing_skips_each_invalid_structure
+    self.assertEqual([s["id"] for s in session.list_sessions()], [self.good_id])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['zz_bad', 'good'] != ['good']
+
+First differing element 0:
+'zz_bad'
+'good'
+
+First list contains 1 additional elements.
+First extra element 1:
+'good'
+
+- ['zz_bad', 'good']
++ ['good']
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.012s
+
+FAILED (failures=15, errors=11)

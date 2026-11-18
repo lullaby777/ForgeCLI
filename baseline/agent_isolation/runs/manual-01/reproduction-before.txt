@@ -1,0 +1,5 @@
+新建 B 后，B 的清单（预期为空）: '1. [pending] A-private'
+A 的 worker 是否仍归 A（预期 True）: False
+B 更新后，A 的清单（预期仍为 A-private）: '1. [pending] B-private'
+A 创建的子 Agent 是否使用 A 的模型（预期 True）: False
+A 创建的子 Agent 是否使用 A 的权限（预期 True）: False

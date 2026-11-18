@@ -1,0 +1,14 @@
+{
+  "reproduction": {
+    "exit_code": 0,
+    "log": "/tmp/corecoder-newline-baseline-01/reproduction-after.txt"
+  },
+  "acceptance": {
+    "exit_code": 1,
+    "log": "/tmp/corecoder-newline-baseline-01/acceptance-after.txt"
+  },
+  "regression": {
+    "exit_code": 1,
+    "log": "/tmp/corecoder-newline-baseline-01/regression-after.txt"
+  }
+}

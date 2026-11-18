@@ -1,0 +1,60 @@
+{"event": "requested", "index": 1, "request_hash_normalized": "4e28dc6162ea78598fe11fa7a292189b537c380eabf84e05c2c7d8a13b57e868"}
+{"event": "response", "index": 1, "elapsed_seconds": 1.2255984999937937, "prompt_tokens": 3579, "completion_tokens": 138, "finish_reason": "tool_calls"}
+{"event": "requested", "index": 2, "request_hash_normalized": "4e9316227778e09d5640bf4cc6ee9593e016b38ae3fd02841089c86c331b1439"}
+{"event": "response", "index": 2, "elapsed_seconds": 1.0836413749493659, "prompt_tokens": 5437, "completion_tokens": 113, "finish_reason": "tool_calls"}
+{"event": "requested", "index": 3, "request_hash_normalized": "ceb102ec43d81d3da92ab4ef3c4429157190c09c5b1b50c2547a481ffc3152e0"}
+{"event": "response", "index": 3, "elapsed_seconds": 1.464189708000049, "prompt_tokens": 8437, "completion_tokens": 178, "finish_reason": "tool_calls"}
+{"event": "requested", "index": 4, "request_hash_normalized": "be90958f34ad54e274eb9824285b9166cc3deb625447f83730320d7245483869"}
+{"event": "response", "index": 4, "elapsed_seconds": 0.9803773330058903, "prompt_tokens": 10060, "completion_tokens": 177, "finish_reason": "tool_calls"}
+{"event": "requested", "index": 5, "request_hash_normalized": "797dcc277e8799dafc52689d333db9f1ae11d0f9f00db323c41095cb1a9d0b91"}
+{"event": "response", "index": 5, "elapsed_seconds": 29.941520750056952, "prompt_tokens": 13810, "completion_tokens": 5097, "finish_reason": "tool_calls"}
+{"event": "requested", "index": 6, "request_hash_normalized": "8cf351203103648cdd757c2b92ce4a4d3b1e1cbdcdb7674fca92c9dfe18f8926"}
+{"event": "response", "index": 6, "elapsed_seconds": 25.75690929207485, "prompt_tokens": 21340, "completion_tokens": 4469, "finish_reason": "tool_calls"}
+{"event": "requested", "index": 7, "request_hash_normalized": "e12acf04b0b29428ee40b1e844bd10d21794508aee695b9ba988aedcbf720e7a"}
+{"event": "response", "index": 7, "elapsed_seconds": 28.503834957955405, "prompt_tokens": 26313, "completion_tokens": 5312, "finish_reason": "tool_calls"}
+{"event": "requested", "index": 8, "request_hash_normalized": "c4842eda8823b3dd233bc27257234eb52500fc42d21ef069ef365ad9f919a743"}
+{"event": "response", "index": 8, "elapsed_seconds": 8.373223625007086, "prompt_tokens": 32035, "completion_tokens": 1392, "finish_reason": "tool_calls"}
+{"event": "requested", "index": 9, "request_hash_normalized": "b107d354904dc28c851f7973431eeebbe860599ae006d9a78a134f791cfb61ac"}
+{"event": "response", "index": 9, "elapsed_seconds": 16.97663262509741, "prompt_tokens": 33725, "completion_tokens": 3448, "finish_reason": "tool_calls"}
+{"event": "requested", "index": 10, "request_hash_normalized": "b9f14db50f330c9f05746b1f73cf58c6cc27f669184a36c6bc6e9275b35bb183"}
+{"event": "response", "index": 10, "elapsed_seconds": 5.2683671249542385, "prompt_tokens": 37380, "completion_tokens": 1273, "finish_reason": "tool_calls"}
+{"event": "requested", "index": 11, "request_hash_normalized": "7de83a022245f57d0a9f0beedaa3e1391c38fb12e11bdafd9f13b27c6f5a0123"}
+{"event": "response", "index": 11, "elapsed_seconds": 1.9890634999610484, "prompt_tokens": 39448, "completion_tokens": 390, "finish_reason": "tool_calls"}
+{"event": "requested", "index": 12, "request_hash_normalized": "dd98a7876dc27dceb320e3808d32c9500660b679b21d8b7434b3b8ef08eb83ce"}
+{"event": "response", "index": 12, "elapsed_seconds": 1.590497542056255, "prompt_tokens": 40187, "completion_tokens": 139, "finish_reason": "tool_calls"}
+{"event": "requested", "index": 13, "request_hash_normalized": "17c57ada365d7d03b573e453b6d166c122bb98ef8040518357f5b338a8609534"}
+{"event": "response", "index": 13, "elapsed_seconds": 3.042951666051522, "prompt_tokens": 40930, "completion_tokens": 748, "finish_reason": "tool_calls"}
+{"event": "requested", "index": 14, "request_hash_normalized": "70dd3749cec7d6ddb8e2f38fdeecc0db61b19772312aa10c013868d15dbe8b5d"}
+{"event": "response", "index": 14, "elapsed_seconds": 1.3130619580624625, "prompt_tokens": 42101, "completion_tokens": 93, "finish_reason": "tool_calls"}
+{"event": "requested", "index": 15, "request_hash_normalized": "dffbc6c6968f2af2ebd928d68f421a450b03e4a3c12cce5019e1e3ac5b11c5f4"}
+{"event": "response", "index": 15, "elapsed_seconds": 5.397780374973081, "prompt_tokens": 42975, "completion_tokens": 1383, "finish_reason": "tool_calls"}
+{"event": "requested", "index": 16, "request_hash_normalized": "aff1cf55c543803b2a7b1e4099245f2c05432852fb542b7db405832658806ead"}
+{"event": "response", "index": 16, "elapsed_seconds": 3.785630625090562, "prompt_tokens": 45060, "completion_tokens": 747, "finish_reason": "tool_calls"}
+{"event": "requested", "index": 17, "request_hash_normalized": "9fde849c16860b67855a2cd1ead07f93bd23e4e0989f1fe40345aecaf6d13c0c"}
+{"event": "response", "index": 17, "elapsed_seconds": 2.3494295409182087, "prompt_tokens": 46176, "completion_tokens": 292, "finish_reason": "tool_calls"}
+{"event": "requested", "index": 18, "request_hash_normalized": "d9c2add973cdbb1b7f827e89a37c29248deb463347806e93fab1388bab261904"}
+{"event": "response", "index": 18, "elapsed_seconds": 1.2857182079460472, "prompt_tokens": 46677, "completion_tokens": 88, "finish_reason": "tool_calls"}
+{"event": "requested", "index": 19, "request_hash_normalized": "83d359483d02ac21506272820f8de5718fd4e95cb36454a2ba1e17e952108fbd"}
+{"event": "response", "index": 19, "elapsed_seconds": 1.345724166953005, "prompt_tokens": 46901, "completion_tokens": 165, "finish_reason": "tool_calls"}
+{"event": "requested", "index": 20, "request_hash_normalized": "91f9e829fe84708ae07526b74779f95cedc5418e69adf268d4ceb68942bd75aa"}
+{"event": "response", "index": 20, "elapsed_seconds": 1.8301467909477651, "prompt_tokens": 48323, "completion_tokens": 185, "finish_reason": "tool_calls"}
+{"event": "requested", "index": 21, "request_hash_normalized": "49348193b7634f22eaa1c5175f9f8272fdc048d300f29e8c92ee6f228cab8372"}
+{"event": "response", "index": 21, "elapsed_seconds": 2.9387073329417035, "prompt_tokens": 48941, "completion_tokens": 321, "finish_reason": "tool_calls"}
+{"event": "requested", "index": 22, "request_hash_normalized": "a58d77d20d6f6afdc8ea59e68d4cbc50d0545bff77eb6f29fb8f56674e29c90e"}
+{"event": "response", "index": 22, "elapsed_seconds": 7.167668999987654, "prompt_tokens": 50450, "completion_tokens": 1784, "finish_reason": "tool_calls"}
+{"event": "requested", "index": 23, "request_hash_normalized": "c8b6fffbecf883dfb8f13643335d60bae901692ab2504076bf5f7f7a122bc716"}
+{"event": "response", "index": 23, "elapsed_seconds": 1.3407226250274107, "prompt_tokens": 52253, "completion_tokens": 94, "finish_reason": "tool_calls"}
+{"event": "requested", "index": 24, "request_hash_normalized": "36477b6846434f74f38e70aa83a7417e00a7213c25f98ec8a0d710744b05b37c"}
+{"event": "response", "index": 24, "elapsed_seconds": 1.8761679580202326, "prompt_tokens": 53461, "completion_tokens": 164, "finish_reason": "tool_calls"}
+{"event": "requested", "index": 25, "request_hash_normalized": "97ff848fcba18e3309170bd4557d5c513e29535c46adb82c54f1958e71b2db53"}
+{"event": "response", "index": 25, "elapsed_seconds": 25.269638041965663, "prompt_tokens": 53765, "completion_tokens": 6097, "finish_reason": "tool_calls"}
+{"event": "requested", "index": 26, "request_hash_normalized": "e254760329572fc469f8ba2e95295ae528b7064e0a74d33f63af8413e077f3a4"}
+{"event": "response", "index": 26, "elapsed_seconds": 2.7437826249515638, "prompt_tokens": 59908, "completion_tokens": 364, "finish_reason": "tool_calls"}
+{"event": "requested", "index": 27, "request_hash_normalized": "9f278e801738fa710ddafd62ff27ddb5a562f18b0f455339eea6454e019426d9"}
+{"event": "response", "index": 27, "elapsed_seconds": 1.4973810829687864, "prompt_tokens": 60487, "completion_tokens": 79, "finish_reason": "tool_calls"}
+{"event": "requested", "index": 28, "request_hash_normalized": "60849c171ad1d5cde2fdfb15ca1fa03d050ebe27b97e20be5f43334e5040d146"}
+{"event": "response", "index": 28, "elapsed_seconds": 4.02253658301197, "prompt_tokens": 60592, "completion_tokens": 541, "finish_reason": "tool_calls"}
+{"event": "requested", "index": 29, "request_hash_normalized": "a86ac61ba0c0197b389f58ab6f940a28caef77222f53723488dbe31361b1dddb"}
+{"event": "response", "index": 29, "elapsed_seconds": 2.132799749961123, "prompt_tokens": 61289, "completion_tokens": 317, "finish_reason": "tool_calls"}
+{"event": "requested", "index": 30, "request_hash_normalized": "fe19a2507067c2e1d5ff9d7dd3efb54cdf583b2e692d608244f8427d8934c86d"}
+{"event": "response", "index": 30, "elapsed_seconds": 1.5481364579172805, "prompt_tokens": 61646, "completion_tokens": 71, "finish_reason": "tool_calls"}

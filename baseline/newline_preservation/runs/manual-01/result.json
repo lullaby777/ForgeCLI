@@ -1,0 +1,39 @@
+{
+  "task": "newline-preservation",
+  "run": "manual-01",
+  "date": "2026-11-16",
+  "timezone": "Asia/Singapore",
+  "model": "deepseek-flash",
+  "provider": "unknown",
+  "start_commit": "45a1642092a7fb9148fc06657db67d032cc41860",
+  "verdict": "failed_no_source_changes",
+  "acceptance": {
+    "methods": 12,
+    "failures_before": 5,
+    "failures_after": 5
+  },
+  "regression": {
+    "before_passed": 352,
+    "after_passed": 352,
+    "known_failures": 1,
+    "new_failures": 0,
+    "live_model_test_excluded": true
+  },
+  "tool_calls": {
+    "bash": 7,
+    "read_file": 3
+  },
+  "user_turns": 1,
+  "final_assistant_content": null,
+  "existing_tests_modified": false,
+  "external_acceptance_unchanged": true,
+  "source_manifest_unchanged": true,
+  "usage_from_user_screenshot": {
+    "prompt_tokens": 49057,
+    "completion_tokens": 4921,
+    "total_tokens": 53978
+  },
+  "agent_elapsed_seconds": null,
+  "cost": null,
+  "termination_cause_upstream": "unknown; finish_reason not persisted"
+}

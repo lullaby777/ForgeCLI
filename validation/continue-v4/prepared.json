@@ -1,0 +1,34 @@
+{
+  "real_model_calls": 0,
+  "formal_case_unused": true,
+  "old_experiments_and_results_unchanged": true,
+  "failed_workspace_copied_exactly": true,
+  "history_messages_restored": 39,
+  "history_changes": "Path relocation only; historical tool calls are not replayed.",
+  "remaining_doc_failure_preserved": true,
+  "baseline": "Clean pre-v4 original-source; known README count failure only.",
+  "model": {
+    "name": "deepseek-flash",
+    "base_url": "https://api.deepseek.com",
+    "temperature": 0.0,
+    "max_tokens": 8192,
+    "context_tokens": 128000,
+    "request_seconds": 60,
+    "sdk_retries": 0
+  },
+  "limits": {
+    "max_attempts": 3,
+    "max_model_calls": 14,
+    "rounds_per_attempt": 10,
+    "max_seconds": 900,
+    "verifier_seconds": 60,
+    "max_stagnant_attempts": 2
+  },
+  "v4_model_calls": 16,
+  "new_model_call_cap": 14,
+  "combined_model_call_cap": 30,
+  "new_attempt_cap": 3,
+  "budget_note": "Fresh continuation attempts/time, not a new end-to-end matched-budget comparison.",
+  "offline_check": "Full original and failed-site regression; two disposable smoke cases use two real doc checks.",
+  "dependencies": "Independent venv; pinned installed packages copied offline from v4, ruff binary copied from same-version local environment."
+}

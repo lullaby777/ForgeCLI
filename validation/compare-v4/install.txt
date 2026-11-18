@@ -1,0 +1,1 @@
+Offline dependency setup: copied installed packages from v3 into a fresh v4 venv; no network, no shared writable site-packages. pip freeze matches requirements exactly.

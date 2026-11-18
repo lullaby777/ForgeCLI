@@ -1,0 +1,194 @@
+{
+  "id": "session_20261116_111849_f8f5de82",
+  "model": "deepseek-flash",
+  "saved_at": "2026-11-16 11:18:49",
+  "messages": [
+    {
+      "role": "user",
+      "content": "修复 edit_file 在小范围编辑时改变文件换行格式的问题。\n\n复现：临时 UTF-8 文件原始字节为 b'alpha\\r\\nbeta\\r\\n'，\n调用 edit_file 把 beta 替换成 BETA，结果变成 b'alpha\\nBETA\\n'。\n预期为 b'alpha\\r\\nBETA\\r\\n'。\n\n本题范围与要求：\n1. 只考虑统一使用 CRLF 或 LF 的 UTF-8 文件；混合换行、纯 CR 换行不属于本题验收范围。\n2. 单词替换不得改变未编辑部分的字节、空行和文件末尾的换行状态。\n3. 在 CRLF 文件中，old_string 用普通 LF 表示多行文本时仍能匹配；\n   old_string 使用 CRLF 时也能匹配。new_string 中的 LF/CRLF 换行按目标文件风格写入，不能产生双重 CR。\n4. LF 文件的单行和多行替换保持正常。\n5. 保持唯一匹配：找不到或多处匹配均拒绝写入，不新增撤销记录。\n6. 非 UTF-8 文件仍应拒绝修改。成功编辑后差异输出只反映实际修改；\n   undo 在模拟重启后也应逐字节恢复原文件。\n7. 不得修改或删除已有测试；可新增开发测试，不读取或修改原项目 baseline 下的外部验收材料。\n8. 保持工具接口。不要修复会话容错等其他问题，也不处理已有 README 行数检查失败。\n   如果本次源码变化使文章里的具体行数失效，可同步更新对应引用，不修改测试来降低标准。\n\n请阅读代码、修复并运行相关测试，最后说明改动、验证结果和未解决问题。"
+    },
+    {
+      "role": "assistant",
+      "content": "I'll start by exploring the project structure to understand the codebase.",
+      "tool_calls": [
+        {
+          "id": "call_00_ET_Mrbl84STuAIcxPa3PpBy7892",
+          "type": "function",
+          "function": {
+            "name": "bash",
+            "arguments": "{\"command\": \"find /private/tmp/corecoder-newline-baseline-01/candidate -maxdepth 2 -not -path '*/.git/*' | head -50\"}"
+          }
+        },
+        {
+          "id": "call_01_ET_qrPy4zLiiWyYwHJJr5WU9131",
+          "type": "function",
+          "function": {
+            "name": "bash",
+            "arguments": "{\"command\": \"cd /private/tmp/corecoder-newline-baseline-01/candidate && git log --oneline | head -5 && git status\"}"
+          }
+        }
+      ],
+      "reasoning_content": ""
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_00_ET_Mrbl84STuAIcxPa3PpBy7892",
+      "content": "/private/tmp/corecoder-newline-baseline-01/candidate\n/private/tmp/corecoder-newline-baseline-01/candidate/LICENSE\n/private/tmp/corecoder-newline-baseline-01/candidate/.pytest_cache\n/private/tmp/corecoder-newline-baseline-01/candidate/.pytest_cache/CACHEDIR.TAG\n/private/tmp/corecoder-newline-baseline-01/candidate/.pytest_cache/README.md\n/private/tmp/corecoder-newline-baseline-01/candidate/.pytest_cache/.gitignore\n/private/tmp/corecoder-newline-baseline-01/candidate/.pytest_cache/v\n/private/tmp/corecoder-newline-baseline-01/candidate/pyproject.toml\n/private/tmp/corecoder-newline-baseline-01/candidate/tests\n/private/tmp/corecoder-newline-baseline-01/candidate/tests/test_mcp_resources.py\n/private/tmp/corecoder-newline-baseline-01/candidate/tests/test_multi_agent.py\n/private/tmp/corecoder-newline-baseline-01/candidate/tests/conftest.py\n/private/tmp/corecoder-newline-baseline-01/candidate/tests/mcp_resource_fixture.py\n/private/tmp/corecoder-newline-baseline-01/candidate/tests/test_checkpoints.py\n/private/tmp/corecoder-newline-baseline-01/candidate/tests/test_session.py\n/private/tmp/corecoder-newline-baseline-01/candidate/tests/test_core.py\n/private/tmp/corecoder-newline-baseline-01/candidate/tests/test_safety_matrix.py\n/private/tmp/corecoder-newline-baseline-01/candidate/tests/__init__.py\n/private/tmp/corecoder-newline-baseline-01/candidate/tests/__pycache__\n/private/tmp/corecoder-newline-baseline-01/candidate/tests/test_repl.py\n/private/tmp/corecoder-newline-baseline-01/candidate/tests/test_hooks.py\n/private/tmp/corecoder-newline-baseline-01/candidate/tests/test_slash_commands.py\n/private/tmp/corecoder-newline-baseline-01/candidate/tests/test_litellm.py\n/private/tmp/corecoder-newline-baseline-01/candidate/tests/test_mcp_http.py\n/private/tmp/corecoder-newline-baseline-01/candidate/tests/test_plan_mode.py\n/private/tmp/corecoder-newline-baseline-01/candidate/tests/test_shell.py\n/private/tmp/corecoder-newline-baseline-01/candidate/tests/test_tools.py\n/private/tmp/corecoder-newline-baseline-01/candidate/tests/test_mcp.py\n/private/tmp/corecoder-newline-baseline-01/candidate/tests/test_demo.py\n/private/tmp/corecoder-newline-baseline-01/candidate/tests/check_installed_wheel.py\n/private/tmp/corecoder-newline-baseline-01/candidate/tests/test_permissions.py\n/private/tmp/corecoder-newline-baseline-01/candidate/tests/test_live_smoke.py\n/private/tmp/corecoder-newline-baseline-01/candidate/README.md\n/private/tmp/corecoder-newline-baseline-01/candidate/README_CN.md\n/private/tmp/corecoder-newline-baseline-01/candidate/.gitignore\n/private/tmp/corecoder-newline-baseline-01/candidate/examples\n/private/tmp/corecoder-newline-baseline-01/candidate/examples/multi_agent_demo.py\n/private/tmp/corecoder-newline-baseline-01/candidate/examples/mcp_filesystem.md\n/private/tmp/corecoder-newline-baseline-01/candidate/examples/mcp_http.md\n/private/tmp/corecoder-newline-baseline-01/candidate/examples/__pycache__\n/private/tmp/corecoder-newline-baseline-01/candidate/examples/plan_hooks_demo.py\n/private/tmp/corecoder-newline-baseline-01/candidate/examples/mcp_filesystem.json\n/private/tmp/corecoder-newline-baseline-01/candidate/.github\n/private/tmp/corecoder-newline-baseline-01/candidate/.github/workflows\n/private/tmp/corecoder-newline-baseline-01/candidate/corecoder\n/private/tmp/corecoder-newline-baseline-01/candidate/corecoder/hooks.py\n/private/tmp/corecoder-newline-baseline-01/candidate/corecoder/tools\n/private/tmp/corecoder-newline-baseline-01/candidate/corecoder/config.py\n/private/tmp/corecoder-newline-baseline-01/candidate/corecoder/shell.py\n/private/tmp/corecoder-newline-baseline-01/candidate/corecoder/session.py"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_01_ET_qrPy4zLiiWyYwHJJr5WU9131",
+      "content": "45a1642 Newline baseline starting snapshot\nOn branch main\nnothing to commit, working tree clean"
+    },
+    {
+      "role": "assistant",
+      "content": null,
+      "tool_calls": [
+        {
+          "id": "call_00_ET_IGosMagXUpkN3rUSNux27967",
+          "type": "function",
+          "function": {
+            "name": "bash",
+            "arguments": "{\"command\": \"cd /private/tmp/corecoder-newline-baseline-01/candidate && ls corecoder corecoder/tools && grep -rn \\\"edit_file\\\" --include=*.py corecoder | head -40\"}"
+          }
+        }
+      ],
+      "reasoning_content": ""
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_00_ET_IGosMagXUpkN3rUSNux27967",
+      "content": "corecoder:\n__init__.py\n__main__.py\n__pycache__\nagent.py\ncheckpoints.py\ncli.py\nconfig.py\ncontext.py\ndemo.py\nhooks.py\nllm.py\nmcp.py\nmcp_http.py\npermissions.py\nprompt.py\nsession.py\nshell.py\ntools\n\ncorecoder/tools:\n__init__.py\n__pycache__\nagent.py\nbase.py\nbash.py\nedit.py\nfetch.py\nglob_tool.py\ngrep.py\nnow.py\nread.py\ntodo.py\nwrite.py\ncorecoder/tools/write.py:15:        \"For small edits to existing files, prefer edit_file instead.\"\ncorecoder/tools/edit.py:21:    name = \"edit_file\"\ncorecoder/tools/edit.py:58:                    return f\"Error: {file_path} is not a UTF-8 text file (edit_file only edits text files)\"\ncorecoder/tools/base.py:6:# File-mutating tools (write_file/edit_file) serialize on this, so a parallel\ncorecoder/checkpoints.py:3:edit_file and write_file record a checkpoint before touching a file; /undo\ncorecoder/permissions.py:4:run the moment the model asks; the mutating ones (edit_file, write_file,\ncorecoder/prompt.py:34:2. **edit_file for small changes.** Use edit_file for targeted edits; write_file only for new files or complete rewrites.\ncorecoder/prompt.py:38:6. **edit_file uniqueness.** When using edit_file, include enough surrounding context in old_string to guarantee a unique match."
+    },
+    {
+      "role": "assistant",
+      "content": null,
+      "tool_calls": [
+        {
+          "id": "call_00_ET_oDcnUepxm1L36Xw3nG2C6369",
+          "type": "function",
+          "function": {
+            "name": "read_file",
+            "arguments": "{\"file_path\": \"/private/tmp/corecoder-newline-baseline-01/candidate/corecoder/tools/edit.py\"}"
+          }
+        }
+      ],
+      "reasoning_content": ""
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_00_ET_oDcnUepxm1L36Xw3nG2C6369",
+      "content": "1\t\"\"\"Search-and-replace file editing (Claude Code's key innovation).\n2\t\n3\tThe core idea: instead of sending whole-file rewrites or line-number patches,\n4\tthe LLM specifies an *exact* substring to find and its replacement. The\n5\tsubstring must appear exactly once in the file, which eliminates ambiguity\n6\tand makes edits safe and reviewable.\n7\t\"\"\"\n8\t\n9\timport difflib\n10\tfrom pathlib import Path\n11\tfrom typing import ClassVar\n12\t\n13\tfrom ..checkpoints import record as _record_checkpoint\n14\tfrom .base import Tool\n15\t\n16\t# track files changed this session for /diff\n17\t_changed_files: set[str] = set()\n18\t\n19\t\n20\tclass EditFileTool(Tool):\n21\t    name = \"edit_file\"\n22\t    description = (\n23\t        \"Edit a file by replacing an exact string match. \"\n24\t        \"old_string must appear exactly once in the file for safety. \"\n25\t        \"Include enough surrounding context to ensure uniqueness.\"\n26\t    )\n27\t    parameters: ClassVar[dict] = {\n28\t        \"type\": \"object\",\n29\t        \"properties\": {\n30\t            \"file_path\": {\n31\t                \"type\": \"string\",\n32\t                \"description\": \"Path to the file to edit\",\n33\t            },\n34\t            \"old_string\": {\n35\t                \"type\": \"string\",\n36\t                \"description\": \"Exact text to find (must be unique in file)\",\n37\t            },\n38\t            \"new_string\": {\n39\t                \"type\": \"string\",\n40\t                \"description\": \"Replacement text\",\n41\t            },\n42\t        },\n43\t        \"required\": [\"file_path\", \"old_string\", \"new_string\"],\n44\t    }\n45\t\n46\t    def execute(self, file_path: str, old_string: str, new_string: str) -> str:\n47\t        from .base import FILE_MUTATION_LOCK\n48\t\n49\t        try:\n50\t            with FILE_MUTATION_LOCK:\n51\t                p = Path(file_path).expanduser().resolve()\n52\t                if not p.exists():\n53\t                    return f\"Error: {file_path} not found\"\n54\t\n55\t                try:\n56\t                    content = p.read_text(encoding=\"utf-8\")\n57\t                except UnicodeDecodeError:\n58\t                    return f\"Error: {file_path} is not a UTF-8 text file (edit_file only edits text files)\"\n59\t                occurrences = content.count(old_string)\n60\t\n61\t                if occurrences == 0:\n62\t                    preview = content[:500] + (\"...\" if len(content) > 500 else \"\")\n63\t                    return (\n64\t                        f\"Error: old_string not found in {file_path}.\\n\"\n65\t                        f\"File starts with:\\n{preview}\"\n66\t                    )\n67\t                if occurrences > 1:\n68\t                    return (\n69\t                        f\"Error: old_string appears {occurrences} times in {file_path}. \"\n70\t                        f\"Include more surrounding lines to make it unique.\"\n71\t                    )\n72\t\n73\t                new_content = content.replace(old_string, new_string, 1)\n74\t                _record_checkpoint(p)\n75\t                p.write_text(new_content, encoding=\"utf-8\")\n76\t                _changed_files.add(str(p))\n77\t\n78\t            # generate a unified diff so the user/LLM can see exactly what changed\n79\t            diff = _unified_diff(content, new_content, str(p))\n80\t            return f\"Edited {file_path}\\n{diff}\"\n81\t        except Exception as e:  # noqa: BLE001\n82\t            # boundary: the agent gets an error string, not a traceback\n83\t            return f\"Error: {e}\"\n84\t\n85\t\n86\tdef _unified_diff(old: str, new: str, filename: str, context: int = 3) -> str:\n87\t    \"\"\"Generate a compact unified diff between old and new file content.\"\"\"\n88\t    old_lines = old.splitlines(keepends=True)\n89\t    new_lines = new.splitlines(keepends=True)\n90\t    diff = difflib.unified_diff(\n91\t        old_lines, new_lines,\n92\t        fromfile=f\"a/{filename}\", tofile=f\"b/{filename}\",\n93\t        n=context,\n94\t    )\n95\t    result = \"\".join(diff)\n96\t    # truncate enormous diffs\n97\t    if len(result) > 3000:\n98\t        result = result[:2500] + \"\\n... (diff truncated)\\n\"\n99\t    return result"
+    },
+    {
+      "role": "assistant",
+      "content": null,
+      "tool_calls": [
+        {
+          "id": "call_00_41OSAYjrBPKWpSV3A0km9876",
+          "type": "function",
+          "function": {
+            "name": "read_file",
+            "arguments": "{\"file_path\": \"/private/tmp/corecoder-newline-baseline-01/candidate/corecoder/checkpoints.py\"}"
+          }
+        },
+        {
+          "id": "call_01_BfFsYaw9HNktG9YTfU2B2943",
+          "type": "function",
+          "function": {
+            "name": "read_file",
+            "arguments": "{\"file_path\": \"/private/tmp/corecoder-newline-baseline-01/candidate/corecoder/tools/write.py\"}"
+          }
+        }
+      ],
+      "reasoning_content": "The bug: `p.read_text()` with universal newlines translates CRLF -> LF. Then write_text writes LF. Need to preserve newline style.\n\nLet's look at checkpoints for undo behavior, and write.py for consistency."
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_00_41OSAYjrBPKWpSV3A0km9876",
+      "content": "1\t\"\"\"Session-scoped undo for file mutations.\n2\t\n3\tedit_file and write_file record a checkpoint before touching a file; /undo\n4\tpops the latest one and restores the previous bytes (or removes the file if\n5\tit did not exist). The stack persists to ~/.corecoder/checkpoints.json so\n6\t/undo still reaches back into earlier sessions after a restart. Bash side\n7\teffects are not tracked, only the two file-writing tools.\n8\t\"\"\"\n9\t\n10\timport base64\n11\timport json\n12\tfrom pathlib import Path\n13\t\n14\tCHECKPOINTS_FILE = Path.home() / \".corecoder\" / \"checkpoints.json\"\n15\t\n16\t# (path, prior bytes or None if the file did not exist)\n17\t_stack: list[tuple[str, bytes | None]] = []\n18\t_loaded = False\n19\t\n20\t\n21\tdef _ensure_loaded() -> None:\n22\t    global _loaded\n23\t    if _loaded:\n24\t        return\n25\t    _loaded = True\n26\t    try:\n27\t        entries = json.loads(CHECKPOINTS_FILE.read_text(encoding=\"utf-8\"))\n28\t        for e in entries:\n29\t            prior = e[\"prior\"]\n30\t            _stack.append((e[\"path\"], base64.b64decode(prior) if prior is not None else None))\n31\t    except (OSError, ValueError, KeyError, TypeError):\n32\t        # a missing or corrupt stack just means nothing to undo\n33\t        pass\n34\t\n35\t\n36\tdef _save() -> None:\n37\t    entries = [\n38\t        {\"path\": path, \"prior\": base64.b64encode(prior).decode(\"ascii\") if prior is not None else None}\n39\t        for path, prior in _stack\n40\t    ]\n41\t    try:\n42\t        CHECKPOINTS_FILE.parent.mkdir(parents=True, exist_ok=True)\n43\t        tmp = CHECKPOINTS_FILE.with_suffix(\".tmp\")\n44\t        tmp.write_text(json.dumps(entries), encoding=\"utf-8\")\n45\t        tmp.replace(CHECKPOINTS_FILE)\n46\t    except OSError:\n47\t        # undo is a safety net; losing its persistence must not break the edit\n48\t        pass\n49\t\n50\t\n51\tdef record(path: Path) -> None:\n52\t    \"\"\"Capture the pre-mutation state of path. Call right before writing.\"\"\"\n53\t    _ensure_loaded()\n54\t    _stack.append((str(path), path.read_bytes() if path.exists() else None))\n55\t    _save()\n56\t\n57\t\n58\tdef undo() -> str:\n59\t    \"\"\"Restore the most recent checkpoint.\"\"\"\n60\t    _ensure_loaded()\n61\t    if not _stack:\n62\t        return \"Nothing to undo.\"\n63\t    path_str, prior = _stack.pop()\n64\t    p = Path(path_str)\n65\t    if prior is None:\n66\t        p.unlink(missing_ok=True)\n67\t        msg = f\"Removed {path_str} (created this session).\"\n68\t    else:\n69\t        # the parent tree may be gone by now: bash side effects are untracked,\n70\t        # so recreate it instead of dying on FileNotFoundError\n71\t        recreated = not p.parent.exists()\n72\t        p.parent.mkdir(parents=True, exist_ok=True)\n73\t        p.write_bytes(prior)\n74\t        msg = f\"Restored {path_str}.\" if not recreated else (\n75\t            f\"Restored {path_str} (recreated missing parent directories).\"\n76\t        )\n77\t    _save()\n78\t    return msg\n79\t\n80\t\n81\tdef pending() -> int:\n82\t    _ensure_loaded()\n83\t    return len(_stack)\n84\t\n85\t\n86\tdef clear() -> None:\n87\t    global _loaded\n88\t    _stack.clear()\n89\t    _loaded = True  # the stack is known-empty; don't reload the file we just removed\n90\t    try:\n91\t        CHECKPOINTS_FILE.unlink(missing_ok=True)\n92\t    except OSError:\n93\t        pass"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_01_BfFsYaw9HNktG9YTfU2B2943",
+      "content": "1\t\"\"\"File creation / overwrite.\"\"\"\n2\t\n3\tfrom pathlib import Path\n4\tfrom typing import ClassVar\n5\t\n6\tfrom ..checkpoints import record as _record_checkpoint\n7\tfrom .base import Tool\n8\tfrom .edit import _changed_files\n9\t\n10\t\n11\tclass WriteFileTool(Tool):\n12\t    name = \"write_file\"\n13\t    description = (\n14\t        \"Create a new file or completely overwrite an existing one. \"\n15\t        \"For small edits to existing files, prefer edit_file instead.\"\n16\t    )\n17\t    parameters: ClassVar[dict] = {\n18\t        \"type\": \"object\",\n19\t        \"properties\": {\n20\t            \"file_path\": {\n21\t                \"type\": \"string\",\n22\t                \"description\": \"Path for the file\",\n23\t            },\n24\t            \"content\": {\n25\t                \"type\": \"string\",\n26\t                \"description\": \"Full file content to write\",\n27\t            },\n28\t        },\n29\t        \"required\": [\"file_path\", \"content\"],\n30\t    }\n31\t\n32\t    def execute(self, file_path: str, content: str) -> str:\n33\t        from .base import FILE_MUTATION_LOCK\n34\t\n35\t        try:\n36\t            with FILE_MUTATION_LOCK:\n37\t                p = Path(file_path).expanduser().resolve()\n38\t                p.parent.mkdir(parents=True, exist_ok=True)\n39\t                _record_checkpoint(p)\n40\t                p.write_text(content, encoding=\"utf-8\")\n41\t                _changed_files.add(str(p))\n42\t            n_lines = content.count(\"\\n\") + (1 if content and not content.endswith(\"\\n\") else 0)\n43\t            return f\"Wrote {n_lines} lines to {file_path}\"\n44\t        except Exception as e:  # noqa: BLE001\n45\t            # boundary: the agent gets an error string, not a traceback\n46\t            return f\"Error: {e}\""
+    },
+    {
+      "role": "assistant",
+      "content": null,
+      "tool_calls": [
+        {
+          "id": "call_00_T7AvyhZBUjqnpgpIZ87i9654",
+          "type": "function",
+          "function": {
+            "name": "bash",
+            "arguments": "{\"command\": \"cd /private/tmp/corecoder-newline-baseline-01/candidate && grep -rn \\\"edit_file\\\\|EditFileTool\\\" --include=*.py tests | head -40\"}"
+          }
+        },
+        {
+          "id": "call_01_ZM2qyC19KchV8mV4CyLO6715",
+          "type": "function",
+          "function": {
+            "name": "bash",
+            "arguments": "{\"command\": \"cd /private/tmp/corecoder-newline-baseline-01/candidate && ls tests && wc -l tests/*.py | tail -3\"}"
+          }
+        }
+      ],
+      "reasoning_content": "Now look at existing tests for edit_file, to know constraints."
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_00_T7AvyhZBUjqnpgpIZ87i9654",
+      "content": "tests/test_checkpoints.py:1:\"\"\"Undo checkpoints for edit_file / write_file.\"\"\"\ntests/test_checkpoints.py:6:from corecoder.tools.edit import EditFileTool\ntests/test_checkpoints.py:19:    assert EditFileTool().execute(str(f), \"v1\", \"v2\").startswith(\"Edited\")\ntests/test_checkpoints.py:39:    EditFileTool().execute(str(f), \"v1\", \"v2\")\ntests/test_checkpoints.py:40:    EditFileTool().execute(str(f), \"v2\", \"v3\")\ntests/test_checkpoints.py:53:    result = EditFileTool().execute(str(f), \"missing\", \"v2\")\ntests/test_checkpoints.py:65:    EditFileTool().execute(str(f), \"v1\", \"v2\")\ntests/test_checkpoints.py:79:    EditFileTool().execute(str(f), \"v1\", \"v2\")\ntests/test_core.py:303:    edit = get_tool(\"edit_file\")\ntests/test_core.py:366:    \"\"\"Two edit_file calls on one file in one batch must not lose either.\"\"\"\ntests/test_core.py:367:    edit = get_tool(\"edit_file\")\ntests/test_core.py:374:            self.name, self.id = \"edit_file\", str(i)\ntests/test_tools.py:281:# --- edit_file ---\ntests/test_tools.py:283:def test_edit_file_basic(tmp_path):\ntests/test_tools.py:284:    edit = get_tool(\"edit_file\")\ntests/test_tools.py:295:def test_edit_file_not_found_string(tmp_path):\ntests/test_tools.py:296:    edit = get_tool(\"edit_file\")\ntests/test_tools.py:303:def test_edit_file_duplicate_string(tmp_path):\ntests/test_tools.py:304:    edit = get_tool(\"edit_file\")\ntests/test_tools.py:311:def test_edit_file_rejects_non_utf8(tmp_path):\ntests/test_tools.py:313:    edit = get_tool(\"edit_file\")\ntests/test_permissions.py:121:    assert second.check(\"edit_file\", {}) is not None  # but only that tool"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_01_ZM2qyC19KchV8mV4CyLO6715",
+      "content": "__init__.py\n__pycache__\ncheck_installed_wheel.py\nconftest.py\nmcp_resource_fixture.py\ntest_checkpoints.py\ntest_core.py\ntest_demo.py\ntest_hooks.py\ntest_litellm.py\ntest_live_smoke.py\ntest_mcp.py\ntest_mcp_http.py\ntest_mcp_resources.py\ntest_multi_agent.py\ntest_permissions.py\ntest_plan_mode.py\ntest_repl.py\ntest_safety_matrix.py\ntest_session.py\ntest_shell.py\ntest_slash_commands.py\ntest_tools.py\n     130 tests/test_slash_commands.py\n     484 tests/test_tools.py\n    4352 total"
+    },
+    {
+      "role": "assistant",
+      "content": null,
+      "tool_calls": [
+        {
+          "id": "call_00_ET_lWkVFR6O6W8fBgXPb42Q2198",
+          "type": "function",
+          "function": {
+            "name": "bash",
+            "arguments": "{\"command\": \"cd /private/tmp/corecoder-newline-baseline-01/candidate && sed -n 270,340p tests/test_tools.py && echo ---- && cat tests/test_checkpoints.py\"}"
+          }
+        }
+      ],
+      "reasoning_content": ""
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_00_ET_lWkVFR6O6W8fBgXPb42Q2198",
+      "content": "assert path.read_text(encoding=\"utf-8\") == \"hello world\\n\"\n\n\ndef test_write_file_creates_dirs(tmp_path):\n    write = get_tool(\"write_file\")\n    nested = tmp_path / \"sub\" / \"dir\" / \"file.txt\"\n    r = write.execute(file_path=str(nested), content=\"nested\\n\")\n    assert \"Wrote\" in r\n    assert nested.read_text(encoding=\"utf-8\") == \"nested\\n\"\n\n\n# --- edit_file ---\n\ndef test_edit_file_basic(tmp_path):\n    edit = get_tool(\"edit_file\")\n    path = tmp_path / \"sample.py\"\n    path.write_text(\"def foo():\\n    return 42\\n\")\n    r = edit.execute(file_path=str(path), old_string=\"return 42\", new_string=\"return 99\")\n    assert \"Edited\" in r\n    assert \"---\" in r  # unified diff\n    content = path.read_text()\n    assert \"return 99\" in content\n    assert \"return 42\" not in content\n\n\ndef test_edit_file_not_found_string(tmp_path):\n    edit = get_tool(\"edit_file\")\n    path = tmp_path / \"sample.py\"\n    path.write_text(\"hello\\n\")\n    r = edit.execute(file_path=str(path), old_string=\"NONEXISTENT\", new_string=\"x\")\n    assert \"not found\" in r.lower()\n\n\ndef test_edit_file_duplicate_string(tmp_path):\n    edit = get_tool(\"edit_file\")\n    path = tmp_path / \"sample.py\"\n    path.write_text(\"dup\\ndup\\n\")\n    r = edit.execute(file_path=str(path), old_string=\"dup\", new_string=\"x\")\n    assert \"2 times\" in r\n\n\ndef test_edit_file_rejects_non_utf8(tmp_path):\n    \"\"\"A non-UTF-8 / binary file must yield a clean error, not a traceback.\"\"\"\n    edit = get_tool(\"edit_file\")\n    path = tmp_path / \"latin.txt\"\n    path.write_bytes(\"café\".encode(\"latin-1\"))  # 0xe9 is invalid UTF-8\n    r = edit.execute(file_path=str(path), old_string=\"caf\", new_string=\"x\")\n    assert \"not a UTF-8 text file\" in r\n\n\n# --- glob ---\n\ndef test_glob_finds_files():\n    glob_t = get_tool(\"glob\")\n    r = glob_t.execute(pattern=\"*.py\", path=os.path.dirname(__file__))\n    assert \"test_tools.py\" in r\n\n\ndef test_glob_no_match():\n    glob_t = get_tool(\"glob\")\n    r = glob_t.execute(pattern=\"*.nonexistent_extension_xyz\")\n    assert \"No files\" in r\n\n\ndef test_glob_nonexistent_path():\n    glob_t = get_tool(\"glob\")\n    r = glob_t.execute(pattern=\"*.py\", path=\"/nonexistent_dir_abc\")\n    assert \"not found\" in r.lower() or \"Error\" in r\n\n\ndef test_glob_path_is_file():\n----\n\"\"\"Undo checkpoints for edit_file / write_file.\"\"\"\n\nfrom __future__ import annotations\n\nfrom corecoder import checkpoints\nfrom corecoder.tools.edit import EditFileTool\nfrom corecoder.tools.write import WriteFileTool\n\n\ndef _simulate_restart():\n    # drop the in-memory stack and force a reload from disk\n    checkpoints._stack.clear()\n    checkpoints._loaded = False\n\n\ndef test_edit_then_undo_restores_previous_bytes(tmp_path):\n    f = tmp_path / \"a.py\"\n    f.write_text(\"v1\\n\", encoding=\"utf-8\")\n    assert EditFileTool().execute(str(f), \"v1\", \"v2\").startswith(\"Edited\")\n    assert f.read_text() == \"v2\\n\"\n\n    assert checkpoints.undo() == f\"Restored {f}.\"\n    assert f.read_text() == \"v1\\n\"\n\n\ndef test_undo_removes_file_created_by_write(tmp_path):\n    f = tmp_path / \"new.py\"\n    assert not f.exists()\n    WriteFileTool().execute(str(f), \"print(1)\\n\")\n    assert f.exists()\n\n    assert checkpoints.undo() == f\"Removed {f} (created this session).\"\n    assert not f.exists()\n\n\ndef test_undo_pops_one_mutation_at_a_time(tmp_path):\n    f = tmp_path / \"a.py\"\n    f.write_text(\"v1\\n\", encoding=\"utf-8\")\n    EditFileTool().execute(str(f), \"v1\", \"v2\")\n    EditFileTool().execute(str(f), \"v2\", \"v3\")\n\n    assert checkpoints.pending() == 2\n    checkpoints.undo()\n    assert f.read_text() == \"v2\\n\"\n    checkpoints.undo()\n    assert f.read_text() == \"v1\\n\"\n\n\ndef test_failed_edit_leaves_no_checkpoint(tmp_path):\n    f = tmp_path / \"a.py\"\n    f.write_text(\"v1\\n\", encoding=\"utf-8\")\n    # old_string absent -> error before any write\n    result = EditFileTool().execute(str(f), \"missing\", \"v2\")\n    assert result.startswith(\"Error:\")\n    assert checkpoints.pending() == 0\n    assert checkpoints.undo() == \"Nothing to undo.\"\n\n\ndef test_undo_recreates_a_deleted_parent_tree(tmp_path):\n    # bash side effects are untracked: if the parent dir is removed between\n    # the checkpoint and /undo, restore recreates it instead of dying.\n    f = tmp_path / \"deep\" / \"nested\" / \"a.py\"\n    f.parent.mkdir(parents=True)\n    f.write_text(\"v1\\n\", encoding=\"utf-8\")\n    EditFileTool().execute(str(f), \"v1\", \"v2\")\n    import shutil\n\n    shutil.rmtree(tmp_path / \"deep\")\n    assert not f.parent.exists()\n\n    msg = checkpoints.undo()\n    assert msg == f\"Restored {f} (recreated missing parent directories).\"\n    assert f.read_text() == \"v1\\n\"\n\n\ndef test_undo_survives_a_restart(tmp_path):\n    f = tmp_path / \"a.py\"\n    f.write_text(\"v1\\n\", encoding=\"utf-8\")\n    EditFileTool().execute(str(f), \"v1\", \"v2\")\n\n    _simulate_restart()\n    assert checkpoints.pending() == 1\n    assert checkpoints.undo() == f\"Restored {f}.\"\n    assert f.read_text() == \"v1\\n\"\n\n    _simulate_restart()  # the popped entry stays popped\n    assert checkpoints.pending() == 0\n    assert checkpoints.undo() == \"Nothing to undo.\"\n\n\ndef test_restart_remembers_a_file_created_by_write(tmp_path):\n    f = tmp_path / \"new.py\"\n    WriteFileTool().execute(str(f), \"print(1)\\n\")\n\n    _simulate_restart()\n    assert checkpoints.undo() == f\"Removed {f} (created this session).\"\n    assert not f.exists()\n\n\ndef test_corrupt_stack_file_means_nothing_to_undo(tmp_path):\n    checkpoints.CHECKPOINTS_FILE.write_text(\"{ nope\", encoding=\"utf-8\")\n\n    _simulate_restart()\n    assert checkpoints.pending() == 0\n    assert checkpoints.undo() == \"Nothing to undo.\""
+    },
+    {
+      "role": "assistant",
+      "content": null,
+      "tool_calls": [
+        {
+          "id": "call_00_jewM4oD2xM96SGOWDtwQ4807",
+          "type": "function",
+          "function": {
+            "name": "bash",
+            "arguments": "{\"command\": \"cd /private/tmp/corecoder-newline-baseline-01/candidate && grep -rn \\\"newline\\\\|CRLF\\\\|\\\\\\\\r\\\\\\\\n\\\" --include=*.py corecoder tests | head -30; echo ----; grep -rn \\\"newline\\\\|CRLF\\\" README.md README_CN.md | head -20\"}"
+          }
+        }
+      ],
+      "reasoning_content": "Now let's check if there's a baseline directory with external acceptance material (we're told not to read). Let's check the parent directory quickly? The instruction says don't read or modify external acceptance materials under the baseline project. We shouldn't. Just implement.\n\nLet's find any documentation mentioning edit_file behavior / newlines."
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_00_jewM4oD2xM96SGOWDtwQ4807",
+      "content": "corecoder/cli.py:186:    # Enter submits, Escape+Enter inserts a newline (for pasting code blocks etc.)\ncorecoder/cli.py:194:    def _newline(event):\ncorecoder/cli.py:316:            # newline logic below still fires even if the reply itself is empty\ncorecoder/cli.py:324:                print()  # newline after streamed tokens\ncorecoder/cli.py:385:        \"  Esc+Enter      Insert newline (for pasting code)\",\ncorecoder/mcp.py:70:            bufsize=1,  # line buffered: the transport is newline-delimited JSON\ntests/mcp_resource_fixture.py:71:    sys.stdout.reconfigure(encoding=\"utf-8\", newline=\"\\n\")\ntests/test_mcp.py:27:sys.stdout.reconfigure(encoding=\"utf-8\", newline=\"\\\\n\")\n----"
+    },
+    {
+      "role": "assistant",
+      "content": null
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+ M README.md
+ M README_CN.md
+ M article/00-index.md
+ M article/00-index_EN.md
+ M article/01-the-loop.md
+ M article/01-the-loop_EN.md
+ M article/02-tools.md
+ M article/02-tools_EN.md
+ M corecoder/agent.py
+ M corecoder/tools/base.py
+ M corecoder/tools/bash.py
+ M corecoder/tools/edit.py
+ M corecoder/tools/glob_tool.py
+ M corecoder/tools/grep.py
+ M corecoder/tools/read.py
+ M corecoder/tools/write.py
+?? tests/test_tool_cwd.py

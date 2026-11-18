@@ -1,0 +1,9 @@
+{
+  "status": "passed",
+  "completed": true,
+  "acceptance": "passed",
+  "regression": "passed",
+  "model_calls": 2,
+  "attempts": 2,
+  "result": "/private/tmp/corecoder-regression-gate-check/offline-demo/result/result.json"
+}

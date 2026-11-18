@@ -1,0 +1,16 @@
+{
+  "task04-original": {
+    "expected_acceptance_failures": 9,
+    "workspace_matches": true
+  },
+  "task04-improved": {
+    "expected_acceptance_failures": 9,
+    "workspace_matches": true
+  },
+  "regression": {
+    "passed": 352,
+    "known_failed": 1,
+    "live_smoke_excluded": true
+  },
+  "real_model_calls": 0
+}

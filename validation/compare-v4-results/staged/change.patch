@@ -1,0 +1,120 @@
+diff --git a/corecoder/tools/bash.py b/corecoder/tools/bash.py
+index 6145f02..1d8cd66 100644
+--- a/corecoder/tools/bash.py
++++ b/corecoder/tools/bash.py
+@@ -9,7 +9,9 @@ Claude Code's BashTool is 1,143 lines. This is the distilled version:
+ 
+ import os
+ import re
++import shlex
+ import subprocess
++import tempfile
+ import threading
+ from typing import ClassVar
+ 
+@@ -83,9 +85,13 @@ class BashTool(Tool):
+         # use this thread's own tracked working directory
+         cwd = get_tracked_cwd() or os.getcwd()
+ 
++        # let the shell report the dir it actually ends in (see _wrap_with_cwd_probe):
++        # text-scanning the command cannot tell `cd sub && false` (moved) from
++        # `false && cd sub; true` (never moved)
++        probe_path = _reserve_cwd_probe() if command.strip() else None
+         try:
+             proc = run_shell(
+-                command,
++                _wrap_with_cwd_probe(command, probe_path) if probe_path else command,
+                 check=False,
+                 capture_output=True,
+                 text=True,
+@@ -93,10 +99,17 @@ class BashTool(Tool):
+                 errors="replace",
+                 timeout=timeout,
+                 cwd=cwd,
++                # handing PWD in keeps `pwd` logical, so a symlinked or aliased
++                # start dir comes back spelled the way the caller handed it over
++                env={**os.environ, "PWD": cwd} if probe_path else None,
+             )
+ 
+             # track cd commands so next command runs in the right place
+-            if proc.returncode == 0:
++            landed = _read_cwd_probe(probe_path)
++            if landed is not None:
++                set_tracked_cwd(landed)
++            elif proc.returncode == 0:
++                # no probe (explicit exit, killed shell): best-effort fallback
+                 _update_cwd(command, cwd)
+             out = proc.stdout
+             if proc.stderr:
+@@ -116,6 +129,71 @@ class BashTool(Tool):
+         except Exception as e:  # noqa: BLE001
+             # anything else from the OS (spawn failure etc.) also comes back as text
+             return f"Error running command: {e}"
++        finally:
++            _discard_cwd_probe(probe_path)
++
++
++def _reserve_cwd_probe() -> str | None:
++    """Reserve an empty file the wrapped shell can drop its final dir into."""
++    if os.name == "nt":
++        # git-bash reports `/c/...` mount paths that Python cannot chdir into, so
++        # Windows keeps the parser-based tracking above untouched
++        return None
++    try:
++        fd, path = tempfile.mkstemp(prefix="corecoder-cwd-")
++    except OSError:
++        return None
++    os.close(fd)
++    return path
++
++
++def _wrap_with_cwd_probe(command: str, probe_path: str) -> str:
++    """Run `command` in this shell, then record where the shell ended up.
++
++    The `pwd` runs *after* the user's statements in the same shell, so it
++    reports the directory that was really reached: `cd sub && false` fails as a
++    whole yet did move the shell, and `false && cd sub; true` succeeds without
++    ever running its `cd`. Parsing the command text cannot tell those apart, and
++    the process exit status cannot either.
++
++    The report goes to a private file — never to stdout/stderr — and the user's
++    exit status is passed through unchanged, so output, truncation and the
++    `[exit code: N]` suffix all keep their old shape.
++    """
++    return (
++        "{\n"
++        f"{command}\n"
++        "}\n"
++        "__corecoder_status=$?\n"
++        f"{{ command pwd > {shlex.quote(probe_path)} 2>/dev/null; }} || true\n"
++        "exit $__corecoder_status\n"
++    )
++
++
++def _read_cwd_probe(probe_path: str | None) -> str | None:
++    """The dir the shell reported, or None when the probe did not run."""
++    if probe_path is None:
++        return None
++    try:
++        with open(probe_path, encoding="utf-8", errors="replace") as f:
++            reported = f.read().strip()
++    except OSError:
++        return None
++    # an empty file means the shell never got that far (killed, `exec`, ...)
++    if not reported or "\n" in reported or not os.path.isabs(reported):
++        return None
++    if not os.path.isdir(reported):
++        return None
++    return os.path.normpath(reported)
++
++
++def _discard_cwd_probe(probe_path: str | None) -> None:
++    if probe_path is None:
++        return
++    try:
++        os.unlink(probe_path)
++    except OSError:
++        pass
+ 
+ 
+ def _check_dangerous(cmd: str) -> str | None:

@@ -1,8 +1,11 @@
 """Interactive REPL - the user-facing terminal interface."""
 
 import argparse
+import json
 import os
 import sys
+import uuid
+from pathlib import Path
 
 from prompt_toolkit import prompt as pt_prompt
 from prompt_toolkit.history import FileHistory
@@ -18,7 +21,7 @@ from .hooks import load_hooks
 from .llm import LLM, LiteLLM
 from .mcp import load_mcp_tools
 from .permissions import DEFAULT_STORE, Permission
-from .session import list_sessions, load_session, save_session
+from .session import list_sessions, load_session, load_task_link, save_session
 from .tools import ALL_TOOLS
 
 console = Console()
@@ -36,9 +39,16 @@ def _parse_args():
     p.add_argument("-p", "--prompt", help="One-shot prompt (non-interactive mode)")
     p.add_argument("--yes", action="store_true", help="Auto-approve every tool call (for scripts and CI)")
     p.add_argument("--demo", action="store_true", help="Run the offline scripted demo (no API key needed)")
+    p.add_argument("--repair-config", metavar="JSON", help="Independent verification config; requires -p")
     p.add_argument("-r", "--resume", metavar="ID", help="Resume a saved session")
+    p.add_argument("--resume-task", metavar="DIR", help="Resume a durable repair task and its remaining budget")
     p.add_argument("-v", "--version", action="version", version=f"%(prog)s {__version__}")
-    return p.parse_args()
+    args = p.parse_args()
+    if args.repair_config and (not args.prompt or args.resume):
+        p.error("--repair-config requires -p and cannot be combined with --resume")
+    if args.resume_task and (args.prompt or args.resume or args.repair_config):
+        p.error("--resume-task cannot be combined with -p, --resume or --repair-config")
+    return args
 
 
 def main():
@@ -95,6 +105,7 @@ def main():
         max_context_tokens=config.max_context_tokens,
         permission=permission,
         hooks=load_hooks(),
+        event_log_path=Path.home() / ".corecoder" / "runs" / f"{uuid.uuid4().hex}.jsonl",
     )
 
     # resume saved session
@@ -102,17 +113,31 @@ def main():
         loaded = load_session(args.resume)
         if loaded:
             agent.messages, loaded_model = loaded
+            agent.task_checkpoint = load_task_link(args.resume)
+            agent.session_id = args.resume
             # restore the model from the saved session unless overridden by CLI
             if not args.model:
                 agent.llm.model = loaded_model
                 config.model = loaded_model
             console.print(f"[green]Resumed session: {args.resume} (model: {agent.llm.model})[/green]")
+            if agent.task_checkpoint:
+                _task_status(agent.task_checkpoint)
         else:
             console.print(f"[red]Session '{args.resume}' not found.[/red]")
             sys.exit(1)
 
+    if args.resume_task:
+        _continue_task(agent, args.resume_task, one_shot=True)
+        return
+
     # one-shot mode
     if args.prompt:
+        if getattr(agent, 'task_checkpoint', None):
+            console.print('[red]该会话关联修复任务；请使用“继续任务”或 --resume-task 恢复。[/red]')
+            raise SystemExit(1)
+        if args.repair_config:
+            _repair_once(agent, args.prompt, args.repair_config)
+            return
         _run_once(agent, args.prompt)
         return
 
@@ -135,6 +160,88 @@ def _ask_permission(tool_name: str, arguments: dict) -> str:
     return "deny"
 
 
+def _repair_once(agent, prompt, config_path):
+    from .repair import RegressionSpec, RepairController, RepairLimits, VerificationSpec
+
+    try:
+        path = Path(config_path).expanduser().resolve()
+        data = json.loads(path.read_text(encoding="utf-8"))
+        if data.get('checkpoint_dir'):
+            _start_task(agent, path, prompt, one_shot=True)
+            return
+        verification = dict(data["verification"])
+        verification["protected_paths"] = [*verification.get("protected_paths", ["tests"]), str(path)]
+        controller = RepairController(
+            agent, path.parent / data["workspace"], VerificationSpec(**verification),
+            path.parent / data["result_dir"], RepairLimits(**data.get("limits", {})),
+            regression=RegressionSpec(**data["regression"]) if "regression" in data else None,
+        )
+        result = controller.run(prompt)
+    except (OSError, ValueError, KeyError, TypeError) as exc:
+        console.print(f"[red]Repair setup error: {type(exc).__name__}[/red]")
+        raise SystemExit(1) from exc
+    console.print(f"Verification: {result.status}; attempts: {len(result.attempts)}; model calls: {result.model_calls}")
+    console.print(f"Acceptance: {result.acceptance_status}; regression: {result.regression_status}; scope: {result.completion_scope}")
+    console.print(f"Results: {controller.result_dir / 'result.json'}")
+    if result.status != "passed":
+        raise SystemExit(1)
+
+
+def _task_status(directory):
+    from .tasks import RepairTask
+    state = RepairTask.info(directory)
+    ledger, limits = state['ledger'], state['config']['limits']
+    console.print(f"Task: {state['status']}; phase: {state['phase']}; "
+                  f"calls: {ledger['model_calls']}/{limits['max_model_calls']}; "
+                  f"attempts: {ledger['attempts']}/{limits['max_attempts']}")
+    console.print(f"Checkpoint: {directory}")
+    if state['completed']:
+        console.print('[green]任务已完成，无需再次调用模型。[/green]')
+    elif state['pending'] and state['pending']['kind'] in ('tools', 'check'):
+        console.print('[yellow]操作结果不明，自动恢复会停止；第一版不自动重放，也不自动清除此标记。[/yellow]')
+    else:
+        console.print('输入“继续任务”或 /continue 恢复')
+
+
+def _continue_task(agent, directory=None, one_shot=False):
+    from .tasks import RepairTask, TaskStorageError
+    directory = directory or getattr(agent, 'task_checkpoint', None)
+    if not directory:
+        console.print('[yellow]没有关联的修复任务。使用 /repair 配置文件 开始。[/yellow]')
+        return
+    task = RepairTask(agent, directory)
+    try:
+        result = task.run()
+    except TaskStorageError as exc:
+        raise ValueError('检查点写入失败，执行已停止；请检查存储后核对任务记录。') from exc
+    agent.task_checkpoint = str(task.directory)
+    agent.session_id = save_session(agent.messages, getattr(agent.llm, 'model', '?'),
+        getattr(agent, 'session_id', None), task_checkpoint=task.directory)
+    _task_status(task.directory)
+    console.print(f"Completed: {result['completed']}; resume session: corecoder -r {agent.session_id}")
+    if one_shot and not result['completed']:
+        raise SystemExit(1)
+
+
+def _start_task(agent, config_path, prompt=None, one_shot=False):
+    from .repair import RegressionSpec, RepairLimits, VerificationSpec
+    from .tasks import RepairTask
+    path = Path(config_path).expanduser().resolve()
+    data = json.loads(path.read_text(encoding='utf-8'))
+    if getattr(agent, 'task_checkpoint', None):
+        raise ValueError('This session already has a task; open a new session to start another')
+    verification = dict(data['verification'])
+    verification['protected_paths'] = [*verification.get('protected_paths', ['tests']), str(path)]
+    task = RepairTask.create(agent, path.parent / data['checkpoint_dir'], prompt or data['task'],
+        path.parent / data['workspace'], VerificationSpec(**verification), RegressionSpec(**data['regression']),
+        RepairLimits(**data.get('limits', {})))
+    agent.task_checkpoint = str(task.directory)
+    agent.session_id = save_session(agent.messages, getattr(agent.llm, 'model', '?'),
+        getattr(agent, 'session_id', None), task_checkpoint=task.directory)
+    console.print(f"Task linked. Resume with: corecoder -r {agent.session_id}")
+    _continue_task(agent, one_shot=one_shot)
+
+
 def _run_once(agent: Agent, prompt: str):
     """Non-interactive: run one prompt and exit."""
     perm = agent.permission
@@ -152,7 +259,11 @@ def _run_once(agent: Agent, prompt: str):
         err_console.print(f"[dim]{tok}[/dim]", end="")
 
     try:
-        agent.chat(prompt, on_token=on_token, on_tool=on_tool, on_reasoning=on_reasoning)
+        response = agent.chat(prompt, on_token=on_token, on_tool=on_tool, on_reasoning=on_reasoning)
+        _show_execution_status(agent, response)
+        result = getattr(agent, "last_run", None)
+        if result is not None and result.status != "responded":
+            sys.exit(1)
     except KeyboardInterrupt:
         console.print("\n[yellow]Interrupted.[/yellow]")
         sys.exit(130)
@@ -161,6 +272,19 @@ def _run_once(agent: Agent, prompt: str):
         console.print(f"\n[red]Error: {e}[/red]")
         sys.exit(1)
     print()
+
+
+def _show_execution_status(agent, response):
+    """Always show non-streamed terminal outcomes, even after reasoning output."""
+    result = getattr(agent, "last_run", None)
+    if result is None:
+        return
+    if result.status != "responded":
+        console.print(f"\n[yellow]{response}[/yellow]")
+    console.print(f"\n[dim]Execution: {result.status}; task not independently verified.[/dim]")
+    path = getattr(agent, "event_log_path", None)
+    if path is not None:
+        console.print(f"[dim]Execution log: {path}[/dim]")
 
 
 def _repl(agent: Agent, config: Config):
@@ -208,6 +332,30 @@ def _repl(agent: Agent, config: Config):
             break
 
         if not user_input:
+            continue
+
+        if getattr(agent, 'task_checkpoint', None) and user_input.split()[0] in ('/compact', '/model', '/plan', '/reset'):
+            console.print('[yellow]任务配置和预算由检查点管理；请用 /task 或“继续任务”，另开会话进行普通聊天。[/yellow]')
+            continue
+
+        if user_input in ('继续任务', '/continue') or user_input == '/task' or user_input.startswith('/repair '):
+            try:
+                if user_input == '/task':
+                    directory = getattr(agent, 'task_checkpoint', None)
+                    if directory:
+                        _task_status(directory)
+                    else:
+                        console.print('[dim]没有关联的修复任务。[/dim]')
+                elif user_input.startswith('/repair '):
+                    _start_task(agent, user_input[len('/repair '):].strip())
+                else:
+                    _continue_task(agent)
+            except (OSError, ValueError, KeyError, TypeError) as exc:
+                console.print(f'[red]Task stopped: {exc}[/red]')
+            continue
+
+        if getattr(agent, 'task_checkpoint', None) and not user_input.startswith('/') and user_input.lower() not in ('quit', 'exit'):
+            console.print('[yellow]修复任务会话请使用“继续任务”或 /task；新任务请另开会话。[/yellow]')
             continue
 
         # built-in commands
@@ -264,7 +412,10 @@ def _repl(agent: Agent, config: Config):
                 console.print(f"[dim]Nothing to compress ({before} tokens, {len(agent.messages)} messages)[/dim]")
             continue
         if user_input == "/save":
-            sid = save_session(agent.messages, config.model)
+            sid = save_session(agent.messages, config.model,
+                               getattr(agent, 'session_id', None) if getattr(agent, 'task_checkpoint', None) else None,
+                               task_checkpoint=getattr(agent, 'task_checkpoint', None))
+            agent.session_id = sid
             console.print(f"[green]Session saved: {sid}[/green]")
             console.print(f"Resume with: corecoder -r {sid}")
             continue
@@ -290,7 +441,8 @@ def _repl(agent: Agent, config: Config):
                 console.print("[dim]No saved sessions.[/dim]")
             else:
                 for s in sessions:
-                    console.print(f"  [cyan]{s['id']}[/cyan] ({s['model']}, {s['saved_at']}) {s['preview']}")
+                    task_label = f" [task: {s['task_status']}]" if s.get('task_status') else ''
+                    console.print(f"  [cyan]{s['id']}[/cyan] ({s['model']}, {s['saved_at']}){task_label} {s['preview']}")
             continue
         if user_input == "/mcp" or user_input.startswith("/mcp "):
             _mcp(user_input[4:].strip())
@@ -322,9 +474,10 @@ def _repl(agent: Agent, config: Config):
                                   on_reasoning=on_reasoning)
             if streamed:
                 print()  # newline after streamed tokens
-            else:
+            elif getattr(getattr(agent, "last_run", None), "status", "responded") == "responded":
                 # response wasn't streamed (came after tool calls)
                 console.print(Markdown(response))
+            _show_execution_status(agent, response)
         except KeyboardInterrupt:
             console.print("\n[yellow]Interrupted.[/yellow]")
         except Exception as e:  # noqa: BLE001
@@ -376,6 +529,9 @@ def _show_help():
         "  /undo          Revert the most recent file change\n"
         "  /plan          Toggle plan mode: read-only, then a plan to approve\n"
         "  /save          Save session to disk\n"
+        "  /repair <json> Start a durable repair task (task + checkpoint_dir required)\n"
+        "  /task          Show linked task progress\n"
+        "  /continue      Resume task; also accepts 继续任务\n"
         "  /sessions      List saved sessions\n"
         "  /mcp           MCP server status; /mcp reconnect <name> revives a dead one\n"
         "  quit           Exit CoreCoder\n"

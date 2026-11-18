@@ -1,0 +1,386 @@
+{
+  "real_model_calls": 0,
+  "observer_edge_cases_passed": true,
+  "first_requests_match": true,
+  "recovery_requests_differ": true,
+  "results": [
+    {
+      "scenario": "length",
+      "arm": "generic",
+      "status": "no_progress",
+      "calls": 2,
+      "attempts": 2,
+      "functional_passed": false,
+      "feedback_usage": {
+        "definition": "Used = model entry requested with this feedback as the latest user message; not proof of model comprehension.",
+        "feedback_generated_count": 2,
+        "feedback_submitted_count": 1,
+        "feedback_used_count": 1,
+        "feedback_response_count": 1,
+        "records": [
+          {
+            "source_attempt": 1,
+            "kind": "generic",
+            "message_hash": "a7685e169250bd12a7984be2153186332456b140c4277afffff325df2a3bd47e",
+            "submitted_to_agent": true,
+            "model_requested_with_feedback": true,
+            "response_returned_with_feedback": true,
+            "request_indexes": [
+              2
+            ],
+            "response_indexes": [
+              2
+            ],
+            "next_attempt": 2,
+            "next_attempt_model_calls": 1,
+            "next_verification": "failed",
+            "next_files_changed": false
+          },
+          {
+            "source_attempt": 2,
+            "kind": "generic",
+            "message_hash": "a7685e169250bd12a7984be2153186332456b140c4277afffff325df2a3bd47e",
+            "submitted_to_agent": false,
+            "model_requested_with_feedback": false,
+            "response_returned_with_feedback": false,
+            "request_indexes": [],
+            "response_indexes": [],
+            "next_attempt": null,
+            "next_attempt_model_calls": 0,
+            "next_verification": null,
+            "next_files_changed": null
+          }
+        ]
+      }
+    },
+    {
+      "scenario": "length",
+      "arm": "staged",
+      "status": "no_progress",
+      "calls": 2,
+      "attempts": 2,
+      "functional_passed": false,
+      "feedback_usage": {
+        "definition": "Used = model entry requested with this feedback as the latest user message; not proof of model comprehension.",
+        "feedback_generated_count": 2,
+        "feedback_submitted_count": 1,
+        "feedback_used_count": 1,
+        "feedback_response_count": 1,
+        "records": [
+          {
+            "source_attempt": 1,
+            "kind": "truncated_without_changes",
+            "message_hash": "be56cb3d9fc57a12c4677fb4bc95b7da999f34623d7361324c3de4a98ffd711c",
+            "submitted_to_agent": true,
+            "model_requested_with_feedback": true,
+            "response_returned_with_feedback": true,
+            "request_indexes": [
+              2
+            ],
+            "response_indexes": [
+              2
+            ],
+            "next_attempt": 2,
+            "next_attempt_model_calls": 1,
+            "next_verification": "failed",
+            "next_files_changed": false
+          },
+          {
+            "source_attempt": 2,
+            "kind": "truncated_without_changes",
+            "message_hash": "be56cb3d9fc57a12c4677fb4bc95b7da999f34623d7361324c3de4a98ffd711c",
+            "submitted_to_agent": false,
+            "model_requested_with_feedback": false,
+            "response_returned_with_feedback": false,
+            "request_indexes": [],
+            "response_indexes": [],
+            "next_attempt": null,
+            "next_attempt_model_calls": 0,
+            "next_verification": null,
+            "next_files_changed": null
+          }
+        ]
+      }
+    },
+    {
+      "scenario": "budget",
+      "arm": "generic",
+      "status": "attempt_limit",
+      "calls": 30,
+      "attempts": 3,
+      "functional_passed": false,
+      "feedback_usage": {
+        "definition": "Used = model entry requested with this feedback as the latest user message; not proof of model comprehension.",
+        "feedback_generated_count": 3,
+        "feedback_submitted_count": 2,
+        "feedback_used_count": 2,
+        "feedback_response_count": 2,
+        "records": [
+          {
+            "source_attempt": 1,
+            "kind": "generic",
+            "message_hash": "875dbe99f2b596a8df76c44f4654203fa0799b4fc99574939e8fef9f00a4393a",
+            "submitted_to_agent": true,
+            "model_requested_with_feedback": true,
+            "response_returned_with_feedback": true,
+            "request_indexes": [
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20
+            ],
+            "response_indexes": [
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20
+            ],
+            "next_attempt": 2,
+            "next_attempt_model_calls": 10,
+            "next_verification": "failed",
+            "next_files_changed": true
+          },
+          {
+            "source_attempt": 2,
+            "kind": "generic",
+            "message_hash": "e20604f048469d85efb32071fe8fdd8322323874e87ceb7c8dbf235ab897f11b",
+            "submitted_to_agent": true,
+            "model_requested_with_feedback": true,
+            "response_returned_with_feedback": true,
+            "request_indexes": [
+              21,
+              22,
+              23,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30
+            ],
+            "response_indexes": [
+              21,
+              22,
+              23,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30
+            ],
+            "next_attempt": 3,
+            "next_attempt_model_calls": 10,
+            "next_verification": "failed",
+            "next_files_changed": true
+          },
+          {
+            "source_attempt": 3,
+            "kind": "generic",
+            "message_hash": "0868b048c6cb7982f8a7a4e777e5ae19cae1e3e1c9b6dab4a732d27d09de9f14",
+            "submitted_to_agent": false,
+            "model_requested_with_feedback": false,
+            "response_returned_with_feedback": false,
+            "request_indexes": [],
+            "response_indexes": [],
+            "next_attempt": null,
+            "next_attempt_model_calls": 0,
+            "next_verification": null,
+            "next_files_changed": null
+          }
+        ]
+      }
+    },
+    {
+      "scenario": "budget",
+      "arm": "staged",
+      "status": "attempt_limit",
+      "calls": 30,
+      "attempts": 3,
+      "functional_passed": false,
+      "feedback_usage": {
+        "definition": "Used = model entry requested with this feedback as the latest user message; not proof of model comprehension.",
+        "feedback_generated_count": 3,
+        "feedback_submitted_count": 2,
+        "feedback_used_count": 2,
+        "feedback_response_count": 2,
+        "records": [
+          {
+            "source_attempt": 1,
+            "kind": "modified_verification_failed",
+            "message_hash": "e2657984deb1e4295985d9cee087f8b6db1d878ecda57b05bebfd3cc8b2a984a",
+            "submitted_to_agent": true,
+            "model_requested_with_feedback": true,
+            "response_returned_with_feedback": true,
+            "request_indexes": [
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20
+            ],
+            "response_indexes": [
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20
+            ],
+            "next_attempt": 2,
+            "next_attempt_model_calls": 10,
+            "next_verification": "failed",
+            "next_files_changed": true
+          },
+          {
+            "source_attempt": 2,
+            "kind": "modified_verification_failed",
+            "message_hash": "2349ca7ddf530ab73b8c4c95053ca6cc62366adfbe500747c1d48b983facc8e5",
+            "submitted_to_agent": true,
+            "model_requested_with_feedback": true,
+            "response_returned_with_feedback": true,
+            "request_indexes": [
+              21,
+              22,
+              23,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30
+            ],
+            "response_indexes": [
+              21,
+              22,
+              23,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30
+            ],
+            "next_attempt": 3,
+            "next_attempt_model_calls": 10,
+            "next_verification": "failed",
+            "next_files_changed": true
+          },
+          {
+            "source_attempt": 3,
+            "kind": "modified_verification_failed",
+            "message_hash": "9690808aa1de8398fdc5af9d55c2d06b049cf4136d8a38fbd235caaf701282ae",
+            "submitted_to_agent": false,
+            "model_requested_with_feedback": false,
+            "response_returned_with_feedback": false,
+            "request_indexes": [],
+            "response_indexes": [],
+            "next_attempt": null,
+            "next_attempt_model_calls": 0,
+            "next_verification": null,
+            "next_files_changed": null
+          }
+        ]
+      }
+    },
+    {
+      "scenario": "recover",
+      "arm": "generic",
+      "status": "passed",
+      "calls": 12,
+      "attempts": 2,
+      "functional_passed": true,
+      "feedback_usage": {
+        "definition": "Used = model entry requested with this feedback as the latest user message; not proof of model comprehension.",
+        "feedback_generated_count": 1,
+        "feedback_submitted_count": 1,
+        "feedback_used_count": 1,
+        "feedback_response_count": 1,
+        "records": [
+          {
+            "source_attempt": 1,
+            "kind": "generic",
+            "message_hash": "875dbe99f2b596a8df76c44f4654203fa0799b4fc99574939e8fef9f00a4393a",
+            "submitted_to_agent": true,
+            "model_requested_with_feedback": true,
+            "response_returned_with_feedback": true,
+            "request_indexes": [
+              11,
+              12
+            ],
+            "response_indexes": [
+              11,
+              12
+            ],
+            "next_attempt": 2,
+            "next_attempt_model_calls": 2,
+            "next_verification": "passed",
+            "next_files_changed": true
+          }
+        ]
+      }
+    },
+    {
+      "scenario": "recover",
+      "arm": "staged",
+      "status": "passed",
+      "calls": 12,
+      "attempts": 2,
+      "functional_passed": true,
+      "feedback_usage": {
+        "definition": "Used = model entry requested with this feedback as the latest user message; not proof of model comprehension.",
+        "feedback_generated_count": 1,
+        "feedback_submitted_count": 1,
+        "feedback_used_count": 1,
+        "feedback_response_count": 1,
+        "records": [
+          {
+            "source_attempt": 1,
+            "kind": "modified_verification_failed",
+            "message_hash": "e2657984deb1e4295985d9cee087f8b6db1d878ecda57b05bebfd3cc8b2a984a",
+            "submitted_to_agent": true,
+            "model_requested_with_feedback": true,
+            "response_returned_with_feedback": true,
+            "request_indexes": [
+              11,
+              12
+            ],
+            "response_indexes": [
+              11,
+              12
+            ],
+            "next_attempt": 2,
+            "next_attempt_model_calls": 2,
+            "next_verification": "passed",
+            "next_files_changed": true
+          }
+        ]
+      }
+    }
+  ]
+}

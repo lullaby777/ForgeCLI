@@ -1,8 +1,27 @@
+> ## About this fork
+>
+> This fork extends [he-yufeng/CoreCoder](https://github.com/he-yufeng/CoreCoder) (MIT) from a readable agent loop into a coding agent whose fixes are **verified**, whose long tasks **survive a crash**, and whose claims are **measured on SWE-bench**. The upstream engine (loop, tools, context, MCP) is unchanged in spirit; the additions are:
+>
+> | Area | What was added | Code |
+> | --- | --- | --- |
+> | Verified repair loop | Trusted verifier (commands supplied by the caller, never by the model), protected test paths, regression gate against a frozen pre-edit baseline, stagnation detection, structured recovery feedback; first tampering with a protected input is restored and reported instead of ending the run | `corecoder/repair.py`, `corecoder/verification.py` |
+> | Durable long tasks | Checkpoint written atomically (temp file + fsync + rename + checksum) before every model call, tool batch and check; resume validates an identity hash of model, tools, prompt and engine, keeps the budget ledger and baseline, never replays a side effect; interrupted tool batches resume only when the caller guarantees the sandbox was terminated | `corecoder/tasks.py`, `corecoder/task_store.py` |
+> | Robustness fixes | Empty assistant turns no longer end runs early or corrupt saved sessions; `finish_reason` is tracked | `corecoder/messages.py`, `corecoder/agent.py`, `corecoder/llm.py` |
+> | Evaluation | Containerized SWE-bench Lite harness (network-isolated Docker, full traces, official scoring) and a `kill -9` fault-injection experiment | [`swebench_eval/`](swebench_eval/README.md) |
+>
+> **Results** (deepseek-flash, 20 gold-validated SWE-bench Lite tasks; details and caveats in [`swebench_eval/README.md`](swebench_eval/README.md)):
+>
+> - Found evaluation contamination: with network access the baseline "solved" 20/20 because in 12 tasks the agent ran `pip download` to copy the upstream fix; with `--network none` the real baseline is 55%.
+> - Resolve rate is statistically indistinguishable from the baseline at this sample size, but the verifier is a useful confidence signal: patches it accepted were officially correct 72% of the time (26/36) vs 33% (8/24) for the rest. The v2 loop used 32% fewer tokens than v1.
+> - Under `kill -9`, every crash during a model call or between steps resumed and finished (8/8), carrying 32–54 history messages and saving 28% of tokens vs restarting; crashes inside a tool batch went from 0/3 to 5/5 resumable, while tampering with protected inputs was still refused.
+>
+> ---
+
 <div align="center">
 
 # CoreCoder
 
-**The nanoGPT of coding agents. A 1.4k-line engine inside 3,276 readable lines of pure Python: understand how a coding agent actually works, then fork your own.**
+**The nanoGPT of coding agents. A 1.6k-line engine inside 4,704 readable lines of pure Python: understand how a coding agent actually works, then fork your own.**
 
 *learn from it · fork it · ship something better*
 
@@ -12,7 +31,7 @@
 [![Python](https://img.shields.io/badge/python-3.10+-blue)](https://python.org)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Tests](https://github.com/he-yufeng/CoreCoder/actions/workflows/ci.yml/badge.svg)](https://github.com/he-yufeng/CoreCoder/actions)
-[![engine](https://img.shields.io/badge/engine-1483_LoC-blue)](article/00-index_EN.md)
+[![engine](https://img.shields.io/badge/engine-1687_LoC-blue)](article/00-index_EN.md)
 [![essays](https://img.shields.io/badge/source--reading-8_bilingual-orange)](article/00-index_EN.md)
 
 </div>
@@ -25,7 +44,7 @@
 
 | | CoreCoder | Claude Code | aider | nanoGPT |
 |---|---|---|---|---|
-| Lines of code | ~1,483 engine / 3,276 total | hundreds of thousands (closed) | tens of thousands of Python | ~600 (two files) |
+| Lines of code | ~1,687 engine / 4,704 total | hundreds of thousands (closed) | tens of thousands of Python | ~600 (two files) |
 | Time to read it all | one afternoon | can't (closed) | a few days of slogging | one afternoon |
 | Breakpoint, change, rerun? | yes, every line | no | yes, but there's a lot | yes |
 | What it's for | understand one, then fork your own | production coding assistant | terminal pair-programming | minimal GPT for teaching |
@@ -36,9 +55,9 @@ The nanoGPT column is there as a reference point: minimal, readable, but it teac
 
 I've always felt coding agents get talked about as if they were arcane. Strip a tool like Claude Code or Cursor all the way down and the core is a `while` loop wrapped around a large model, plus seven or eight tools that let it actually do things. The hard part was never the loop; it's everything the loop has to cope with once it meets the real world. CoreCoder is the minimal version that writes that core out honestly.
 
-The engine (loop, model interface, context, tools, sessions) is 1,483 lines once you drop blank lines and comments. Counting the outer CLI, config and packaging too, the whole package is 26 files: 3,276 physical lines, 2,703 net, every one short enough to read in a single sitting. The growth since the original 1,161-line snapshot went into visible features: plan mode, hooks and checkpoints, each documented below.
+The engine (loop, model interface, context, tools, sessions) is 1,687 lines once you drop blank lines and comments. Counting the outer CLI, config and packaging too, the whole package is 33 files: 4,704 physical lines, 3,982 net, every one short enough to read in a single sitting. The growth since the original 1,161-line snapshot went into visible features: plan mode, hooks and checkpoints, each documented below.
 
-And it really runs: reads and writes files, executes shell, spawns sub-agents, compacts context in three tiers, and tells you the tokens and dollars a run burned whenever you ask. Anything that would mutate your disk or run a command stops for your consent first. The suite has 353 offline tests and an opt-in live smoke test. But the point of it running isn't to become your daily driver. It runs so the walkthrough can't lie: a reference that shows how an agent works has to actually work.
+And it really runs: reads and writes files, executes shell, spawns sub-agents, compacts context in three tiers, and tells you the tokens and dollars a run burned whenever you ask. Anything that would mutate your disk or run a command stops for your consent first. The suite has 479 offline tests and an opt-in live smoke test. But the point of it running isn't to become your daily driver. It runs so the walkthrough can't lie: a reference that shows how an agent works has to actually work.
 
 The code came out of a public teardown: open analyses have already exposed a lot of the load-bearing architecture inside production agents like Claude Code. I took the most essential layer and rewrote it honestly, in as little code as I could. So reading CoreCoder is roughly like reading a runnable, annotated take on how that kind of agent works, except it's only a minimal reimplementation, sitting right there on your machine for you to take apart and change.
 
@@ -89,17 +108,17 @@ Laid out flat, the whole project is this big. Skim it before you clone and you'l
 
 ```
 corecoder/
-├── agent.py        agent loop + parallel tool exec       240 lines   ← start here
-├── llm.py          streaming client + retry + cost        364 lines
+├── agent.py        agent loop + parallel tool exec       354 lines   ← start here
+├── llm.py          streaming client + retry + cost        372 lines
 ├── context.py      three-tier context compaction          220 lines
-├── session.py      save / resume + path-traversal guard    97 lines
+├── session.py      save / resume + path-traversal guard    99 lines
 ├── permissions.py  consent for mutating tools              81 lines
 ├── hooks.py        Pre/PostToolUse shell hooks             87 lines
 ├── shell.py        POSIX shell routing (Git Bash on Windows) 61 lines
 ├── mcp.py          MCP tools, text resources + stdio      313 lines
 ├── mcp_http.py     remote Streamable HTTP transport       211 lines
 ├── prompt.py       system prompt                           41 lines
-├── cli.py          REPL + slash commands + one-shot       393 lines
+├── cli.py          REPL + slash commands + one-shot       446 lines
 ├── config.py       env-var config                          55 lines
 ├── checkpoints.py  /undo snapshot and restore               93 lines
 ├── demo.py         offline end-to-end demo                 101 lines
@@ -111,7 +130,7 @@ corecoder/
     ├── read.py       file read                             56 lines
     ├── write.py      file write                            46 lines
     ├── todo.py       agent-maintained task checklist       79 lines
-    ├── agent.py      sub-agent teams + isolation         224 lines
+    ├── agent.py      sub-agent teams + isolation         227 lines
     └── base.py       tool base class                       32 lines
 examples/
 ├── plan_hooks_demo.py  offline plan mode + hooks demo (no API key)
@@ -331,3 +350,15 @@ Before you send anything, run `pytest tests/ -q`, `ruff check corecoder tests`, 
 By [Yufeng He](https://github.com/he-yufeng), formerly at Moonshot AI (Kimi). I earlier wrote a fairly complete [Claude Code source analysis](article/claude-code-source-analysis.md) (written in Chinese); this project is its hands-on counterpart: that one walks you through reading it, this one through rebuilding it.
 
 > CoreCoder was formerly named NanoCoder; it was renamed to avoid confusion with [Nano-Collective/nanocoder](https://github.com/Nano-Collective/nanocoder), and old links redirect here automatically.
+
+## Execution outcomes and recovery
+
+Empty responses are retried at most once without adding invalid history. CLI runs report execution status and write metadata events under `~/.corecoder/runs/`; a returned response is not independent task verification. See [ISSUE-001 behavior and offline tests](docs/issue-001.md).
+
+## Independent verification loop
+
+Use `--repair-config` with fixed local acceptance and regression commands. New regression failures feed back within the same execution limits; overall completion requires both gates. Run the fully offline `examples/regression_repair_demo.py` first; see [workflow, limits, and result files](docs/repair-loop.md).
+
+Durable repair tasks save checkpoints, inherit budgets, and resume through linked sessions; see [task recovery](docs/task-recovery.md).
+
+For the actual execution path, evidence, limitations, and next cleanup steps, see the [project and code guide](docs/项目主线与代码导览.md).

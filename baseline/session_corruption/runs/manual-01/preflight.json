@@ -1,0 +1,31 @@
+{
+  "date": "2026-11-16",
+  "timezone": "Asia/Singapore",
+  "candidate": "/private/tmp/corecoder-session-baseline-01/candidate",
+  "venv": "/private/tmp/corecoder-session-baseline-01/venv",
+  "start_commit": "736c677a0a7b68be1adcd9ea0b6ccaa2f4d6e1a1",
+  "original_tests": {
+    "passed": 352,
+    "failed": 1,
+    "excluded": "tests/test_live_smoke.py",
+    "exit_code": 1,
+    "known_failure": "tests/test_core.py::test_readme_line_counts_are_current",
+    "seconds": 23.96
+  },
+  "acceptance": {
+    "test_methods": 10,
+    "subtest_failures": 15,
+    "subtest_errors": 11,
+    "exit_code": 1,
+    "expected_before_fix": true
+  },
+  "model_called": false,
+  "bug_fixed": false,
+  "source_changes_after_copy": [],
+  "notes": [
+    "原始工作区含已有未提交工具改动；副本保留这些改动，不是纯上游提交。",
+    "最初受本机端口限制的测试输出保存在 regression-restricted.txt；允许本机测试服务后重跑结果为准。",
+    "测试用户目录隔离，真实模型测试明确排除，密钥从测试进程环境移除。",
+    "未调用基线 Agent，result 目录尚未创建。"
+  ]
+}

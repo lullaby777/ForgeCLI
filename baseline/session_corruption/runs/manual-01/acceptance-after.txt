@@ -1,0 +1,15 @@
+test_empty_conversation_is_valid (test_acceptance.SessionAcceptance.test_empty_conversation_is_valid) ... ok
+test_invalid_json_and_encoding (test_acceptance.SessionAcceptance.test_invalid_json_and_encoding) ... ok
+test_invalid_message_entries (test_acceptance.SessionAcceptance.test_invalid_message_entries) ... ok
+test_invalid_required_fields (test_acceptance.SessionAcceptance.test_invalid_required_fields) ... ok
+test_invalid_top_level (test_acceptance.SessionAcceptance.test_invalid_top_level) ... ok
+test_listing_skips_each_invalid_structure (test_acceptance.SessionAcceptance.test_listing_skips_each_invalid_structure) ... ok
+test_missing_session (test_acceptance.SessionAcceptance.test_missing_session) ... ok
+test_path_normalization_still_works (test_acceptance.SessionAcceptance.test_path_normalization_still_works) ... ok
+test_tool_call_message_with_null_content_is_valid (test_acceptance.SessionAcceptance.test_tool_call_message_with_null_content_is_valid) ... ok
+test_valid_unicode_roundtrip_and_preview (test_acceptance.SessionAcceptance.test_valid_unicode_roundtrip_and_preview) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.008s
+
+OK

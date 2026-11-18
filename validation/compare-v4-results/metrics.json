@@ -1,0 +1,146 @@
+{
+  "rows": [
+    {
+      "arm": "generic",
+      "functional_passed": false,
+      "execution": "passed",
+      "model_calls": 20,
+      "prompt_tokens": 600753,
+      "completion_tokens": 20047,
+      "total_tokens": 620800,
+      "seconds": 133.95981425000355,
+      "feedback_usage": {
+        "definition": "Used = model entry requested with this feedback as the latest user message; not proof of model comprehension.",
+        "feedback_generated_count": 1,
+        "feedback_submitted_count": 1,
+        "feedback_used_count": 1,
+        "feedback_response_count": 1,
+        "records": [
+          {
+            "source_attempt": 1,
+            "kind": "generic",
+            "message_hash": "bf9b58c5eafbe630fc95d8656ae3034715d6333ee134f0eff4b3642efa8f124c",
+            "submitted_to_agent": true,
+            "model_requested_with_feedback": true,
+            "response_returned_with_feedback": true,
+            "request_indexes": [
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20
+            ],
+            "response_indexes": [
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20
+            ],
+            "next_attempt": 2,
+            "next_attempt_model_calls": 10,
+            "next_verification": "passed",
+            "next_files_changed": true
+          }
+        ]
+      },
+      "new_regression_failures": [
+        "tests/test_core.py::test_doc_python_line_references_are_current",
+        "tests/test_demo.py::test_demo_runs_the_full_loop",
+        "tests/test_demo.py::test_plan_hooks_example_guards_then_lets_through",
+        "tests/test_tools.py::test_bash_basic",
+        "tests/test_tools.py::test_bash_exit_code",
+        "tests/test_tools.py::test_bash_timeout"
+      ],
+      "existing_tests_changed": false,
+      "review_acceptance": {
+        "exit_code": 0,
+        "timeout": false
+      },
+      "review_regression": {
+        "exit_code": 1,
+        "timeout": false
+      }
+    },
+    {
+      "arm": "staged",
+      "functional_passed": false,
+      "execution": "passed",
+      "model_calls": 16,
+      "prompt_tokens": 343358,
+      "completion_tokens": 24413,
+      "total_tokens": 367771,
+      "seconds": 149.2529732909752,
+      "feedback_usage": {
+        "definition": "Used = model entry requested with this feedback as the latest user message; not proof of model comprehension.",
+        "feedback_generated_count": 1,
+        "feedback_submitted_count": 1,
+        "feedback_used_count": 1,
+        "feedback_response_count": 1,
+        "records": [
+          {
+            "source_attempt": 1,
+            "kind": "truncated_without_changes",
+            "message_hash": "4a30a4078f7b9f38f420f2e6c8ad33815991ec1eaf29751b2aeb987428a87673",
+            "submitted_to_agent": true,
+            "model_requested_with_feedback": true,
+            "response_returned_with_feedback": true,
+            "request_indexes": [
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16
+            ],
+            "response_indexes": [
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16
+            ],
+            "next_attempt": 2,
+            "next_attempt_model_calls": 10,
+            "next_verification": "passed",
+            "next_files_changed": true
+          }
+        ]
+      },
+      "new_regression_failures": [
+        "tests/test_core.py::test_doc_python_line_references_are_current"
+      ],
+      "existing_tests_changed": false,
+      "review_acceptance": {
+        "exit_code": 0,
+        "timeout": false
+      },
+      "review_regression": {
+        "exit_code": 1,
+        "timeout": false
+      }
+    }
+  ],
+  "analysis_real_model_calls": 0,
+  "v4_all_files_unchanged": true,
+  "review_method": "Acceptance and full regression on disposable copies; original logs not overwritten"
+}

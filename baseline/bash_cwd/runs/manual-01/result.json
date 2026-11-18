@@ -1,0 +1,25 @@
+{
+  "task": "bash-cwd",
+  "run": "manual-01",
+  "verdict": "failed_no_source_changes_empty_assistant",
+  "model": "deepseek-flash",
+  "user_turns": 1,
+  "assistant_rounds": 5,
+  "tool_calls": {
+    "bash": 4,
+    "read_file": 4
+  },
+  "source_changes": false,
+  "existing_tests_modified": false,
+  "acceptance_failures_before": 9,
+  "acceptance_failures_after": 9,
+  "regression_summary": "1 failed, 352 passed in 15.89s",
+  "usage_from_screenshot": {
+    "prompt": 34638,
+    "completion": 4675,
+    "total": 39313
+  },
+  "cost": null,
+  "agent_elapsed_seconds": null,
+  "finish_reason": "not recorded"
+}

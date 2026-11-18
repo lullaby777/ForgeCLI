@@ -1,0 +1,16 @@
+{"event": "run_started", "run_id": "4b71d9de30ad4164a79a747fd2904b87", "time": 1794814932.7439091, "model": null, "max_rounds": 2, "max_empty_retries": 1}
+{"event": "model_requested", "run_id": "4b71d9de30ad4164a79a747fd2904b87", "time": 1794814932.744006, "round": 1}
+{"event": "model_response", "run_id": "4b71d9de30ad4164a79a747fd2904b87", "time": 1794814932.744051, "round": 1, "elapsed_seconds": 4.466692917048931e-05, "finish_reason": null, "prompt_tokens": 0, "completion_tokens": 0, "has_text": false, "tool_calls": 1}
+{"event": "tool_started", "run_id": "4b71d9de30ad4164a79a747fd2904b87", "time": 1794814932.7440891, "tool": "write_file"}
+{"event": "tool_returned", "run_id": "4b71d9de30ad4164a79a747fd2904b87", "time": 1794814932.744321, "tool": "write_file", "elapsed_seconds": 0.00023191701620817184}
+{"event": "model_requested", "run_id": "4b71d9de30ad4164a79a747fd2904b87", "time": 1794814932.7443671, "round": 2}
+{"event": "model_response", "run_id": "4b71d9de30ad4164a79a747fd2904b87", "time": 1794814932.744396, "round": 2, "elapsed_seconds": 2.9041897505521774e-05, "finish_reason": null, "prompt_tokens": 0, "completion_tokens": 0, "has_text": true, "tool_calls": 0}
+{"event": "run_ended", "run_id": "4b71d9de30ad4164a79a747fd2904b87", "time": 1794814932.744427, "status": "responded", "rounds": 2, "empty_retries": 0, "finish_reason": null, "error_type": null}
+{"event": "run_started", "run_id": "1711601388214ab1b541fadce000dbf2", "time": 1794814932.79365, "model": null, "max_rounds": 2, "max_empty_retries": 1}
+{"event": "model_requested", "run_id": "1711601388214ab1b541fadce000dbf2", "time": 1794814932.793758, "round": 1}
+{"event": "model_response", "run_id": "1711601388214ab1b541fadce000dbf2", "time": 1794814932.7938051, "round": 1, "elapsed_seconds": 4.4208019971847534e-05, "finish_reason": null, "prompt_tokens": 0, "completion_tokens": 0, "has_text": false, "tool_calls": 1}
+{"event": "tool_started", "run_id": "1711601388214ab1b541fadce000dbf2", "time": 1794814932.793849, "tool": "write_file"}
+{"event": "tool_returned", "run_id": "1711601388214ab1b541fadce000dbf2", "time": 1794814932.794218, "tool": "write_file", "elapsed_seconds": 0.00036866602022200823}
+{"event": "model_requested", "run_id": "1711601388214ab1b541fadce000dbf2", "time": 1794814932.794276, "round": 2}
+{"event": "model_response", "run_id": "1711601388214ab1b541fadce000dbf2", "time": 1794814932.794306, "round": 2, "elapsed_seconds": 2.9290909878909588e-05, "finish_reason": null, "prompt_tokens": 0, "completion_tokens": 0, "has_text": true, "tool_calls": 0}
+{"event": "run_ended", "run_id": "1711601388214ab1b541fadce000dbf2", "time": 1794814932.7943392, "status": "responded", "rounds": 2, "empty_retries": 0, "finish_reason": null, "error_type": null}

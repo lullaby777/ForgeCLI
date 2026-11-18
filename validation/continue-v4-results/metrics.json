@@ -1,0 +1,34 @@
+{
+  "real_model_calls": 0,
+  "review_acceptance": {
+    "exit_code": 0,
+    "timeout": false
+  },
+  "review_regression": {
+    "exit_code": 1,
+    "timeout": false
+  },
+  "functional_passed": true,
+  "completed": true,
+  "existing_tests_unchanged": true,
+  "bash_source_unchanged_from_v4": true,
+  "changed_files": [
+    "article/02-tools.md",
+    "article/02-tools_EN.md",
+    "tests/test_bash_cwd_tracking.py"
+  ],
+  "new_test_cases": 15,
+  "restored_history_messages": 39,
+  "initial_feedback_used_and_response_returned": true,
+  "retry_feedback_count": 0,
+  "new_calls": 10,
+  "v4_calls": 16,
+  "total_calls": 26,
+  "prompt_tokens": 424960,
+  "completion_tokens": 4867,
+  "total_tokens": 429827,
+  "seconds": 70.09715641697403,
+  "agent_stop": "round_limit",
+  "controller_stop": "passed",
+  "original_resume_suite_unchanged": true
+}

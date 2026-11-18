@@ -1,0 +1,229 @@
+test_directory_with_spaces_and_failed_tail (test_acceptance.BashCwdAcceptance.test_directory_with_spaces_and_failed_tail) ... ERROR
+test_failed_cd_does_not_enable_later_and_cd (test_acceptance.BashCwdAcceptance.test_failed_cd_does_not_enable_later_and_cd) ... ERROR
+test_later_cd_failure_preserves_earlier_success (test_acceptance.BashCwdAcceptance.test_later_cd_failure_preserves_earlier_success) ... ERROR
+test_nested_changes_survive_later_failure (test_acceptance.BashCwdAcceptance.test_nested_changes_survive_later_failure) ... ERROR
+test_parallel_agent_batch_inherits_and_merges_failed_cd (test_acceptance.BashCwdAcceptance.test_parallel_agent_batch_inherits_and_merges_failed_cd) ... FAIL
+test_quoted_text_is_not_executed_cd (test_acceptance.BashCwdAcceptance.test_quoted_text_is_not_executed_cd) ... ERROR
+test_skipped_cd_with_failed_overall_status (test_acceptance.BashCwdAcceptance.test_skipped_cd_with_failed_overall_status) ... ERROR
+test_skipped_cd_with_successful_overall_status (test_acceptance.BashCwdAcceptance.test_skipped_cd_with_successful_overall_status) ... ERROR
+test_stdout_stderr_and_exit_status_preserved (test_acceptance.BashCwdAcceptance.test_stdout_stderr_and_exit_status_preserved) ... ERROR
+test_subshell_does_not_change_parent_directory (test_acceptance.BashCwdAcceptance.test_subshell_does_not_change_parent_directory) ... ERROR
+test_successful_cd_followed_by_failed_and_command (test_acceptance.BashCwdAcceptance.test_successful_cd_followed_by_failed_and_command) ... ERROR
+test_successful_cd_followed_by_failed_semicolon_command (test_acceptance.BashCwdAcceptance.test_successful_cd_followed_by_failed_semicolon_command) ... ERROR
+test_successful_chain_still_works (test_acceptance.BashCwdAcceptance.test_successful_chain_still_works) ... ERROR
+test_thread_directories_do_not_cross_or_change_process_cwd (test_acceptance.BashCwdAcceptance.test_thread_directories_do_not_cross_or_change_process_cwd) ... ERROR
+
+======================================================================
+ERROR: test_directory_with_spaces_and_failed_tail (test_acceptance.BashCwdAcceptance.test_directory_with_spaces_and_failed_tail)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/corecoder-compare-03/evaluation/task04/test_acceptance.py", line 78, in test_directory_with_spaces_and_failed_tail
+    self.bash.execute('cd "space dir" && false')
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/corecoder-compare-03/task04-generic/workspace/corecoder/tools/bash.py", line 92, in execute
+    probe = _make_cwd_probe() if uses_posix_shell() else None
+            ~~~~~~~~~~~~~~~^^
+  File "/private/tmp/corecoder-compare-03/task04-generic/workspace/corecoder/tools/bash.py", line 149, in _make_cwd_probe
+    tempfile.gettempdir(), f"corecoder-cwd-{os.getpid()}-{next(_probe_seq)}"
+                                                               ^^^^^^^^^^
+NameError: name '_probe_seq' is not defined
+
+======================================================================
+ERROR: test_failed_cd_does_not_enable_later_and_cd (test_acceptance.BashCwdAcceptance.test_failed_cd_does_not_enable_later_and_cd)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/corecoder-compare-03/evaluation/task04/test_acceptance.py", line 53, in test_failed_cd_does_not_enable_later_and_cd
+    self.bash.execute("cd missing-directory && cd sub; true")
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/corecoder-compare-03/task04-generic/workspace/corecoder/tools/bash.py", line 92, in execute
+    probe = _make_cwd_probe() if uses_posix_shell() else None
+            ~~~~~~~~~~~~~~~^^
+  File "/private/tmp/corecoder-compare-03/task04-generic/workspace/corecoder/tools/bash.py", line 149, in _make_cwd_probe
+    tempfile.gettempdir(), f"corecoder-cwd-{os.getpid()}-{next(_probe_seq)}"
+                                                               ^^^^^^^^^^
+NameError: name '_probe_seq' is not defined
+
+======================================================================
+ERROR: test_later_cd_failure_preserves_earlier_success (test_acceptance.BashCwdAcceptance.test_later_cd_failure_preserves_earlier_success)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/corecoder-compare-03/evaluation/task04/test_acceptance.py", line 62, in test_later_cd_failure_preserves_earlier_success
+    self.bash.execute("cd sub && cd missing-directory")
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/corecoder-compare-03/task04-generic/workspace/corecoder/tools/bash.py", line 92, in execute
+    probe = _make_cwd_probe() if uses_posix_shell() else None
+            ~~~~~~~~~~~~~~~^^
+  File "/private/tmp/corecoder-compare-03/task04-generic/workspace/corecoder/tools/bash.py", line 149, in _make_cwd_probe
+    tempfile.gettempdir(), f"corecoder-cwd-{os.getpid()}-{next(_probe_seq)}"
+                                                               ^^^^^^^^^^
+NameError: name '_probe_seq' is not defined
+
+======================================================================
+ERROR: test_nested_changes_survive_later_failure (test_acceptance.BashCwdAcceptance.test_nested_changes_survive_later_failure)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/corecoder-compare-03/evaluation/task04/test_acceptance.py", line 57, in test_nested_changes_survive_later_failure
+    result = self.bash.execute("cd sub && cd nested && false")
+  File "/private/tmp/corecoder-compare-03/task04-generic/workspace/corecoder/tools/bash.py", line 92, in execute
+    probe = _make_cwd_probe() if uses_posix_shell() else None
+            ~~~~~~~~~~~~~~~^^
+  File "/private/tmp/corecoder-compare-03/task04-generic/workspace/corecoder/tools/bash.py", line 149, in _make_cwd_probe
+    tempfile.gettempdir(), f"corecoder-cwd-{os.getpid()}-{next(_probe_seq)}"
+                                                               ^^^^^^^^^^
+NameError: name '_probe_seq' is not defined
+
+======================================================================
+ERROR: test_quoted_text_is_not_executed_cd (test_acceptance.BashCwdAcceptance.test_quoted_text_is_not_executed_cd)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/corecoder-compare-03/evaluation/task04/test_acceptance.py", line 74, in test_quoted_text_is_not_executed_cd
+    self.bash.execute("printf '%s' 'cd sub; cd other'")
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/corecoder-compare-03/task04-generic/workspace/corecoder/tools/bash.py", line 92, in execute
+    probe = _make_cwd_probe() if uses_posix_shell() else None
+            ~~~~~~~~~~~~~~~^^
+  File "/private/tmp/corecoder-compare-03/task04-generic/workspace/corecoder/tools/bash.py", line 149, in _make_cwd_probe
+    tempfile.gettempdir(), f"corecoder-cwd-{os.getpid()}-{next(_probe_seq)}"
+                                                               ^^^^^^^^^^
+NameError: name '_probe_seq' is not defined
+
+======================================================================
+ERROR: test_skipped_cd_with_failed_overall_status (test_acceptance.BashCwdAcceptance.test_skipped_cd_with_failed_overall_status)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/corecoder-compare-03/evaluation/task04/test_acceptance.py", line 44, in test_skipped_cd_with_failed_overall_status
+    result = self.bash.execute("false && cd sub")
+  File "/private/tmp/corecoder-compare-03/task04-generic/workspace/corecoder/tools/bash.py", line 92, in execute
+    probe = _make_cwd_probe() if uses_posix_shell() else None
+            ~~~~~~~~~~~~~~~^^
+  File "/private/tmp/corecoder-compare-03/task04-generic/workspace/corecoder/tools/bash.py", line 149, in _make_cwd_probe
+    tempfile.gettempdir(), f"corecoder-cwd-{os.getpid()}-{next(_probe_seq)}"
+                                                               ^^^^^^^^^^
+NameError: name '_probe_seq' is not defined
+
+======================================================================
+ERROR: test_skipped_cd_with_successful_overall_status (test_acceptance.BashCwdAcceptance.test_skipped_cd_with_successful_overall_status)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/corecoder-compare-03/evaluation/task04/test_acceptance.py", line 49, in test_skipped_cd_with_successful_overall_status
+    self.bash.execute("false && cd sub; true")
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/corecoder-compare-03/task04-generic/workspace/corecoder/tools/bash.py", line 92, in execute
+    probe = _make_cwd_probe() if uses_posix_shell() else None
+            ~~~~~~~~~~~~~~~^^
+  File "/private/tmp/corecoder-compare-03/task04-generic/workspace/corecoder/tools/bash.py", line 149, in _make_cwd_probe
+    tempfile.gettempdir(), f"corecoder-cwd-{os.getpid()}-{next(_probe_seq)}"
+                                                               ^^^^^^^^^^
+NameError: name '_probe_seq' is not defined
+
+======================================================================
+ERROR: test_stdout_stderr_and_exit_status_preserved (test_acceptance.BashCwdAcceptance.test_stdout_stderr_and_exit_status_preserved)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/corecoder-compare-03/evaluation/task04/test_acceptance.py", line 82, in test_stdout_stderr_and_exit_status_preserved
+    result = self.bash.execute("cd sub; printf 'visible-out'; printf 'visible-err' >&2; false")
+  File "/private/tmp/corecoder-compare-03/task04-generic/workspace/corecoder/tools/bash.py", line 92, in execute
+    probe = _make_cwd_probe() if uses_posix_shell() else None
+            ~~~~~~~~~~~~~~~^^
+  File "/private/tmp/corecoder-compare-03/task04-generic/workspace/corecoder/tools/bash.py", line 149, in _make_cwd_probe
+    tempfile.gettempdir(), f"corecoder-cwd-{os.getpid()}-{next(_probe_seq)}"
+                                                               ^^^^^^^^^^
+NameError: name '_probe_seq' is not defined
+
+======================================================================
+ERROR: test_subshell_does_not_change_parent_directory (test_acceptance.BashCwdAcceptance.test_subshell_does_not_change_parent_directory)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/corecoder-compare-03/evaluation/task04/test_acceptance.py", line 70, in test_subshell_does_not_change_parent_directory
+    self.bash.execute("(cd sub && false); true")
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/corecoder-compare-03/task04-generic/workspace/corecoder/tools/bash.py", line 92, in execute
+    probe = _make_cwd_probe() if uses_posix_shell() else None
+            ~~~~~~~~~~~~~~~^^
+  File "/private/tmp/corecoder-compare-03/task04-generic/workspace/corecoder/tools/bash.py", line 149, in _make_cwd_probe
+    tempfile.gettempdir(), f"corecoder-cwd-{os.getpid()}-{next(_probe_seq)}"
+                                                               ^^^^^^^^^^
+NameError: name '_probe_seq' is not defined
+
+======================================================================
+ERROR: test_successful_cd_followed_by_failed_and_command (test_acceptance.BashCwdAcceptance.test_successful_cd_followed_by_failed_and_command)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/corecoder-compare-03/evaluation/task04/test_acceptance.py", line 34, in test_successful_cd_followed_by_failed_and_command
+    result = self.bash.execute("cd sub && false")
+  File "/private/tmp/corecoder-compare-03/task04-generic/workspace/corecoder/tools/bash.py", line 92, in execute
+    probe = _make_cwd_probe() if uses_posix_shell() else None
+            ~~~~~~~~~~~~~~~^^
+  File "/private/tmp/corecoder-compare-03/task04-generic/workspace/corecoder/tools/bash.py", line 149, in _make_cwd_probe
+    tempfile.gettempdir(), f"corecoder-cwd-{os.getpid()}-{next(_probe_seq)}"
+                                                               ^^^^^^^^^^
+NameError: name '_probe_seq' is not defined
+
+======================================================================
+ERROR: test_successful_cd_followed_by_failed_semicolon_command (test_acceptance.BashCwdAcceptance.test_successful_cd_followed_by_failed_semicolon_command)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/corecoder-compare-03/evaluation/task04/test_acceptance.py", line 39, in test_successful_cd_followed_by_failed_semicolon_command
+    result = self.bash.execute("cd sub; false")
+  File "/private/tmp/corecoder-compare-03/task04-generic/workspace/corecoder/tools/bash.py", line 92, in execute
+    probe = _make_cwd_probe() if uses_posix_shell() else None
+            ~~~~~~~~~~~~~~~^^
+  File "/private/tmp/corecoder-compare-03/task04-generic/workspace/corecoder/tools/bash.py", line 149, in _make_cwd_probe
+    tempfile.gettempdir(), f"corecoder-cwd-{os.getpid()}-{next(_probe_seq)}"
+                                                               ^^^^^^^^^^
+NameError: name '_probe_seq' is not defined
+
+======================================================================
+ERROR: test_successful_chain_still_works (test_acceptance.BashCwdAcceptance.test_successful_chain_still_works)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/corecoder-compare-03/evaluation/task04/test_acceptance.py", line 66, in test_successful_chain_still_works
+    self.bash.execute("cd sub && cd nested")
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/corecoder-compare-03/task04-generic/workspace/corecoder/tools/bash.py", line 92, in execute
+    probe = _make_cwd_probe() if uses_posix_shell() else None
+            ~~~~~~~~~~~~~~~^^
+  File "/private/tmp/corecoder-compare-03/task04-generic/workspace/corecoder/tools/bash.py", line 149, in _make_cwd_probe
+    tempfile.gettempdir(), f"corecoder-cwd-{os.getpid()}-{next(_probe_seq)}"
+                                                               ^^^^^^^^^^
+NameError: name '_probe_seq' is not defined
+
+======================================================================
+ERROR: test_thread_directories_do_not_cross_or_change_process_cwd (test_acceptance.BashCwdAcceptance.test_thread_directories_do_not_cross_or_change_process_cwd)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/corecoder-compare-03/evaluation/task04/test_acceptance.py", line 106, in test_thread_directories_do_not_cross_or_change_process_cwd
+    result, recorded, actual = future.result(timeout=10)
+                               ~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/concurrent/futures/_base.py", line 447, in result
+    return self.__get_result()
+           ~~~~~~~~~~~~~~~~~^^
+  File "/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/concurrent/futures/_base.py", line 396, in __get_result
+    raise self._exception
+  File "/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/concurrent/futures/thread.py", line 86, in run
+    result = ctx.run(self.task)
+  File "/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/concurrent/futures/thread.py", line 73, in run
+    return fn(*args, **kwargs)
+  File "/tmp/corecoder-compare-03/evaluation/task04/test_acceptance.py", line 97, in run
+    result = BashTool().execute(f"cd {target} && false")
+  File "/private/tmp/corecoder-compare-03/task04-generic/workspace/corecoder/tools/bash.py", line 92, in execute
+    probe = _make_cwd_probe() if uses_posix_shell() else None
+            ~~~~~~~~~~~~~~~^^
+  File "/private/tmp/corecoder-compare-03/task04-generic/workspace/corecoder/tools/bash.py", line 149, in _make_cwd_probe
+    tempfile.gettempdir(), f"corecoder-cwd-{os.getpid()}-{next(_probe_seq)}"
+                                                               ^^^^^^^^^^
+NameError: name '_probe_seq' is not defined
+
+======================================================================
+FAIL: test_parallel_agent_batch_inherits_and_merges_failed_cd (test_acceptance.BashCwdAcceptance.test_parallel_agent_batch_inherits_and_merges_failed_cd)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/corecoder-compare-03/evaluation/task04/test_acceptance.py", line 125, in test_parallel_agent_batch_inherits_and_merges_failed_cd
+    self.assertIn("[exit code: 1]", result[0])
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '[exit code: 1]' not found in "Error executing bash: name '_probe_seq' is not defined"
+
+----------------------------------------------------------------------
+Ran 14 tests in 0.013s
+
+FAILED (failures=1, errors=13)

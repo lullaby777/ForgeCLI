@@ -32,6 +32,7 @@ class LLMResponse:
     prompt_tokens: int = 0
     completion_tokens: int = 0
     reasoning_content: str | None = None
+    finish_reason: str | None = None
 
     @property
     def message(self) -> dict:
@@ -218,6 +219,7 @@ class LLM:
         tc_map: dict[int, dict] = {}  # index -> {id, name, arguments_str}
         prompt_tok = 0
         completion_tok = 0
+        finish_reason = None
 
         for chunk in stream:
             # usage info comes in the final chunk; getattr-style reads stay safe
@@ -231,7 +233,12 @@ class LLM:
 
             if not getattr(chunk, "choices", None):
                 continue
-            delta = chunk.choices[0].delta
+            choice = chunk.choices[0]
+            if getattr(choice, "finish_reason", None) is not None:
+                finish_reason = choice.finish_reason
+            delta = getattr(choice, "delta", None)
+            if delta is None:
+                continue
 
             # thinking models stream their chain-of-thought separately; show
             # it when someone is listening, but never mix it into the reply.
@@ -285,6 +292,7 @@ class LLM:
             tool_calls=parsed,
             prompt_tokens=prompt_tok,
             completion_tokens=completion_tok,
+            finish_reason=finish_reason,
             reasoning_content=(
                 "".join(reasoning_parts) if reasoning_parts is not None else None
             ),

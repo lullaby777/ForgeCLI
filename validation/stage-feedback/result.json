@@ -1,0 +1,15 @@
+{
+  "tests_passed": 416,
+  "new_stage_feedback_tests": 13,
+  "real_model_calls": 0,
+  "changed_file_ruff": "passed",
+  "compileall": "passed",
+  "previous_v1_files_unchanged": 963,
+  "previous_v2_files_unchanged": 482,
+  "five_baselines_unchanged": true,
+  "prior_results_unchanged": true,
+  "no_progress_rule": "unchanged",
+  "preview_kind": "truncated_without_changes",
+  "preview_chars": 1739,
+  "prior_generic_feedback_chars": 5056
+}

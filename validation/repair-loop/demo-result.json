@@ -1,0 +1,72 @@
+{
+  "workspace": "/private/tmp/corecoder-repair-demo-02/workspace",
+  "limits": {
+    "max_attempts": 3,
+    "max_model_calls": 30,
+    "rounds_per_attempt": 2,
+    "max_seconds": 300,
+    "verifier_seconds": 30,
+    "max_stagnant_attempts": 2
+  },
+  "verification": {
+    "argv": [
+      "/private/tmp/corecoder-issue001/venv/bin/python",
+      "/private/tmp/corecoder-repair-demo-02/verify.py"
+    ],
+    "protected_paths": [
+      "/private/tmp/corecoder-repair-demo-02/verify.py"
+    ],
+    "failure_codes": [
+      1
+    ]
+  },
+  "agent_log": "/private/tmp/corecoder-repair-demo-02/result/agent-events.jsonl",
+  "status": "passed",
+  "attempts": [
+    {
+      "number": 1,
+      "agent_status": "responded",
+      "before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "model_calls_before": 0,
+      "agent_run": {
+        "status": "responded",
+        "rounds": 2,
+        "empty_retries": 0,
+        "finish_reason": null,
+        "error_type": null
+      },
+      "model_calls_after": 2,
+      "after": "a8ffa7ea6561e904c324bce2c6ee12a1c066ca4e899a1d8baa1fa167b78a8d2f",
+      "verification": {
+        "status": "failed",
+        "exit_code": 1,
+        "feedback": "Exit code: 1\nTraceback (most recent call last):\n  File \"/private/tmp/corecoder-repair-demo-02/verify.py\", line 2, in <module>\n    assert Path('answer.txt').read_text() == 'fixed', 'answer must be fixed'\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: answer must be fixed\n",
+        "output": "/private/tmp/corecoder-repair-demo-02/result/verification-1.txt"
+      }
+    },
+    {
+      "number": 2,
+      "agent_status": "responded",
+      "before": "a8ffa7ea6561e904c324bce2c6ee12a1c066ca4e899a1d8baa1fa167b78a8d2f",
+      "model_calls_before": 2,
+      "agent_run": {
+        "status": "responded",
+        "rounds": 2,
+        "empty_retries": 0,
+        "finish_reason": null,
+        "error_type": null
+      },
+      "model_calls_after": 4,
+      "after": "be48fcfe92c3f72b9790b1f76c20bad59ca1ed738a6d4e9c800f9982cbb2cf50",
+      "verification": {
+        "status": "passed",
+        "exit_code": 0,
+        "feedback": "Exit code: 0\n",
+        "output": "/private/tmp/corecoder-repair-demo-02/result/verification-2.txt"
+      }
+    }
+  ],
+  "model_calls": 4,
+  "elapsed_seconds": 0.072,
+  "error_type": null
+}

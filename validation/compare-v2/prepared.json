@@ -1,0 +1,79 @@
+{
+  "real_model_calls": 0,
+  "cases": {
+    "original": {
+      "ready": true,
+      "model": {
+        "name": "deepseek-flash",
+        "base_url": "https://api.deepseek.com",
+        "temperature": 0.0,
+        "max_tokens": 8192,
+        "context_tokens": 128000,
+        "request_seconds": 60,
+        "sdk_retries": 0
+      },
+      "limits": {
+        "max_attempts": 3,
+        "max_model_calls": 30,
+        "rounds_per_attempt": 30,
+        "max_seconds": 900,
+        "verifier_seconds": 60,
+        "max_stagnant_attempts": 2
+      },
+      "workspace_digest": "c75cda1710e195df45120692ef5b9e7fe6d1112ee9747a734a12d4a3d2940361",
+      "runtime_digest": "c75cda1710e195df45120692ef5b9e7fe6d1112ee9747a734a12d4a3d2940361",
+      "task_digest": "1f99b48e213b93cb2f07ee0e3439f769a3fd07630745ce25205954a85642ed54",
+      "live_result": false
+    },
+    "improved": {
+      "ready": true,
+      "model": {
+        "name": "deepseek-flash",
+        "base_url": "https://api.deepseek.com",
+        "temperature": 0.0,
+        "max_tokens": 8192,
+        "context_tokens": 128000,
+        "request_seconds": 60,
+        "sdk_retries": 0
+      },
+      "limits": {
+        "max_attempts": 3,
+        "max_model_calls": 30,
+        "rounds_per_attempt": 30,
+        "max_seconds": 900,
+        "verifier_seconds": 60,
+        "max_stagnant_attempts": 2
+      },
+      "workspace_digest": "c75cda1710e195df45120692ef5b9e7fe6d1112ee9747a734a12d4a3d2940361",
+      "runtime_digest": "6df4b7653c5ff76638f1250c914d4e9d81f447807fc2c5e82c5453bf2c35eb87",
+      "task_digest": "1f99b48e213b93cb2f07ee0e3439f769a3fd07630745ce25205954a85642ed54",
+      "live_result": false
+    }
+  },
+  "logical_change_from_v1": {
+    "model.max_tokens": [
+      4096,
+      8192
+    ]
+  },
+  "runtime_sources_match_v1": true,
+  "task_and_dependencies_match_v1": true,
+  "original_baseline_protected_files_unchanged": 683,
+  "v1_files_unchanged": 963,
+  "preflight": {
+    "task04-original": {
+      "expected_acceptance_failures": 9,
+      "workspace_matches": true
+    },
+    "task04-improved": {
+      "expected_acceptance_failures": 9,
+      "workspace_matches": true
+    },
+    "regression": {
+      "passed": 352,
+      "known_failed": 1,
+      "live_smoke_excluded": true
+    },
+    "real_model_calls": 0
+  }
+}

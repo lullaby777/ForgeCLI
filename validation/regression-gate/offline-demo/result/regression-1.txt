@@ -1,0 +1,16 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_________________________________ test_legacy __________________________________
+
+    def test_legacy():
+>    assert Path('legacy.txt').read_text() == 'ok', 'legacy broke'
+E    AssertionError: legacy broke
+E    assert 'broken' == 'ok'
+E      
+E      - ok
+E      + broken
+
+tests/test_old.py:3: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_old.py::test_legacy - AssertionError: legacy broke
+1 failed in 0.01s

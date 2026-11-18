@@ -1,0 +1,15 @@
+working tree on top of 3a7d48419ddc9db51ac26311ed726f18b816e499
+ M corecoder/agent.py
+ M corecoder/cli.py
+ M corecoder/llm.py
+ M corecoder/prompt.py
+ M corecoder/session.py
+ M corecoder/tools/__init__.py
+ M corecoder/tools/agent.py
+?? corecoder/messages.py
+?? corecoder/repair.py
+?? corecoder/task_store.py
+?? corecoder/tasks.py
+?? corecoder/tools/fetch.py
+?? corecoder/tools/now.py
+?? corecoder/verification.py

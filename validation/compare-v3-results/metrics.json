@@ -1,0 +1,52 @@
+{
+  "rows": [
+    {
+      "arm": "generic",
+      "functional_passed": false,
+      "model_calls": 30,
+      "prompt_tokens": 1161015,
+      "completion_tokens": 31562,
+      "total_tokens": 1192577,
+      "seconds": 223.41931591695175,
+      "stop": "model_call_limit",
+      "attempts": 1,
+      "agent_stop": "round_limit",
+      "feedback_used": false,
+      "new_regression_failures": [
+        "tests/test_core.py::test_doc_python_line_references_are_current",
+        "tests/test_core.py::test_parallel_bash_calls_inherit_and_merge_session_cwd",
+        "tests/test_tools.py::test_bash_basic",
+        "tests/test_tools.py::test_bash_exit_code",
+        "tests/test_tools.py::test_bash_timeout",
+        "tests/test_tools.py::test_bash_truncates_long_output"
+      ],
+      "existing_tests_changed": false,
+      "independent_acceptance": {
+        "exit_code": 1,
+        "timeout": false
+      }
+    },
+    {
+      "arm": "staged",
+      "functional_passed": true,
+      "model_calls": 30,
+      "prompt_tokens": 1193686,
+      "completion_tokens": 35659,
+      "total_tokens": 1229345,
+      "seconds": 263.1633740409743,
+      "stop": "passed",
+      "attempts": 1,
+      "agent_stop": "round_limit",
+      "feedback_used": false,
+      "new_regression_failures": [],
+      "existing_tests_changed": false,
+      "independent_acceptance": {
+        "exit_code": 0,
+        "timeout": false
+      }
+    }
+  ],
+  "analysis_real_model_calls": 0,
+  "all_raw_results_preserved": true,
+  "causal_conclusion": "Feedback intervention not consumed by either model; no feedback efficacy conclusion"
+}

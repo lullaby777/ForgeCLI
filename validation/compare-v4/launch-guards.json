@@ -1,0 +1,19 @@
+[
+  {
+    "arguments": [
+      "task04",
+      "generic",
+      "--live"
+    ],
+    "exit_code": 1,
+    "output": "Set CORECODER_API_KEY first; no case has been consumed"
+  },
+  {
+    "arguments": [
+      "task04",
+      "staged"
+    ],
+    "exit_code": 2,
+    "output": "usage: run.py [-h] --live {task04} {generic,staged}\nrun.py: error: the following arguments are required: --live"
+  }
+]

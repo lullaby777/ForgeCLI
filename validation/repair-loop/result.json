@@ -1,0 +1,27 @@
+{
+  "feature": "independent repair verification loop",
+  "tests": {
+    "passed": 403,
+    "failed": 0,
+    "new_repair_tests": 27,
+    "real_model_smoke_excluded": true
+  },
+  "offline_demo": {
+    "attempts": 2,
+    "model_entry_calls": 4,
+    "verification": [
+      "failed",
+      "passed"
+    ],
+    "status": "passed"
+  },
+  "real_model_calls": 0,
+  "protected_baseline_files": 683,
+  "protected_files_changed": [],
+  "preexisting_tests_changed": [],
+  "compileall": "passed",
+  "changed_files_ruff": "passed",
+  "whole_repository_ruff": "6 pre-existing warnings",
+  "time_limit_semantics": "cooperative at call boundaries; verifier subprocess timeout enforced",
+  "model_budget_semantics": "model chat entry calls, including compaction/subagents, excluding internal HTTP retries"
+}

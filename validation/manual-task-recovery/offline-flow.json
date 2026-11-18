@@ -1,0 +1,12 @@
+{
+  "real_model_calls": 0,
+  "simulated_calls": 3,
+  "paused_calls": 1,
+  "session_restored_before_continue": true,
+  "ledger_unchanged_on_selection": true,
+  "baseline_preserved": true,
+  "same_task_id": true,
+  "safe_ctrl_c": true,
+  "stopped": "no_progress",
+  "task_was_not_fixed_by_mock": true
+}

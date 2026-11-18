@@ -1,0 +1,286 @@
+"""Relative path resolution across the bash and file tools.
+
+The bash tool tracks the session's working directory; the file tools must
+agree with it. A successful `cd backend` has to move read_file/edit_file/
+write_file/grep/glob too, without anyone calling os.chdir (threads, parallel
+batches and sub-agents each keep their own directory).
+"""
+
+import os
+from pathlib import Path
+
+import pytest
+
+from corecoder.agent import Agent
+from corecoder.llm import LLM
+from corecoder.tools.bash import get_tracked_cwd, set_tracked_cwd
+from tests.conftest import get_tool
+
+
+@pytest.fixture(autouse=True)
+def _restore_tracked_cwd():
+    """Never leak a tracked directory into the next test."""
+    previous = get_tracked_cwd()
+    yield
+    set_tracked_cwd(previous)
+
+
+@pytest.fixture
+def tree(tmp_path):
+    """A root with note.txt (ROOT VALUE) and backend/note.txt (SUB VALUE)."""
+    (tmp_path / "note.txt").write_text("ROOT VALUE\n", encoding="utf-8")
+    sub = tmp_path / "backend"
+    sub.mkdir()
+    (sub / "note.txt").write_text("SUB VALUE\n", encoding="utf-8")
+    (sub / "app.py").write_text("needle = 1\n", encoding="utf-8")
+    set_tracked_cwd(str(tmp_path))
+    return tmp_path, sub
+
+
+class _TC:
+    """Minimal stand-in for a parsed tool call."""
+
+    def __init__(self, name, i, **arguments):
+        self.name, self.id = name, str(i)
+        self.arguments = arguments
+
+
+# --- single tools follow the session directory ---
+
+def test_read_file_follows_bash_cd(tree):
+    _, sub = tree
+    bash, read = get_tool("bash"), get_tool("read_file")
+
+    assert "ROOT VALUE" in read.execute(file_path="note.txt")
+    bash.execute(command=f"cd {sub}")
+    assert get_tracked_cwd() == str(sub)
+    assert "SUB VALUE" in read.execute(file_path="note.txt")
+    assert "ROOT VALUE" not in read.execute(file_path="note.txt")
+    # the process directory is untouched
+    assert os.getcwd() != str(sub)
+
+
+def test_edit_file_edits_session_file_only(tree):
+    root, sub = tree
+    bash, edit = get_tool("bash"), get_tool("edit_file")
+    bash.execute(command="cd backend")
+
+    result = edit.execute(file_path="note.txt", old_string="SUB VALUE", new_string="SUB EDITED")
+    assert result.startswith("Edited note.txt")
+    assert (sub / "note.txt").read_text(encoding="utf-8") == "SUB EDITED\n"
+    assert (root / "note.txt").read_text(encoding="utf-8") == "ROOT VALUE\n"
+
+
+def test_write_file_writes_session_file_only(tree):
+    root, sub = tree
+    bash, write = get_tool("bash"), get_tool("write_file")
+    bash.execute(command="cd backend")
+
+    assert "Wrote" in write.execute(file_path="note.txt", content="SUB WRITTEN\n")
+    assert (sub / "note.txt").read_text(encoding="utf-8") == "SUB WRITTEN\n"
+    assert (root / "note.txt").read_text(encoding="utf-8") == "ROOT VALUE\n"
+
+
+def test_write_file_creates_nested_dirs_under_session_cwd(tree):
+    root, sub = tree
+    bash, write = get_tool("bash"), get_tool("write_file")
+    bash.execute(command="cd backend")
+
+    assert "Wrote" in write.execute(file_path="deep/nested/new.txt", content="nested\n")
+    assert (sub / "deep" / "nested" / "new.txt").read_text(encoding="utf-8") == "nested\n"
+    assert not (root / "deep").exists()
+
+
+def test_read_file_edit_file_roundtrip_on_new_nested_file(tree):
+    root, sub = tree
+    bash, write, read, edit = (
+        get_tool("bash"), get_tool("write_file"), get_tool("read_file"), get_tool("edit_file"),
+    )
+    bash.execute(command="cd backend")
+    write.execute(file_path="pkg/mod.py", content="value = 1\n")
+    assert "value = 1" in read.execute(file_path="pkg/mod.py")
+    assert edit.execute(file_path="pkg/mod.py", old_string="1", new_string="2").startswith("Edited")
+    assert (sub / "pkg" / "mod.py").read_text(encoding="utf-8") == "value = 2\n"
+    assert not (root / "pkg").exists()
+
+
+def test_grep_and_glob_default_to_session_cwd(tree):
+    root, sub = tree
+    bash, grep, glob_tool = get_tool("bash"), get_tool("grep"), get_tool("glob")
+    bash.execute(command="cd backend")
+
+    grep_default = grep.execute(pattern="needle")
+    assert str(sub / "app.py") in grep_default
+    assert str(root / "note.txt") not in grep_default.replace(str(sub), "")
+
+    glob_default = glob_tool.execute(pattern="*.py")
+    assert str(sub / "app.py") in glob_default
+    assert str(root) + os.sep + "note.txt" not in glob_default
+
+    # `path="."` means the same thing
+    assert str(sub / "app.py") in grep.execute(pattern="needle", path=".")
+    assert str(sub / "app.py") in glob_tool.execute(pattern="*.py", path=".")
+
+
+def test_explicit_relative_paths_resolve_against_session_cwd(tree):
+    _, sub = tree
+    bash, read, grep, glob_tool = (
+        get_tool("bash"), get_tool("read_file"), get_tool("grep"), get_tool("glob"),
+    )
+    bash.execute(command="cd backend")
+
+    assert "SUB VALUE" in read.execute(file_path="./note.txt")
+    assert str(sub / "app.py") in grep.execute(pattern="needle", path=".")
+    assert str(sub / "app.py") in grep.execute(pattern="needle", path="./app.py")
+    assert str(sub / "note.txt") in glob_tool.execute(pattern="note.txt", path=".")
+    # a relative subdirectory that only exists below the session dir
+    assert str(sub / "app.py") in glob_tool.execute(pattern="app.py", path=".")
+
+
+def test_absolute_and_tilde_paths_keep_their_meaning(tree, tmp_path, monkeypatch):
+    root, sub = tree
+    bash, read, write = get_tool("bash"), get_tool("read_file"), get_tool("write_file")
+    bash.execute(command="cd backend")
+
+    # absolute path still addresses the root copy
+    assert "ROOT VALUE" in read.execute(file_path=str(root / "note.txt"))
+    write.execute(file_path=str(root / "abs.txt"), content="abs\n")
+    assert (root / "abs.txt").read_text(encoding="utf-8") == "abs\n"
+    assert not (sub / "abs.txt").exists()
+
+    # `~` still means the home directory, not the session directory
+    home = tmp_path / "home"
+    home.mkdir()
+    monkeypatch.setenv("HOME", str(home))
+    monkeypatch.setenv("USERPROFILE", str(home))
+    (home / "tilde.txt").write_text("HOME VALUE\n", encoding="utf-8")
+    assert "HOME VALUE" in read.execute(file_path="~/tilde.txt")
+    write.execute(file_path="~/tilde_written.txt", content="tilde\n")
+    assert (home / "tilde_written.txt").read_text(encoding="utf-8") == "tilde\n"
+    assert not (sub / "tilde_written.txt").exists()
+
+
+def test_no_session_cwd_falls_back_to_process_cwd(tmp_path, monkeypatch):
+    (tmp_path / "fallback.txt").write_text("FALLBACK\n", encoding="utf-8")
+    set_tracked_cwd(None)
+    monkeypatch.setattr(os, "getcwd", lambda: str(tmp_path))
+
+    assert "FALLBACK" in get_tool("read_file").execute(file_path="fallback.txt")
+    assert str(tmp_path / "fallback.py") not in get_tool("glob").execute(pattern="*.py")
+
+
+def test_error_messages_still_name_the_original_argument(tree):
+    bash = get_tool("bash")
+    bash.execute(command="cd backend")
+
+    assert get_tool("read_file").execute(file_path="missing.txt") == "Error: missing.txt not found"
+    assert get_tool("edit_file").execute(
+        file_path="missing.txt", old_string="a", new_string="b"
+    ) == "Error: missing.txt not found"
+    assert "Error: missing.txt not found" == get_tool("grep").execute(
+        pattern="x", path="missing.txt"
+    )
+    assert "Error: missing.txt not found" == get_tool("glob").execute(
+        pattern="*", path="missing.txt"
+    )
+
+
+# --- parallel batches ---
+
+def _agent(*tools):
+    return Agent(llm=LLM.__new__(LLM), tools=list(tools))
+
+
+def test_parallel_batch_file_tools_use_batch_start_cwd(tree):
+    """A sibling's cd must not move where the batch's file tools look, and the
+    merged directory only takes effect for the *next* batch."""
+    root, sub = tree
+    bash, read = get_tool("bash"), get_tool("read_file")
+    agent = _agent(bash, read, get_tool("grep"))
+
+    results = agent._exec_tools_parallel([
+        _TC("bash", 1, command="cd backend"),
+        _TC("read_file", 2, file_path="note.txt"),
+        _TC("grep", 3, pattern="VALUE"),
+    ])
+
+    assert "SUB VALUE" not in results[1]
+    assert "ROOT VALUE" in results[1]
+    assert str(root / "note.txt") in results[2]
+    # the cd is merged afterwards, and the next batch sees it
+    assert get_tracked_cwd() == str(sub)
+    assert "SUB VALUE" in read.execute(file_path="note.txt")
+    assert "SUB VALUE" in agent._exec_tools_parallel([_TC("read_file", 4, file_path="note.txt")])[0]
+
+
+def test_parallel_batch_file_tools_inherit_session_cwd(tree):
+    """Pool workers start from the session dir, not the launch directory, even
+    when the batch has no bash call at all."""
+    root, sub = tree
+    set_tracked_cwd(str(sub))
+    agent = _agent(get_tool("read_file"), get_tool("glob"))
+
+    results = agent._exec_tools_parallel([
+        _TC("read_file", 1, file_path="note.txt"),
+        _TC("glob", 2, pattern="note.txt"),
+    ])
+    assert "SUB VALUE" in results[0]
+    assert str(sub / "note.txt") in results[1]
+    assert str(root / "note.txt") not in results[1]
+
+
+def test_parallel_batch_without_session_cwd_uses_process_cwd(tmp_path, monkeypatch):
+    (tmp_path / "plain.txt").write_text("PLAIN\n", encoding="utf-8")
+    set_tracked_cwd(None)
+    monkeypatch.setattr(os, "getcwd", lambda: str(tmp_path))
+
+    results = _agent(get_tool("read_file"))._exec_tools_parallel([
+        _TC("read_file", 1, file_path="plain.txt"),
+    ])
+    assert "PLAIN" in results[0]
+    assert get_tracked_cwd() is None
+
+
+# --- sub-agents ---
+
+def test_sub_agent_file_tools_use_own_thread_cwd(tmp_path, monkeypatch):
+    """A sub-agent resolves relative paths against its own directory, and the
+    parent's directory is untouched afterwards."""
+    from corecoder.agent import Agent as CoreAgent
+    from corecoder.tools.agent import AgentTool
+
+    root = tmp_path / "root"
+    sub = tmp_path / "sub"
+    root.mkdir()
+    sub.mkdir()
+    (root / "note.txt").write_text("ROOT VALUE\n", encoding="utf-8")
+    (sub / "note.txt").write_text("SUB VALUE\n", encoding="utf-8")
+
+    read = get_tool("read_file")
+    tool = AgentTool()
+    tool._parent_agent = _agent()
+
+    def fake_chat(self, text, **kwargs):
+        set_tracked_cwd(str(sub))  # the sub-agent cd's somewhere else
+        return read.execute(file_path="note.txt")
+
+    monkeypatch.setattr(CoreAgent, "chat", fake_chat)
+    set_tracked_cwd(str(root))
+
+    result = tool.execute(task="read note.txt")
+    assert "SUB VALUE" in result
+    assert "ROOT VALUE" not in result
+    assert get_tracked_cwd() == str(root)
+    assert "ROOT VALUE" in read.execute(file_path="note.txt")
+
+
+# --- os.chdir must stay out of this ---
+
+def test_file_tools_never_change_process_cwd(tree):
+    before = Path.cwd()
+    get_tool("bash").execute(command="cd backend")
+    get_tool("write_file").execute(file_path="w.txt", content="w\n")
+    get_tool("read_file").execute(file_path="note.txt")
+    get_tool("grep").execute(pattern="needle")
+    get_tool("glob").execute(pattern="*")
+    assert Path.cwd() == before

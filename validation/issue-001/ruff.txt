@@ -1,0 +1,120 @@
+I001 [*] Import block is un-sorted or un-formatted
+  --> corecoder/tools/__init__.py:3:1
+   |
+ 1 |   """Tool registry."""
+ 2 |
+ 3 | / from .agent import AgentTool
+ 4 | | from .bash import BashTool
+ 5 | | from .edit import EditFileTool
+ 6 | | from .glob_tool import GlobTool
+ 7 | | from .grep import GrepTool
+ 8 | | from .read import ReadFileTool
+ 9 | | from .todo import TodoWriteTool
+10 | | from .write import WriteFileTool
+11 | | from .now import NowTool
+12 | | from .fetch import FetchUrlTool
+   | |_______________________________^
+13 |
+14 |   ALL_TOOLS = [
+   |
+help: Organize imports
+   |
+5  | from .edit import EditFileTool
+6  + from .fetch import FetchUrlTool
+7  | from .glob_tool import GlobTool
+8  | from .grep import GrepTool
+9  + from .now import NowTool
+10 | from .read import ReadFileTool
+11 | from .todo import TodoWriteTool
+12 | from .write import WriteFileTool
+   - from .now import NowTool
+   - from .fetch import FetchUrlTool
+13 |
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> corecoder/tools/fetch.py:3:1
+  |
+1 |   """A read-only tool that fetches the text content of a URL."""
+2 |
+3 | / import urllib.request
+4 | | from .base import Tool
+  | |______________________^
+help: Organize imports
+  |
+3 | import urllib.request
+4 +
+5 | from .base import Tool
+  |
+
+RUF012 Mutable default value for class attribute
+  --> corecoder/tools/fetch.py:13:18
+   |
+11 |           "Use this to read documentation, API responses, or web pages."
+12 |       )
+13 |       parameters = {
+   |  __________________^
+14 | |         "type": "object",
+15 | |         "properties": {
+16 | |             "url": {
+17 | |                 "type": "string",
+18 | |                 "description": "The http:// or https:// URL to fetch",
+19 | |             },
+20 | |             "timeout": {
+21 | |                 "type": "integer",
+22 | |                 "description": "Timeout in seconds (default 15)",
+23 | |             },
+24 | |         },
+25 | |         "required": ["url"],
+26 | |     }
+   | |_____^
+27 |
+28 |       def execute(self, url: str, timeout: int = 15) -> str:
+   |
+help: Consider initializing in `__init__` or annotating with `typing.ClassVar`
+
+BLE001 Do not catch blind exception: `Exception`
+  --> corecoder/tools/fetch.py:36:16
+   |
+34 |                 raw = resp.read(1_000_000)  # 顶多读 1MB，别让一个巨页撑爆内存
+35 |                 text = raw.decode("utf-8", errors="replace")
+36 |         except Exception as e:
+   |                ^^^^^^^^^
+37 |             return f"Error fetching {url}: {e}"
+38 |         # 太长就留头尾，跟 bash 输出截断一个套路
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> corecoder/tools/now.py:3:1
+  |
+1 |   """A tool that tells the agent the current time."""
+2 |
+3 | / import time
+4 | | from .base import Tool
+  | |______________________^
+help: Organize imports
+  |
+3 | import time
+4 +
+5 | from .base import Tool
+  |
+
+RUF012 Mutable default value for class attribute
+  --> corecoder/tools/now.py:10:18
+   |
+ 8 |       name = "now"
+ 9 |       description = "Get the current local date and time. Use this when the user asks about the current time or you need a timestamp."
+10 |       parameters = {
+   |  __________________^
+11 | |         "type": "object",
+12 | |         "properties": {},
+13 | |         "required": [],
+14 | |     }
+   | |_____^
+15 |
+16 |       def execute(self) -> str:
+   |
+help: Consider initializing in `__init__` or annotating with `typing.ClassVar`
+
+Found 6 errors.
+[*] 3 fixable with `--fix`.

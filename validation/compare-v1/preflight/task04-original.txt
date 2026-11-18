@@ -1,0 +1,124 @@
+test_directory_with_spaces_and_failed_tail (test_acceptance.BashCwdAcceptance.test_directory_with_spaces_and_failed_tail) ... FAIL
+test_failed_cd_does_not_enable_later_and_cd (test_acceptance.BashCwdAcceptance.test_failed_cd_does_not_enable_later_and_cd) ... FAIL
+test_later_cd_failure_preserves_earlier_success (test_acceptance.BashCwdAcceptance.test_later_cd_failure_preserves_earlier_success) ... FAIL
+test_nested_changes_survive_later_failure (test_acceptance.BashCwdAcceptance.test_nested_changes_survive_later_failure) ... FAIL
+test_parallel_agent_batch_inherits_and_merges_failed_cd (test_acceptance.BashCwdAcceptance.test_parallel_agent_batch_inherits_and_merges_failed_cd) ... FAIL
+test_quoted_text_is_not_executed_cd (test_acceptance.BashCwdAcceptance.test_quoted_text_is_not_executed_cd) ... ok
+test_skipped_cd_with_failed_overall_status (test_acceptance.BashCwdAcceptance.test_skipped_cd_with_failed_overall_status) ... ok
+test_skipped_cd_with_successful_overall_status (test_acceptance.BashCwdAcceptance.test_skipped_cd_with_successful_overall_status) ... FAIL
+test_stdout_stderr_and_exit_status_preserved (test_acceptance.BashCwdAcceptance.test_stdout_stderr_and_exit_status_preserved) ... ok
+test_subshell_does_not_change_parent_directory (test_acceptance.BashCwdAcceptance.test_subshell_does_not_change_parent_directory) ... ok
+test_successful_cd_followed_by_failed_and_command (test_acceptance.BashCwdAcceptance.test_successful_cd_followed_by_failed_and_command) ... FAIL
+test_successful_cd_followed_by_failed_semicolon_command (test_acceptance.BashCwdAcceptance.test_successful_cd_followed_by_failed_semicolon_command) ... FAIL
+test_successful_chain_still_works (test_acceptance.BashCwdAcceptance.test_successful_chain_still_works) ... ok
+test_thread_directories_do_not_cross_or_change_process_cwd (test_acceptance.BashCwdAcceptance.test_thread_directories_do_not_cross_or_change_process_cwd) ... FAIL
+
+======================================================================
+FAIL: test_directory_with_spaces_and_failed_tail (test_acceptance.BashCwdAcceptance.test_directory_with_spaces_and_failed_tail)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/corecoder-compare-01/evaluation/task04/test_acceptance.py", line 79, in test_directory_with_spaces_and_failed_tail
+    self.assert_directory(self.root / "space dir")
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/corecoder-compare-01/evaluation/task04/test_acceptance.py", line 30, in assert_directory
+    self.assertEqual(Path(get_tracked_cwd()).resolve(), expected.resolve())
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Posix[39 chars]tjgz7z68qb4skb80000gn/T/corecoder-cwd-test-us_5ne9y') != Posix[39 chars]tjgz7z68qb4skb80000gn/T/corecoder-cwd-test-us_5ne9y/space dir')
+
+======================================================================
+FAIL: test_failed_cd_does_not_enable_later_and_cd (test_acceptance.BashCwdAcceptance.test_failed_cd_does_not_enable_later_and_cd)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/corecoder-compare-01/evaluation/task04/test_acceptance.py", line 54, in test_failed_cd_does_not_enable_later_and_cd
+    self.assert_directory(self.root)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "/tmp/corecoder-compare-01/evaluation/task04/test_acceptance.py", line 30, in assert_directory
+    self.assertEqual(Path(get_tracked_cwd()).resolve(), expected.resolve())
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Posix[33 chars]yt9010tjgz7z68qb4skb80000gn/T/corecoder-cwd-test-78q7gwg8/sub') != Posix[33 chars]yt9010tjgz7z68qb4skb80000gn/T/corecoder-cwd-test-78q7gwg8')
+
+======================================================================
+FAIL: test_later_cd_failure_preserves_earlier_success (test_acceptance.BashCwdAcceptance.test_later_cd_failure_preserves_earlier_success)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/corecoder-compare-01/evaluation/task04/test_acceptance.py", line 63, in test_later_cd_failure_preserves_earlier_success
+    self.assert_directory(self.root / "sub")
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "/tmp/corecoder-compare-01/evaluation/task04/test_acceptance.py", line 30, in assert_directory
+    self.assertEqual(Path(get_tracked_cwd()).resolve(), expected.resolve())
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Posix[33 chars]yt9010tjgz7z68qb4skb80000gn/T/corecoder-cwd-test-twhd9yel') != Posix[33 chars]yt9010tjgz7z68qb4skb80000gn/T/corecoder-cwd-test-twhd9yel/sub')
+
+======================================================================
+FAIL: test_nested_changes_survive_later_failure (test_acceptance.BashCwdAcceptance.test_nested_changes_survive_later_failure)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/corecoder-compare-01/evaluation/task04/test_acceptance.py", line 59, in test_nested_changes_survive_later_failure
+    self.assert_directory(self.root / "sub" / "nested")
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/corecoder-compare-01/evaluation/task04/test_acceptance.py", line 30, in assert_directory
+    self.assertEqual(Path(get_tracked_cwd()).resolve(), expected.resolve())
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Posix[40 chars]jgz7z68qb4skb80000gn/T/corecoder-cwd-test-u184e1hw') != Posix[40 chars]jgz7z68qb4skb80000gn/T/corecoder-cwd-test-u184e1hw/sub/nested')
+
+======================================================================
+FAIL: test_parallel_agent_batch_inherits_and_merges_failed_cd (test_acceptance.BashCwdAcceptance.test_parallel_agent_batch_inherits_and_merges_failed_cd)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/corecoder-compare-01/evaluation/task04/test_acceptance.py", line 127, in test_parallel_agent_batch_inherits_and_merges_failed_cd
+    self.assert_directory(self.root / "sub")
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "/tmp/corecoder-compare-01/evaluation/task04/test_acceptance.py", line 30, in assert_directory
+    self.assertEqual(Path(get_tracked_cwd()).resolve(), expected.resolve())
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Posix[33 chars]yt9010tjgz7z68qb4skb80000gn/T/corecoder-cwd-test-mbpxco69') != Posix[33 chars]yt9010tjgz7z68qb4skb80000gn/T/corecoder-cwd-test-mbpxco69/sub')
+
+======================================================================
+FAIL: test_skipped_cd_with_successful_overall_status (test_acceptance.BashCwdAcceptance.test_skipped_cd_with_successful_overall_status)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/corecoder-compare-01/evaluation/task04/test_acceptance.py", line 50, in test_skipped_cd_with_successful_overall_status
+    self.assert_directory(self.root)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "/tmp/corecoder-compare-01/evaluation/task04/test_acceptance.py", line 30, in assert_directory
+    self.assertEqual(Path(get_tracked_cwd()).resolve(), expected.resolve())
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Posix[33 chars]yt9010tjgz7z68qb4skb80000gn/T/corecoder-cwd-test-bnvwu8d6/sub') != Posix[33 chars]yt9010tjgz7z68qb4skb80000gn/T/corecoder-cwd-test-bnvwu8d6')
+
+======================================================================
+FAIL: test_successful_cd_followed_by_failed_and_command (test_acceptance.BashCwdAcceptance.test_successful_cd_followed_by_failed_and_command)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/corecoder-compare-01/evaluation/task04/test_acceptance.py", line 36, in test_successful_cd_followed_by_failed_and_command
+    self.assert_directory(self.root / "sub")
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "/tmp/corecoder-compare-01/evaluation/task04/test_acceptance.py", line 30, in assert_directory
+    self.assertEqual(Path(get_tracked_cwd()).resolve(), expected.resolve())
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Posix[33 chars]yt9010tjgz7z68qb4skb80000gn/T/corecoder-cwd-test-ngu9vqz3') != Posix[33 chars]yt9010tjgz7z68qb4skb80000gn/T/corecoder-cwd-test-ngu9vqz3/sub')
+
+======================================================================
+FAIL: test_successful_cd_followed_by_failed_semicolon_command (test_acceptance.BashCwdAcceptance.test_successful_cd_followed_by_failed_semicolon_command)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/corecoder-compare-01/evaluation/task04/test_acceptance.py", line 41, in test_successful_cd_followed_by_failed_semicolon_command
+    self.assert_directory(self.root / "sub")
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "/tmp/corecoder-compare-01/evaluation/task04/test_acceptance.py", line 30, in assert_directory
+    self.assertEqual(Path(get_tracked_cwd()).resolve(), expected.resolve())
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Posix[33 chars]yt9010tjgz7z68qb4skb80000gn/T/corecoder-cwd-test-j95grkov') != Posix[33 chars]yt9010tjgz7z68qb4skb80000gn/T/corecoder-cwd-test-j95grkov/sub')
+
+======================================================================
+FAIL: test_thread_directories_do_not_cross_or_change_process_cwd (test_acceptance.BashCwdAcceptance.test_thread_directories_do_not_cross_or_change_process_cwd)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/corecoder-compare-01/evaluation/task04/test_acceptance.py", line 108, in test_thread_directories_do_not_cross_or_change_process_cwd
+    self.assertEqual(recorded, self.root / target)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Posix[33 chars]yt9010tjgz7z68qb4skb80000gn/T/corecoder-cwd-test-ygog_yxp') != Posix[33 chars]yt9010tjgz7z68qb4skb80000gn/T/corecoder-cwd-test-ygog_yxp/sub')
+
+----------------------------------------------------------------------
+Ran 14 tests in 0.076s
+
+FAILED (failures=9)

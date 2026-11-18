@@ -1,0 +1,178 @@
+{
+  "workspace": "/private/tmp/corecoder-regression-gate-check/offline-demo/workspace",
+  "limits": {
+    "max_attempts": 3,
+    "max_model_calls": 30,
+    "rounds_per_attempt": 1,
+    "max_seconds": 300,
+    "verifier_seconds": 30,
+    "max_stagnant_attempts": 2
+  },
+  "verification": {
+    "argv": [
+      "/private/tmp/corecoder-issue001/venv/bin/python",
+      "/private/tmp/corecoder-regression-gate-check/offline-demo/accept.py"
+    ],
+    "protected_paths": [
+      "/private/tmp/corecoder-regression-gate-check/offline-demo/accept.py"
+    ],
+    "failure_codes": [
+      1
+    ]
+  },
+  "regression": {
+    "argv": [
+      "/private/tmp/corecoder-issue001/venv/bin/python",
+      "-m",
+      "pytest",
+      "tests",
+      "-q"
+    ],
+    "protected_paths": [
+      "tests"
+    ]
+  },
+  "agent_log": "/private/tmp/corecoder-regression-gate-check/offline-demo/result/agent-events.jsonl",
+  "status": "passed",
+  "attempts": [
+    {
+      "number": 1,
+      "agent_status": "round_limit",
+      "before": "4b2d5db89f4c15a0cc7dc340e62f21d6b9359ca5020556dbce0346a0284e4a39",
+      "model_calls_before": 0,
+      "regression": {
+        "status": "failed",
+        "exit_code": 1,
+        "feedback": "Task acceptance passed. Regression comparison against the frozen pre-edit baseline:\nFAILED tests.test_old::test_legacy: AssertionError: legacy broke\nassert 'broken' == 'ok'\n  \n  - ok\n  + broken",
+        "output": "/private/tmp/corecoder-regression-gate-check/offline-demo/result/regression-1.txt",
+        "phase": "regression",
+        "report": "/private/tmp/corecoder-regression-gate-check/offline-demo/result/regression-1.xml",
+        "tests": {
+          "tests.test_old::test_legacy": "failed"
+        },
+        "failures": [
+          "tests.test_old::test_legacy"
+        ],
+        "new_failures": [
+          "tests.test_old::test_legacy"
+        ],
+        "lost_tests": [],
+        "known_failures_present": []
+      },
+      "agent_run": {
+        "status": "round_limit",
+        "rounds": 1,
+        "empty_retries": 0,
+        "finish_reason": null,
+        "error_type": null
+      },
+      "model_calls_after": 1,
+      "after": "ef1e8f0ac07230265bc7783655bd85ba472426875547f306a799788f44b40ab5",
+      "facts": {
+        "agent_status": "round_limit",
+        "finish_reason": null,
+        "files_changed": true,
+        "changed_file_count": 2,
+        "changed_files": [
+          "answer.txt",
+          "legacy.txt"
+        ],
+        "successful_read_requests": [],
+        "read_evidence_scope": "non-error tool results visible in history; not proof of current file correctness",
+        "workspace_fingerprint": "ef1e8f0ac07230265bc7783655bd85ba472426875547f306a799788f44b40ab5",
+        "verification_status": "passed",
+        "verification_exit_code": 0,
+        "verification_input_fingerprint": "ef1e8f0ac07230265bc7783655bd85ba472426875547f306a799788f44b40ab5",
+        "failed_phase": "regression"
+      },
+      "verification": {
+        "status": "passed",
+        "exit_code": 0,
+        "feedback": "Exit code: 0\n",
+        "output": "/private/tmp/corecoder-regression-gate-check/offline-demo/result/verification-1.txt"
+      },
+      "failed_phase": "regression",
+      "recovery": {
+        "kind": "regression_failed",
+        "next_action": "Task acceptance passed, but regression checks found new failures or lost test coverage. Repair these failures without undoing the target fix. Do not modify tests, suppress collection, or expand the frozen baseline failure list. Completion requires both checks to pass.",
+        "failure_excerpt": "FAILED tests.test_old::test_legacy: AssertionError: legacy broke\nFAILED tests.test_old::test_legacy: AssertionError: legacy broke",
+        "message": "Original task: Fix answer.txt while preserving legacy behavior\nRecovery stage: regression_failed\nObserved execution facts (read requests are not proof of current correctness): {\"agent_status\": \"round_limit\", \"finish_reason\": null, \"files_changed\": true, \"changed_file_count\": 2, \"changed_files\": [\"answer.txt\", \"legacy.txt\"], \"successful_read_requests\": [], \"verification_status\": \"failed\", \"verification_exit_code\": 1, \"new_regression_failures\": [\"tests.test_old::test_legacy\"], \"missing_or_skipped_tests\": []}\nNext action: Task acceptance passed, but regression checks found new failures or lost test coverage. Repair these failures without undoing the target fix. Do not modify tests, suppress collection, or expand the frozen baseline failure list. Completion requires both checks to pass.\nDo not change acceptance criteria or protected tests.\nKey verification evidence:\nFAILED tests.test_old::test_legacy: AssertionError: legacy broke\nFAILED tests.test_old::test_legacy: AssertionError: legacy broke",
+        "message_chars": 1004
+      },
+      "feedback_submitted_to_agent": true
+    },
+    {
+      "number": 2,
+      "agent_status": "round_limit",
+      "before": "ef1e8f0ac07230265bc7783655bd85ba472426875547f306a799788f44b40ab5",
+      "model_calls_before": 1,
+      "regression": {
+        "status": "passed",
+        "exit_code": 0,
+        "feedback": "Task acceptance passed. Regression comparison against the frozen pre-edit baseline:",
+        "output": "/private/tmp/corecoder-regression-gate-check/offline-demo/result/regression-2.txt",
+        "phase": "regression",
+        "report": "/private/tmp/corecoder-regression-gate-check/offline-demo/result/regression-2.xml",
+        "tests": {
+          "tests.test_old::test_legacy": "passed"
+        },
+        "failures": [],
+        "new_failures": [],
+        "lost_tests": [],
+        "known_failures_present": []
+      },
+      "agent_run": {
+        "status": "round_limit",
+        "rounds": 1,
+        "empty_retries": 0,
+        "finish_reason": null,
+        "error_type": null
+      },
+      "model_calls_after": 2,
+      "after": "072603e8d9025e8e9ed54c55a9b5346494ec2d084e4403794527e43b467ac3c7",
+      "facts": {
+        "agent_status": "round_limit",
+        "finish_reason": null,
+        "files_changed": true,
+        "changed_file_count": 1,
+        "changed_files": [
+          "legacy.txt"
+        ],
+        "successful_read_requests": [],
+        "read_evidence_scope": "non-error tool results visible in history; not proof of current file correctness",
+        "workspace_fingerprint": "072603e8d9025e8e9ed54c55a9b5346494ec2d084e4403794527e43b467ac3c7",
+        "verification_status": "passed",
+        "verification_exit_code": 0,
+        "verification_input_fingerprint": "072603e8d9025e8e9ed54c55a9b5346494ec2d084e4403794527e43b467ac3c7"
+      },
+      "verification": {
+        "status": "passed",
+        "exit_code": 0,
+        "feedback": "Exit code: 0\n",
+        "output": "/private/tmp/corecoder-regression-gate-check/offline-demo/result/verification-2.txt"
+      }
+    }
+  ],
+  "model_calls": 2,
+  "elapsed_seconds": 0.445,
+  "error_type": null,
+  "completion_scope": "acceptance_and_regression",
+  "completed": true,
+  "acceptance_status": "passed",
+  "regression_status": "passed",
+  "regression_baseline": {
+    "status": "passed",
+    "exit_code": 0,
+    "feedback": "Exit code: 0\n.                                                                        [100%]\n1 passed in 0.00s\n",
+    "output": "/private/tmp/corecoder-regression-gate-check/offline-demo/result/regression-baseline.txt",
+    "phase": "regression",
+    "report": "/private/tmp/corecoder-regression-gate-check/offline-demo/result/regression-baseline.xml",
+    "tests": {
+      "tests.test_old::test_legacy": "passed"
+    },
+    "failures": [],
+    "new_failures": [],
+    "lost_tests": [],
+    "known_failures_present": []
+  }
+}

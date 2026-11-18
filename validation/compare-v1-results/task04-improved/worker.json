@@ -1,0 +1,82 @@
+{
+  "arm": "improved",
+  "model": {
+    "name": "deepseek-flash",
+    "base_url": "https://api.deepseek.com",
+    "temperature": 0.0,
+    "max_tokens": 4096,
+    "context_tokens": 128000,
+    "request_seconds": 60,
+    "sdk_retries": 0
+  },
+  "limits": {
+    "max_attempts": 3,
+    "max_model_calls": 30,
+    "rounds_per_attempt": 30,
+    "max_seconds": 900,
+    "verifier_seconds": 60,
+    "max_stagnant_attempts": 2
+  },
+  "behavior": {
+    "chat_attempts": 3,
+    "empty_response_retry": 1,
+    "verification_feedback": true
+  },
+  "live": true,
+  "execution_status": "no_progress",
+  "controller": {
+    "status": "no_progress",
+    "attempts": [
+      {
+        "number": 1,
+        "agent_status": "output_limit",
+        "before": "b2c5a4467d439a0b69cac27e403e76da82478247de22a28d95bce442f3242782",
+        "model_calls_before": 0,
+        "agent_run": {
+          "status": "output_limit",
+          "rounds": 8,
+          "empty_retries": 0,
+          "finish_reason": "length",
+          "error_type": null
+        },
+        "model_calls_after": 8,
+        "after": "b2c5a4467d439a0b69cac27e403e76da82478247de22a28d95bce442f3242782",
+        "verification": {
+          "status": "failed",
+          "exit_code": 1,
+          "feedback": "Exit code: 1\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Posix[33 chars]yt9010tjgz7z68qb4skb80000gn/T/corecoder-cwd-test-3etsvoqg') != Posix[33 chars]yt9010tjgz7z68qb4skb80000gn/T/corecoder-cwd-test-3etsvoqg/sub')\n\n======================================================================\nFAIL: test_skipped_cd_with_successful_overall_status (test_acceptance.BashCwdAcceptance.test_skipped_cd_with_successful_overall_status)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/tmp/corecoder-compare-01/evaluation/task04/test_acceptance.py\", line 50, in test_skipped_cd_with_successful_overall_status\n    self.assert_directory(self.root)\n    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^\n  File \"/tmp/corecoder-compare-01/evaluation/task04/test_acceptance.py\", line 30, in assert_directory\n    self.assertEqual(Path(get_tracked_cwd()).resolve(), expected.resolve())\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Posix[33 chars]yt9010tjgz7z68qb4skb80000gn/T/corecoder-cwd-test-nyraocjy/sub') != Posix[33 chars]yt9010tjgz7z68qb4skb80000gn/T/corecoder-cwd-test-nyraocjy')\n\n======================================================================\nFAIL: test_successful_cd_followed_by_failed_and_command (test_acceptance.BashCwdAcceptance.test_successful_cd_followed_by_failed_and_command)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/tmp/corecoder-compare-01/evaluation/task04/test_acceptance.py\", line 36, in test_successful_cd_followed_by_failed_and_command\n    self.assert_directory(self.root / \"sub\")\n    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/corecoder-compare-01/evaluation/task04/test_acceptance.py\", line 30, in assert_directory\n    self.assertEqual(Path(get_tracked_cwd()).resolve(), expected.resolve())\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Posix[33 chars]yt9010tjgz7z68qb4skb80000gn/T/corecoder-cwd-test-yx8wmqvy') != Posix[33 chars]yt9010tjgz7z68qb4skb80000gn/T/corecoder-cwd-test-yx8wmqvy/sub')\n\n======================================================================\nFAIL: test_successful_cd_followed_by_failed_semicolon_command (test_acceptance.BashCwdAcceptance.test_successful_cd_followed_by_failed_semicolon_command)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/tmp/corecoder-compare-01/evaluation/task04/test_acceptance.py\", line 41, in test_successful_cd_followed_by_failed_semicolon_command\n    self.assert_directory(self.root / \"sub\")\n    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/corecoder-compare-01/evaluation/task04/test_acceptance.py\", line 30, in assert_directory\n    self.assertEqual(Path(get_tracked_cwd()).resolve(), expected.resolve())\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Posix[33 chars]yt9010tjgz7z68qb4skb80000gn/T/corecoder-cwd-test-7iy5cg2r') != Posix[33 chars]yt9010tjgz7z68qb4skb80000gn/T/corecoder-cwd-test-7iy5cg2r/sub')\n\n======================================================================\nFAIL: test_thread_directories_do_not_cross_or_change_process_cwd (test_acceptance.BashCwdAcceptance.test_thread_directories_do_not_cross_or_change_process_cwd)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/tmp/corecoder-compare-01/evaluation/task04/test_acceptance.py\", line 108, in test_thread_directories_do_not_cross_or_change_process_cwd\n    self.assertEqual(recorded, self.root / target)\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Posix[33 chars]yt9010tjgz7z68qb4skb80000gn/T/corecoder-cwd-test-fsdc1dde') != Posix[33 chars]yt9010tjgz7z68qb4skb80000gn/T/corecoder-cwd-test-fsdc1dde/sub')\n\n----------------------------------------------------------------------\nRan 14 tests in 0.083s\n\nFAILED (failures=9)\n",
+          "output": "/private/tmp/corecoder-compare-01/task04-improved/run/controller/verification-1.txt"
+        }
+      },
+      {
+        "number": 2,
+        "agent_status": "output_limit",
+        "before": "b2c5a4467d439a0b69cac27e403e76da82478247de22a28d95bce442f3242782",
+        "model_calls_before": 8,
+        "agent_run": {
+          "status": "output_limit",
+          "rounds": 2,
+          "empty_retries": 0,
+          "finish_reason": "length",
+          "error_type": null
+        },
+        "model_calls_after": 10,
+        "after": "b2c5a4467d439a0b69cac27e403e76da82478247de22a28d95bce442f3242782",
+        "verification": {
+          "status": "failed",
+          "exit_code": 1,
+          "feedback": "Exit code: 1\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Posix[33 chars]yt9010tjgz7z68qb4skb80000gn/T/corecoder-cwd-test-q68tyuk1') != Posix[33 chars]yt9010tjgz7z68qb4skb80000gn/T/corecoder-cwd-test-q68tyuk1/sub')\n\n======================================================================\nFAIL: test_skipped_cd_with_successful_overall_status (test_acceptance.BashCwdAcceptance.test_skipped_cd_with_successful_overall_status)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/tmp/corecoder-compare-01/evaluation/task04/test_acceptance.py\", line 50, in test_skipped_cd_with_successful_overall_status\n    self.assert_directory(self.root)\n    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^\n  File \"/tmp/corecoder-compare-01/evaluation/task04/test_acceptance.py\", line 30, in assert_directory\n    self.assertEqual(Path(get_tracked_cwd()).resolve(), expected.resolve())\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Posix[33 chars]yt9010tjgz7z68qb4skb80000gn/T/corecoder-cwd-test-hgtvtudf/sub') != Posix[33 chars]yt9010tjgz7z68qb4skb80000gn/T/corecoder-cwd-test-hgtvtudf')\n\n======================================================================\nFAIL: test_successful_cd_followed_by_failed_and_command (test_acceptance.BashCwdAcceptance.test_successful_cd_followed_by_failed_and_command)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/tmp/corecoder-compare-01/evaluation/task04/test_acceptance.py\", line 36, in test_successful_cd_followed_by_failed_and_command\n    self.assert_directory(self.root / \"sub\")\n    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/corecoder-compare-01/evaluation/task04/test_acceptance.py\", line 30, in assert_directory\n    self.assertEqual(Path(get_tracked_cwd()).resolve(), expected.resolve())\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Posix[33 chars]yt9010tjgz7z68qb4skb80000gn/T/corecoder-cwd-test-7oa1m7g7') != Posix[33 chars]yt9010tjgz7z68qb4skb80000gn/T/corecoder-cwd-test-7oa1m7g7/sub')\n\n======================================================================\nFAIL: test_successful_cd_followed_by_failed_semicolon_command (test_acceptance.BashCwdAcceptance.test_successful_cd_followed_by_failed_semicolon_command)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/tmp/corecoder-compare-01/evaluation/task04/test_acceptance.py\", line 41, in test_successful_cd_followed_by_failed_semicolon_command\n    self.assert_directory(self.root / \"sub\")\n    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/corecoder-compare-01/evaluation/task04/test_acceptance.py\", line 30, in assert_directory\n    self.assertEqual(Path(get_tracked_cwd()).resolve(), expected.resolve())\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Posix[33 chars]yt9010tjgz7z68qb4skb80000gn/T/corecoder-cwd-test-vwsy7ao_') != Posix[33 chars]yt9010tjgz7z68qb4skb80000gn/T/corecoder-cwd-test-vwsy7ao_/sub')\n\n======================================================================\nFAIL: test_thread_directories_do_not_cross_or_change_process_cwd (test_acceptance.BashCwdAcceptance.test_thread_directories_do_not_cross_or_change_process_cwd)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/tmp/corecoder-compare-01/evaluation/task04/test_acceptance.py\", line 108, in test_thread_directories_do_not_cross_or_change_process_cwd\n    self.assertEqual(recorded, self.root / target)\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Posix[33 chars]yt9010tjgz7z68qb4skb80000gn/T/corecoder-cwd-test-s68thyz7') != Posix[33 chars]yt9010tjgz7z68qb4skb80000gn/T/corecoder-cwd-test-s68thyz7/sub')\n\n----------------------------------------------------------------------\nRan 14 tests in 0.082s\n\nFAILED (failures=9)\n",
+          "output": "/private/tmp/corecoder-compare-01/task04-improved/run/controller/verification-2.txt"
+        }
+      }
+    ],
+    "model_calls": 10,
+    "elapsed_seconds": 93.817,
+    "error_type": null
+  },
+  "model_calls": 10,
+  "elapsed_seconds": 93.81920929101761,
+  "prompt_tokens": 143515,
+  "completion_tokens": 14873,
+  "estimated_cost_usd": null
+}

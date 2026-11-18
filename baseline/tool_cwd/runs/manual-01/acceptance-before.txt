@@ -1,0 +1,137 @@
+test_absolute_paths_keep_their_meaning (test_acceptance.ToolCwdAcceptance.test_absolute_paths_keep_their_meaning) ... ok
+test_child_directory_does_not_leak_into_parent (test_acceptance.ToolCwdAcceptance.test_child_directory_does_not_leak_into_parent) ... FAIL
+test_edit_changes_only_session_file (test_acceptance.ToolCwdAcceptance.test_edit_changes_only_session_file) ... FAIL
+test_explicit_relative_search_directory (test_acceptance.ToolCwdAcceptance.test_explicit_relative_search_directory) ... FAIL
+test_glob_default_searches_only_session_directory (test_acceptance.ToolCwdAcceptance.test_glob_default_searches_only_session_directory) ... FAIL
+test_grep_default_searches_only_session_directory (test_acceptance.ToolCwdAcceptance.test_grep_default_searches_only_session_directory) ... FAIL
+test_grep_relative_filename_uses_session_directory (test_acceptance.ToolCwdAcceptance.test_grep_relative_filename_uses_session_directory) ... FAIL
+test_parallel_file_tools_inherit_batch_directory (test_acceptance.ToolCwdAcceptance.test_parallel_file_tools_inherit_batch_directory) ... FAIL
+test_read_matches_shell_after_cd (test_acceptance.ToolCwdAcceptance.test_read_matches_shell_after_cd) ... FAIL
+test_same_batch_uses_start_directory_then_merges_cd (test_acceptance.ToolCwdAcceptance.test_same_batch_uses_start_directory_then_merges_cd) ... FAIL
+test_threads_do_not_share_path_context_or_change_process_cwd (test_acceptance.ToolCwdAcceptance.test_threads_do_not_share_path_context_or_change_process_cwd) ... FAIL
+test_tilde_still_uses_home (test_acceptance.ToolCwdAcceptance.test_tilde_still_uses_home) ... ok
+test_unset_session_directory_falls_back_to_process_directory (test_acceptance.ToolCwdAcceptance.test_unset_session_directory_falls_back_to_process_directory) ... ok
+test_write_creates_nested_file_in_session_directory (test_acceptance.ToolCwdAcceptance.test_write_creates_nested_file_in_session_directory) ... FAIL
+test_write_overwrites_only_session_file (test_acceptance.ToolCwdAcceptance.test_write_overwrites_only_session_file) ... FAIL
+
+======================================================================
+FAIL: test_child_directory_does_not_leak_into_parent (test_acceptance.ToolCwdAcceptance.test_child_directory_does_not_leak_into_parent)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/tool_cwd/test_acceptance.py", line 172, in test_child_directory_does_not_leak_into_parent
+    self.assertIn("OTHER VALUE", result)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'OTHER VALUE' not found in '[Sub-agent completed]\n1\tROOT VALUE'
+
+======================================================================
+FAIL: test_edit_changes_only_session_file (test_acceptance.ToolCwdAcceptance.test_edit_changes_only_session_file)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/tool_cwd/test_acceptance.py", line 72, in test_edit_changes_only_session_file
+    self.assertEqual((self.root / "backend/note.txt").read_text(), "SUB EDITED")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'SUB VALUE' != 'SUB EDITED'
+- SUB VALUE
++ SUB EDITED
+
+
+======================================================================
+FAIL: test_explicit_relative_search_directory (test_acceptance.ToolCwdAcceptance.test_explicit_relative_search_directory)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/tool_cwd/test_acceptance.py", line 99, in test_explicit_relative_search_directory
+    self.assertIn("ASSET", self.grep.execute("ASSET", path="assets"))
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'ASSET' not found in 'Error: assets not found'
+
+======================================================================
+FAIL: test_glob_default_searches_only_session_directory (test_acceptance.ToolCwdAcceptance.test_glob_default_searches_only_session_directory)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/tool_cwd/test_acceptance.py", line 87, in test_glob_default_searches_only_session_directory
+    self.assertEqual({Path(line).resolve() for line in result.splitlines()}, {self.root / "backend/note.txt"})
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Items in the first set but not the second:
+PosixPath('/private/var/folders/_8/4ygyt9010tjgz7z68qb4skb80000gn/T/corecoder-tool-cwd-94rt74c_/note.txt')
+Items in the second set but not the first:
+PosixPath('/private/var/folders/_8/4ygyt9010tjgz7z68qb4skb80000gn/T/corecoder-tool-cwd-94rt74c_/backend/note.txt')
+
+======================================================================
+FAIL: test_grep_default_searches_only_session_directory (test_acceptance.ToolCwdAcceptance.test_grep_default_searches_only_session_directory)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/tool_cwd/test_acceptance.py", line 92, in test_grep_default_searches_only_session_directory
+    self.assertNotIn("ROOT VALUE", result)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'ROOT VALUE' unexpectedly found in '/private/var/folders/_8/4ygyt9010tjgz7z68qb4skb80000gn/T/corecoder-tool-cwd-c_0z1rfd/note.txt:1: ROOT VALUE\n/private/var/folders/_8/4ygyt9010tjgz7z68qb4skb80000gn/T/corecoder-tool-cwd-c_0z1rfd/other/note.txt:1: OTHER VALUE\n/private/var/folders/_8/4ygyt9010tjgz7z68qb4skb80000gn/T/corecoder-tool-cwd-c_0z1rfd/backend/note.txt:1: SUB VALUE'
+
+======================================================================
+FAIL: test_grep_relative_filename_uses_session_directory (test_acceptance.ToolCwdAcceptance.test_grep_relative_filename_uses_session_directory)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/tool_cwd/test_acceptance.py", line 96, in test_grep_relative_filename_uses_session_directory
+    self.assertIn("SUB VALUE", self.grep.execute("VALUE", path="note.txt"))
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'SUB VALUE' not found in '/private/var/folders/_8/4ygyt9010tjgz7z68qb4skb80000gn/T/corecoder-tool-cwd-pc9ueprb/note.txt:1: ROOT VALUE'
+
+======================================================================
+FAIL: test_parallel_file_tools_inherit_batch_directory (test_acceptance.ToolCwdAcceptance.test_parallel_file_tools_inherit_batch_directory)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/tool_cwd/test_acceptance.py", line 128, in test_parallel_file_tools_inherit_batch_directory
+    self.assertIn("SUB VALUE", results[0])
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'SUB VALUE' not found in '1\tROOT VALUE'
+
+======================================================================
+FAIL: test_read_matches_shell_after_cd (test_acceptance.ToolCwdAcceptance.test_read_matches_shell_after_cd)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/tool_cwd/test_acceptance.py", line 66, in test_read_matches_shell_after_cd
+    self.assertIn("SUB VALUE", self.read.execute("note.txt"))
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'SUB VALUE' not found in '1\tROOT VALUE'
+
+======================================================================
+FAIL: test_same_batch_uses_start_directory_then_merges_cd (test_acceptance.ToolCwdAcceptance.test_same_batch_uses_start_directory_then_merges_cd)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/tool_cwd/test_acceptance.py", line 139, in test_same_batch_uses_start_directory_then_merges_cd
+    self.assertIn("SUB VALUE", results[1])
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'SUB VALUE' not found in '1\tROOT VALUE'
+
+======================================================================
+FAIL: test_threads_do_not_share_path_context_or_change_process_cwd (test_acceptance.ToolCwdAcceptance.test_threads_do_not_share_path_context_or_change_process_cwd)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/tool_cwd/test_acceptance.py", line 157, in test_threads_do_not_share_path_context_or_change_process_cwd
+    self.assertIn("SUB VALUE", a.result(timeout=10))
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'SUB VALUE' not found in '1\tROOT VALUE'
+
+======================================================================
+FAIL: test_write_creates_nested_file_in_session_directory (test_acceptance.ToolCwdAcceptance.test_write_creates_nested_file_in_session_directory)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/tool_cwd/test_acceptance.py", line 82, in test_write_creates_nested_file_in_session_directory
+    self.assertTrue((self.root / "backend/new/deep.txt").is_file())
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_write_overwrites_only_session_file (test_acceptance.ToolCwdAcceptance.test_write_overwrites_only_session_file)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/qiaoya/Desktop/CoreCoder/baseline/tool_cwd/test_acceptance.py", line 77, in test_write_overwrites_only_session_file
+    self.assertEqual((self.root / "backend/note.txt").read_text(), "NEW")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'SUB VALUE' != 'NEW'
+- SUB VALUE
++ NEW
+
+
+----------------------------------------------------------------------
+Ran 15 tests in 0.074s
+
+FAILED (failures=12)

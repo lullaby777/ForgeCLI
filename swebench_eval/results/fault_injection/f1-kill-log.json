@@ -1,0 +1,318 @@
+[
+  {
+    "iid": "pytest-dev__pytest-11143",
+    "mode": "nofault",
+    "exit": 0
+  },
+  {
+    "iid": "pallets__flask-4992",
+    "mode": "nofault",
+    "exit": 0
+  },
+  {
+    "iid": "pytest-dev__pytest-5221",
+    "mode": "nofault",
+    "exit": 0
+  },
+  {
+    "iid": "pytest-dev__pytest-5103",
+    "mode": "nofault",
+    "exit": 0
+  },
+  {
+    "iid": "pytest-dev__pytest-5227",
+    "mode": "nofault",
+    "exit": 0
+  },
+  {
+    "iid": "pytest-dev__pytest-5692",
+    "mode": "nofault",
+    "exit": 0
+  },
+  {
+    "iid": "pytest-dev__pytest-7168",
+    "mode": "nofault",
+    "exit": 0
+  },
+  {
+    "iid": "pytest-dev__pytest-5495",
+    "mode": "nofault",
+    "exit": 0
+  },
+  {
+    "iid": "pytest-dev__pytest-6116",
+    "mode": "nofault",
+    "exit": 0
+  },
+  {
+    "iid": "pytest-dev__pytest-7373",
+    "mode": "nofault",
+    "exit": 0
+  },
+  {
+    "iid": "pytest-dev__pytest-7432",
+    "mode": "nofault",
+    "exit": 0
+  },
+  {
+    "iid": "pytest-dev__pytest-8906",
+    "mode": "nofault",
+    "exit": 0
+  },
+  {
+    "iid": "pytest-dev__pytest-8365",
+    "mode": "nofault",
+    "exit": 0
+  },
+  {
+    "iid": "pytest-dev__pytest-7490",
+    "mode": "nofault",
+    "exit": 0
+  },
+  {
+    "iid": "pallets__flask-4992",
+    "mode": "kill",
+    "k_after_task": 2,
+    "delay_s": 6.58,
+    "killed": true,
+    "killed_at_s": 47.1,
+    "last_trace_event": "llm_response",
+    "checkpoint_at_kill": {
+      "phase": "agent",
+      "pending": "tools",
+      "ledger_calls": 4,
+      "attempts": 1,
+      "status": "ready"
+    },
+    "resume_exit": 0,
+    "resume_seconds": 2.5,
+    "resume_stop": "tools_outcome_unknown"
+  },
+  {
+    "iid": "pytest-dev__pytest-11143",
+    "mode": "kill",
+    "k_after_task": 6,
+    "delay_s": 1.33,
+    "killed": false,
+    "note": "process finished (or never created a durable task) before the kill point"
+  },
+  {
+    "iid": "pytest-dev__pytest-5221",
+    "mode": "kill",
+    "k_after_task": 6,
+    "delay_s": 5.54,
+    "killed": false,
+    "note": "process finished (or never created a durable task) before the kill point"
+  },
+  {
+    "iid": "pytest-dev__pytest-9359",
+    "mode": "nofault",
+    "exit": 0
+  },
+  {
+    "iid": "pytest-dev__pytest-5103",
+    "mode": "kill",
+    "k_after_task": 3,
+    "delay_s": 5.16,
+    "killed": true,
+    "killed_at_s": 164.1,
+    "last_trace_event": "llm_request",
+    "checkpoint_at_kill": {
+      "phase": "agent",
+      "pending": "model",
+      "ledger_calls": 4,
+      "attempts": 2,
+      "status": "ready"
+    },
+    "resume_exit": 0,
+    "resume_seconds": 128.0,
+    "resume_stop": "passed"
+  },
+  {
+    "iid": "pytest-dev__pytest-5227",
+    "mode": "kill",
+    "k_after_task": 1,
+    "delay_s": 6.28,
+    "killed": true,
+    "killed_at_s": 39.5,
+    "last_trace_event": "llm_request",
+    "checkpoint_at_kill": {
+      "phase": "agent",
+      "pending": "model",
+      "ledger_calls": 4,
+      "attempts": 1,
+      "status": "ready"
+    },
+    "resume_exit": 0,
+    "resume_seconds": 172.1,
+    "resume_stop": "passed"
+  },
+  {
+    "iid": "pytest-dev__pytest-6116",
+    "mode": "kill",
+    "k_after_task": 6,
+    "delay_s": 1.94,
+    "killed": false,
+    "note": "process finished (or never created a durable task) before the kill point"
+  },
+  {
+    "iid": "pytest-dev__pytest-5692",
+    "mode": "kill",
+    "k_after_task": 4,
+    "delay_s": 0.32,
+    "killed": true,
+    "killed_at_s": 55.5,
+    "last_trace_event": "llm_request",
+    "checkpoint_at_kill": {
+      "phase": "agent",
+      "pending": "model",
+      "ledger_calls": 5,
+      "attempts": 1,
+      "status": "ready"
+    },
+    "resume_exit": 0,
+    "resume_seconds": 7.5,
+    "resume_stop": "passed"
+  },
+  {
+    "iid": "pytest-dev__pytest-5495",
+    "mode": "kill",
+    "k_after_task": 4,
+    "delay_s": 5.54,
+    "killed": false,
+    "note": "process finished (or never created a durable task) before the kill point"
+  },
+  {
+    "iid": "pytest-dev__pytest-7373",
+    "mode": "kill",
+    "k_after_task": 2,
+    "delay_s": 1.21,
+    "killed": true,
+    "killed_at_s": 43.8,
+    "last_trace_event": "llm_request",
+    "checkpoint_at_kill": {
+      "phase": "agent",
+      "pending": "model",
+      "ledger_calls": 3,
+      "attempts": 1,
+      "status": "ready"
+    },
+    "resume_exit": 0,
+    "resume_seconds": 28.0,
+    "resume_stop": "passed"
+  },
+  {
+    "iid": "pytest-dev__pytest-7168",
+    "mode": "kill",
+    "k_after_task": 4,
+    "delay_s": 1.14,
+    "killed": true,
+    "killed_at_s": 73.1,
+    "last_trace_event": "llm_response",
+    "checkpoint_at_kill": {
+      "phase": "agent",
+      "pending": null,
+      "ledger_calls": 4,
+      "attempts": 1,
+      "status": "ready"
+    },
+    "resume_exit": 0,
+    "resume_seconds": 65.8,
+    "resume_stop": "passed"
+  },
+  {
+    "iid": "pytest-dev__pytest-7490",
+    "mode": "kill",
+    "k_after_task": 2,
+    "delay_s": 2.42,
+    "killed": true,
+    "killed_at_s": 47.0,
+    "last_trace_event": "llm_request",
+    "checkpoint_at_kill": {
+      "phase": "agent",
+      "pending": "model",
+      "ledger_calls": 4,
+      "attempts": 1,
+      "status": "ready"
+    },
+    "resume_exit": 0,
+    "resume_seconds": 74.6,
+    "resume_stop": "passed"
+  },
+  {
+    "iid": "pytest-dev__pytest-7432",
+    "mode": "kill",
+    "k_after_task": 6,
+    "delay_s": 3.54,
+    "killed": true,
+    "killed_at_s": 127.2,
+    "last_trace_event": "llm_response",
+    "checkpoint_at_kill": {
+      "phase": "agent",
+      "pending": "tools",
+      "ledger_calls": 6,
+      "attempts": 1,
+      "status": "ready"
+    },
+    "resume_exit": 0,
+    "resume_seconds": 0.8,
+    "resume_stop": "tools_outcome_unknown"
+  },
+  {
+    "iid": "pytest-dev__pytest-9359",
+    "mode": "kill",
+    "k_after_task": 5,
+    "delay_s": 3.1,
+    "killed": true,
+    "killed_at_s": 73.6,
+    "last_trace_event": "llm_response",
+    "checkpoint_at_kill": {
+      "phase": "agent",
+      "pending": "tools",
+      "ledger_calls": 5,
+      "attempts": 1,
+      "status": "ready"
+    },
+    "resume_exit": 0,
+    "resume_seconds": 0.7,
+    "resume_stop": "tools_outcome_unknown"
+  },
+  {
+    "iid": "pytest-dev__pytest-8365",
+    "mode": "kill",
+    "k_after_task": 3,
+    "delay_s": 6.05,
+    "killed": true,
+    "killed_at_s": 105.4,
+    "last_trace_event": "llm_request",
+    "checkpoint_at_kill": {
+      "phase": "agent",
+      "pending": "model",
+      "ledger_calls": 4,
+      "attempts": 1,
+      "status": "ready"
+    },
+    "resume_exit": 0,
+    "resume_seconds": 40.7,
+    "resume_stop": "passed"
+  },
+  {
+    "iid": "pytest-dev__pytest-8906",
+    "mode": "kill",
+    "k_after_task": 1,
+    "delay_s": 0.93,
+    "killed": true,
+    "killed_at_s": 53.1,
+    "last_trace_event": "llm_request",
+    "checkpoint_at_kill": {
+      "phase": "agent",
+      "pending": "model",
+      "ledger_calls": 2,
+      "attempts": 1,
+      "status": "ready"
+    },
+    "resume_exit": 0,
+    "resume_seconds": 69.6,
+    "resume_stop": "passed"
+  }
+]

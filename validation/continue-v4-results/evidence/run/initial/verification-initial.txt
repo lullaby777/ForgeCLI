@@ -1,0 +1,19 @@
+test_directory_with_spaces_and_failed_tail (test_acceptance.BashCwdAcceptance.test_directory_with_spaces_and_failed_tail) ... ok
+test_failed_cd_does_not_enable_later_and_cd (test_acceptance.BashCwdAcceptance.test_failed_cd_does_not_enable_later_and_cd) ... ok
+test_later_cd_failure_preserves_earlier_success (test_acceptance.BashCwdAcceptance.test_later_cd_failure_preserves_earlier_success) ... ok
+test_nested_changes_survive_later_failure (test_acceptance.BashCwdAcceptance.test_nested_changes_survive_later_failure) ... ok
+test_parallel_agent_batch_inherits_and_merges_failed_cd (test_acceptance.BashCwdAcceptance.test_parallel_agent_batch_inherits_and_merges_failed_cd) ... ok
+test_quoted_text_is_not_executed_cd (test_acceptance.BashCwdAcceptance.test_quoted_text_is_not_executed_cd) ... ok
+test_skipped_cd_with_failed_overall_status (test_acceptance.BashCwdAcceptance.test_skipped_cd_with_failed_overall_status) ... ok
+test_skipped_cd_with_successful_overall_status (test_acceptance.BashCwdAcceptance.test_skipped_cd_with_successful_overall_status) ... ok
+test_stdout_stderr_and_exit_status_preserved (test_acceptance.BashCwdAcceptance.test_stdout_stderr_and_exit_status_preserved) ... ok
+test_subshell_does_not_change_parent_directory (test_acceptance.BashCwdAcceptance.test_subshell_does_not_change_parent_directory) ... ok
+test_successful_cd_followed_by_failed_and_command (test_acceptance.BashCwdAcceptance.test_successful_cd_followed_by_failed_and_command) ... ok
+test_successful_cd_followed_by_failed_semicolon_command (test_acceptance.BashCwdAcceptance.test_successful_cd_followed_by_failed_semicolon_command) ... ok
+test_successful_chain_still_works (test_acceptance.BashCwdAcceptance.test_successful_chain_still_works) ... ok
+test_thread_directories_do_not_cross_or_change_process_cwd (test_acceptance.BashCwdAcceptance.test_thread_directories_do_not_cross_or_change_process_cwd) ... ok
+
+----------------------------------------------------------------------
+Ran 14 tests in 0.172s
+
+OK

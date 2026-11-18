@@ -1,0 +1,82 @@
+{
+  "arm": "improved",
+  "model": {
+    "name": "deepseek-flash",
+    "base_url": "https://api.deepseek.com",
+    "temperature": 0.0,
+    "max_tokens": 4096,
+    "context_tokens": 128000,
+    "request_seconds": 60,
+    "sdk_retries": 0
+  },
+  "limits": {
+    "max_attempts": 3,
+    "max_model_calls": 30,
+    "rounds_per_attempt": 30,
+    "max_seconds": 900,
+    "verifier_seconds": 60,
+    "max_stagnant_attempts": 2
+  },
+  "behavior": {
+    "chat_attempts": 3,
+    "empty_response_retry": 1,
+    "verification_feedback": true
+  },
+  "live": true,
+  "execution_status": "passed",
+  "controller": {
+    "status": "passed",
+    "attempts": [
+      {
+        "number": 1,
+        "agent_status": "output_limit",
+        "before": "7febb7fa00eb79e75a8ef7d06f5766fc53c650747ed6af41c213ddaa3fae9c75",
+        "model_calls_before": 0,
+        "agent_run": {
+          "status": "output_limit",
+          "rounds": 11,
+          "empty_retries": 0,
+          "finish_reason": "length",
+          "error_type": null
+        },
+        "model_calls_after": 11,
+        "after": "7febb7fa00eb79e75a8ef7d06f5766fc53c650747ed6af41c213ddaa3fae9c75",
+        "verification": {
+          "status": "failed",
+          "exit_code": 1,
+          "feedback": "Exit code: 1\n~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: False is not true : Error: old_string not found in /var/folders/_8/4ygyt9010tjgz7z68qb4skb80000gn/T/corecoder-newline-test-rc4l2_3i/sample.txt.\nFile starts with:\nhead\nalpha\nbeta\ntail\n\n\n======================================================================\nFAIL: test_crlf_multiline_with_lf_arguments (test_acceptance.NewlineAcceptance.test_crlf_multiline_with_lf_arguments)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/tmp/corecoder-compare-01/evaluation/task02/test_acceptance.py\", line 60, in test_crlf_multiline_with_lf_arguments\n    self.edited(b\"head\\r\\nalpha\\r\\nbeta\\r\\ntail\\r\\n\", \"alpha\\nbeta\", \"A\\nB\\nC\",\n    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n                b\"head\\r\\nA\\r\\nB\\r\\nC\\r\\ntail\\r\\n\")\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/corecoder-compare-01/evaluation/task02/test_acceptance.py\", line 49, in edited\n    self.assertEqual(path.read_bytes(), expected)\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: b'head\\nA\\nB\\nC\\ntail\\n' != b'head\\r\\nA\\r\\nB\\r\\nC\\r\\ntail\\r\\n'\n\n======================================================================\nFAIL: test_crlf_single_word (test_acceptance.NewlineAcceptance.test_crlf_single_word)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/tmp/corecoder-compare-01/evaluation/task02/test_acceptance.py\", line 53, in test_crlf_single_word\n    self.edited(b\"alpha\\r\\nbeta\\r\\ngamma\\r\\n\", \"beta\", \"BETA\",\n    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n                b\"alpha\\r\\nBETA\\r\\ngamma\\r\\n\")\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/corecoder-compare-01/evaluation/task02/test_acceptance.py\", line 49, in edited\n    self.assertEqual(path.read_bytes(), expected)\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: b'alpha\\nBETA\\ngamma\\n' != b'alpha\\r\\nBETA\\r\\ngamma\\r\\n'\n\n======================================================================\nFAIL: test_no_final_newline_preserved (test_acceptance.NewlineAcceptance.test_no_final_newline_preserved) (before=b'alpha\\r\\nbeta')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/tmp/corecoder-compare-01/evaluation/task02/test_acceptance.py\", line 75, in test_no_final_newline_preserved\n    self.edited(before, \"beta\", \"BETA\", expected)\n    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/corecoder-compare-01/evaluation/task02/test_acceptance.py\", line 49, in edited\n    self.assertEqual(path.read_bytes(), expected)\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: b'alpha\\nBETA' != b'alpha\\r\\nBETA'\n\n======================================================================\nFAIL: test_unicode_and_blank_lines (test_acceptance.NewlineAcceptance.test_unicode_and_blank_lines)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/tmp/corecoder-compare-01/evaluation/task02/test_acceptance.py\", line 78, in test_unicode_and_blank_lines\n    self.edited(\"标题\\r\\n\\r\\n旧内容\\r\\n结尾\\r\\n\".encode(), \"旧内容\", \"新内容\",\n    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n                \"标题\\r\\n\\r\\n新内容\\r\\n结尾\\r\\n\".encode())\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/corecoder-compare-01/evaluation/task02/test_acceptance.py\", line 49, in edited\n    self.assertEqual(path.read_bytes(), expected)\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: b'\\xe[17 chars]\\x98\\n\\n\\xe6\\x96\\xb0\\xe5\\x86\\x85\\xe5\\xae\\xb9\\n[22 chars]be\\n' != b'\\xe[17 chars]\\x98\\r\\n\\r\\n\\xe6\\x96\\xb0\\xe5\\x86\\x85\\xe5\\xae\\x[30 chars]\\r\\n'\n\n----------------------------------------------------------------------\nRan 12 tests in 0.007s\n\nFAILED (failures=5)\n",
+          "output": "/private/tmp/corecoder-compare-01/task02-improved/run/controller/verification-1.txt"
+        }
+      },
+      {
+        "number": 2,
+        "agent_status": "model_call_limit",
+        "before": "7febb7fa00eb79e75a8ef7d06f5766fc53c650747ed6af41c213ddaa3fae9c75",
+        "model_calls_before": 11,
+        "agent_run": {
+          "status": "error",
+          "rounds": 20,
+          "empty_retries": 0,
+          "finish_reason": "tool_calls",
+          "error_type": "BudgetExceeded"
+        },
+        "model_calls_after": 30,
+        "after": "bef3a2ab7aff080fe5f2c5623ceab9112adb90b9dbb7ccc7ca9d149ed5141ee9",
+        "verification": {
+          "status": "passed",
+          "exit_code": 0,
+          "feedback": "Exit code: 0\ntest_ambiguous_match_does_not_change_file_or_checkpoint (test_acceptance.NewlineAcceptance.test_ambiguous_match_does_not_change_file_or_checkpoint) ... ok\ntest_crlf_multiline_with_crlf_arguments (test_acceptance.NewlineAcceptance.test_crlf_multiline_with_crlf_arguments) ... ok\ntest_crlf_multiline_with_lf_arguments (test_acceptance.NewlineAcceptance.test_crlf_multiline_with_lf_arguments) ... ok\ntest_crlf_single_word (test_acceptance.NewlineAcceptance.test_crlf_single_word) ... ok\ntest_diff_reports_only_the_changed_line (test_acceptance.NewlineAcceptance.test_diff_reports_only_the_changed_line) ... ok\ntest_lf_multiline (test_acceptance.NewlineAcceptance.test_lf_multiline) ... ok\ntest_lf_single_word (test_acceptance.NewlineAcceptance.test_lf_single_word) ... ok\ntest_missing_match_does_not_change_file_or_checkpoint (test_acceptance.NewlineAcceptance.test_missing_match_does_not_change_file_or_checkpoint) ... ok\ntest_no_final_newline_preserved (test_acceptance.NewlineAcceptance.test_no_final_newline_preserved) ... ok\ntest_non_utf8_is_rejected_without_modification (test_acceptance.NewlineAcceptance.test_non_utf8_is_rejected_without_modification) ... ok\ntest_undo_after_restart_restores_original_bytes (test_acceptance.NewlineAcceptance.test_undo_after_restart_restores_original_bytes) ... ok\ntest_unicode_and_blank_lines (test_acceptance.NewlineAcceptance.test_unicode_and_blank_lines) ... ok\n\n----------------------------------------------------------------------\nRan 12 tests in 0.007s\n\nOK\n",
+          "output": "/private/tmp/corecoder-compare-01/task02-improved/run/controller/verification-2.txt"
+        }
+      }
+    ],
+    "model_calls": 30,
+    "elapsed_seconds": 193.182,
+    "error_type": null
+  },
+  "model_calls": 30,
+  "elapsed_seconds": 193.18516287498642,
+  "prompt_tokens": 704325,
+  "completion_tokens": 21847,
+  "estimated_cost_usd": null
+}

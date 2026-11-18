@@ -1,0 +1,88 @@
+{
+  "arm": "staged",
+  "model": {
+    "name": "deepseek-flash",
+    "base_url": "https://api.deepseek.com",
+    "temperature": 0.0,
+    "max_tokens": 8192,
+    "context_tokens": 128000,
+    "request_seconds": 60,
+    "sdk_retries": 0
+  },
+  "limits": {
+    "max_attempts": 3,
+    "max_model_calls": 30,
+    "rounds_per_attempt": 30,
+    "max_seconds": 900,
+    "verifier_seconds": 60,
+    "max_stagnant_attempts": 2
+  },
+  "behavior": {
+    "chat_attempts": 3,
+    "empty_response_retry": 1,
+    "verification_feedback": true
+  },
+  "recovery_strategy": "staged",
+  "live": true,
+  "execution_status": "passed",
+  "controller": {
+    "status": "passed",
+    "attempts": [
+      {
+        "number": 1,
+        "agent_status": "round_limit",
+        "before": "77708c9627ebd4fdbe7739557d981e0fc11ee87accddc041e180b061bf44ce48",
+        "model_calls_before": 0,
+        "agent_run": {
+          "status": "round_limit",
+          "rounds": 30,
+          "empty_retries": 0,
+          "finish_reason": "tool_calls",
+          "error_type": null
+        },
+        "model_calls_after": 30,
+        "after": "220f9d50624c56994fd68e7632eb78be6c05662698601a7c6d30f0ff45cc0a45",
+        "facts": {
+          "agent_status": "round_limit",
+          "finish_reason": "tool_calls",
+          "files_changed": true,
+          "changed_file_count": 6,
+          "changed_files": [
+            "README.md",
+            "README_CN.md",
+            "article/02-tools.md",
+            "article/02-tools_EN.md",
+            "corecoder/tools/bash.py",
+            "tests/test_bash_cwd_composition.py"
+          ],
+          "successful_read_requests": [
+            "corecoder/shell.py",
+            "tests/test_tools.py",
+            "corecoder/agent.py",
+            "tests/test_core.py",
+            "corecoder/tools/bash.py"
+          ],
+          "read_evidence_scope": "non-error tool results visible in history; not proof of current file correctness",
+          "workspace_fingerprint": "220f9d50624c56994fd68e7632eb78be6c05662698601a7c6d30f0ff45cc0a45",
+          "verification_status": "passed",
+          "verification_exit_code": 0,
+          "verification_input_fingerprint": "220f9d50624c56994fd68e7632eb78be6c05662698601a7c6d30f0ff45cc0a45"
+        },
+        "verification": {
+          "status": "passed",
+          "exit_code": 0,
+          "feedback": "Exit code: 0\ntest_directory_with_spaces_and_failed_tail (test_acceptance.BashCwdAcceptance.test_directory_with_spaces_and_failed_tail) ... ok\ntest_failed_cd_does_not_enable_later_and_cd (test_acceptance.BashCwdAcceptance.test_failed_cd_does_not_enable_later_and_cd) ... ok\ntest_later_cd_failure_preserves_earlier_success (test_acceptance.BashCwdAcceptance.test_later_cd_failure_preserves_earlier_success) ... ok\ntest_nested_changes_survive_later_failure (test_acceptance.BashCwdAcceptance.test_nested_changes_survive_later_failure) ... ok\ntest_parallel_agent_batch_inherits_and_merges_failed_cd (test_acceptance.BashCwdAcceptance.test_parallel_agent_batch_inherits_and_merges_failed_cd) ... ok\ntest_quoted_text_is_not_executed_cd (test_acceptance.BashCwdAcceptance.test_quoted_text_is_not_executed_cd) ... ok\ntest_skipped_cd_with_failed_overall_status (test_acceptance.BashCwdAcceptance.test_skipped_cd_with_failed_overall_status) ... ok\ntest_skipped_cd_with_successful_overall_status (test_acceptance.BashCwdAcceptance.test_skipped_cd_with_successful_overall_status) ... ok\ntest_stdout_stderr_and_exit_status_preserved (test_acceptance.BashCwdAcceptance.test_stdout_stderr_and_exit_status_preserved) ... ok\ntest_subshell_does_not_change_parent_directory (test_acceptance.BashCwdAcceptance.test_subshell_does_not_change_parent_directory) ... ok\ntest_successful_cd_followed_by_failed_and_command (test_acceptance.BashCwdAcceptance.test_successful_cd_followed_by_failed_and_command) ... ok\ntest_successful_cd_followed_by_failed_semicolon_command (test_acceptance.BashCwdAcceptance.test_successful_cd_followed_by_failed_semicolon_command) ... ok\ntest_successful_chain_still_works (test_acceptance.BashCwdAcceptance.test_successful_chain_still_works) ... ok\ntest_thread_directories_do_not_cross_or_change_process_cwd (test_acceptance.BashCwdAcceptance.test_thread_directories_do_not_cross_or_change_process_cwd) ... ok\n\n----------------------------------------------------------------------\nRan 14 tests in 0.116s\n\nOK\n",
+          "output": "/private/tmp/corecoder-compare-03/task04-staged/run/controller/verification-1.txt"
+        }
+      }
+    ],
+    "model_calls": 30,
+    "elapsed_seconds": 263.16,
+    "error_type": null
+  },
+  "model_calls": 30,
+  "elapsed_seconds": 263.1633740409743,
+  "prompt_tokens": 1193686,
+  "completion_tokens": 35659,
+  "estimated_cost_usd": null
+}

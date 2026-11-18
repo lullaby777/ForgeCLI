@@ -1,0 +1,34 @@
+{
+  "real_model_calls": 0,
+  "formal_task_not_created": true,
+  "formal_workspace_unchanged": true,
+  "formal_sessions_empty": true,
+  "formal_pause_marker_absent": true,
+  "old_baselines_experiments_and_results_unchanged": true,
+  "runtime_matches_current_main": true,
+  "preflight": {
+    "real_model_calls": 0,
+    "target_tests": 14,
+    "target_failures": 9,
+    "regression_passed": 352,
+    "regression_known_failures": 1,
+    "formal_task_not_created": true
+  },
+  "offline_flow": {
+    "real_model_calls": 0,
+    "simulated_calls": 3,
+    "paused_calls": 1,
+    "session_restored_before_continue": true,
+    "ledger_unchanged_on_selection": true,
+    "baseline_preserved": true,
+    "same_task_id": true,
+    "safe_ctrl_c": true,
+    "stopped": "no_progress",
+    "task_was_not_fixed_by_mock": true
+  },
+  "missing_key_guard": {
+    "exit_code": 1,
+    "output": "Set CORECODER_API_KEY in this terminal. No task/model request has started."
+  },
+  "dependency_method": "Independent venv; pinned installed packages copied offline from resume-01"
+}

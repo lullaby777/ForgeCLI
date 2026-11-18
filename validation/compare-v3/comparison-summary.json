@@ -1,0 +1,17 @@
+{
+  "results": [
+    {
+      "task": "task04",
+      "arm": "generic",
+      "status": "not_run"
+    },
+    {
+      "task": "task04",
+      "arm": "staged",
+      "status": "not_run"
+    }
+  ],
+  "initial_requests_match": {
+    "task04": null
+  }
+}

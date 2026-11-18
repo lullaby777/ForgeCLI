@@ -1,0 +1,29 @@
+{
+  "real_model_calls": 0,
+  "full_offline_suite": "440 passed in 24.16s",
+  "new_regression_gate_tests": 24,
+  "changed_files_lint": "passed",
+  "existing_tests_unchanged": true,
+  "baseline_and_five_copies_unchanged": true,
+  "v1_v2_v3_v4_unchanged": true,
+  "prior_validation_files_unchanged": true,
+  "demo": {
+    "attempts": 2,
+    "scripted_model_calls": 2,
+    "target_checks": [
+      "passed",
+      "passed"
+    ],
+    "regression_checks": [
+      "failed",
+      "passed"
+    ],
+    "completed": true
+  },
+  "source_hashes": {
+    "corecoder/cli.py": "3b69ce6145cc127281a281cb852d2e0de22945430d940d7c163eddd381d88efe",
+    "corecoder/repair.py": "9d83342fd936e69cc880e514946ea3abc8afab232533b9b05fe6bfc2ace787c6",
+    "examples/regression_repair_demo.py": "e45358ca698249f7fbc981fd4d91dbdad81cc8ca2ed484431922b3d579fdaccf",
+    "tests/test_regression_gate.py": "8d8f6f7309495000a3f5a715711bbab8a38467b79e1bd15f7aa17e898b518aa9"
+  }
+}

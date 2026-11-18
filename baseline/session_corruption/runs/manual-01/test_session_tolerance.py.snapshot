@@ -1,0 +1,133 @@
+"""Fault tolerance for session files: broken files must never hide healthy ones.
+
+All cases run against a temporary sessions directory so real user sessions
+(``~/.corecoder/sessions``) are never read or written.
+"""
+
+import json
+
+import pytest
+
+from corecoder import session as session_module
+from corecoder.session import load_session, save_session
+
+
+@pytest.fixture
+def sessions_dir(tmp_path, monkeypatch):
+    monkeypatch.setattr(session_module, "SESSIONS_DIR", tmp_path)
+    return tmp_path
+
+
+def _write(root, name, payload):
+    path = root / f"{name}.json"
+    path.write_text(payload if isinstance(payload, str) else json.dumps(payload), encoding="utf-8")
+    return path
+
+
+@pytest.mark.parametrize(
+    "raw",
+    [
+        "[]",                      # the reported repro: top-level JSON array
+        "null",                    # top-level null
+        "42",                      # top-level number
+        '"a string"',              # top-level string
+        "{}",                      # object without model/messages
+        '{"messages": []}',        # model missing
+        '{"model": "", "messages": []}',      # model empty
+        '{"model": 7, "messages": []}',       # model not a string
+        '{"model": "m"}',                     # messages missing
+        '{"model": "m", "messages": {}}',     # messages not a list
+        '{"model": "m", "messages": ["x"]}',  # message not an object
+        '{"model": "m", "messages": [{"content": "x"}]}',            # role missing
+        '{"model": "m", "messages": [{"role": "", "content": "x"}]}',  # role empty
+        '{"model": "m", "messages": [{"role": 1, "content": "x"}]}',   # role not str
+        '{"model": "m", "messages": [{"role": "user", "content": 5}]}',  # bad content
+        '{ not json',              # unparsable
+    ],
+)
+def test_invalid_session_returns_none(sessions_dir, raw):
+    _write(sessions_dir, "bad", raw)
+    assert load_session("bad") is None
+
+
+def test_invalid_sessions_are_skipped_in_listing(sessions_dir):
+    good_id = save_session([{"role": "user", "content": "正常会话"}], "model-zh")
+    bad_path = _write(sessions_dir, "zz_bad", "[]")
+
+    sessions = session_module.list_sessions()
+
+    assert [s["id"] for s in sessions] == [good_id]
+    assert sessions[0] == {
+        "id": good_id,
+        "model": "model-zh",
+        "saved_at": sessions[0]["saved_at"],
+        "preview": "正常会话",
+    }
+    # the broken file is left exactly as it was
+    assert bad_path.read_text(encoding="utf-8") == "[]"
+
+
+def test_broken_file_is_not_rewritten_or_deleted(sessions_dir):
+    bad_path = _write(sessions_dir, "bad", "[]")
+    before = (bad_path.read_bytes(), bad_path.stat().st_mtime_ns)
+
+    assert load_session("bad") is None
+    session_module.list_sessions()
+
+    assert bad_path.exists()
+    assert (bad_path.read_bytes(), bad_path.stat().st_mtime_ns) == before
+
+
+def test_empty_message_list_is_valid(sessions_dir):
+    sid = save_session([], "model-empty")
+    assert load_session(sid) == ([], "model-empty")
+
+    sessions = session_module.list_sessions()
+    assert [s["id"] for s in sessions] == [sid]
+    assert sessions[0]["preview"] == ""
+
+
+def test_assistant_tool_call_history_roundtrips(sessions_dir):
+    msgs = [
+        {"role": "user", "content": "查一下天气"},
+        {"role": "assistant", "content": None, "tool_calls": [{"id": "c1", "type": "function"}]},
+        {"role": "tool", "tool_call_id": "c1", "content": "晴"},
+        {"role": "assistant", "content": "今天晴"},
+    ]
+    sid = save_session(msgs, "model-tools")
+
+    assert load_session(sid) == (msgs, "model-tools")
+    assert session_module.list_sessions()[0]["preview"] == "查一下天气"
+
+
+def test_message_without_content_key_is_accepted(sessions_dir):
+    _write(
+        sessions_dir,
+        "nocontent",
+        {"id": "nocontent", "model": "m", "saved_at": "2024-01-01 00:00:00",
+         "messages": [{"role": "assistant", "tool_calls": [{"id": "c1"}]}]},
+    )
+    assert load_session("nocontent") == (
+        [{"role": "assistant", "tool_calls": [{"id": "c1"}]}],
+        "m",
+    )
+
+
+def test_handwritten_session_file_uses_stem_when_id_missing(sessions_dir):
+    _write(sessions_dir, "legacy", {"model": "m", "messages": [{"role": "user", "content": "hi"}]})
+
+    assert load_session("legacy") == ([{"role": "user", "content": "hi"}], "m")
+    assert session_module.list_sessions()[0]["id"] == "legacy"
+
+
+def test_preview_is_truncated_to_80_chars(sessions_dir):
+    long_text = "字" * 200
+    save_session([{"role": "user", "content": long_text}], "m")
+
+    assert session_module.list_sessions()[0]["preview"] == long_text[:80]
+
+
+def test_path_traversal_guard_still_applies(sessions_dir):
+    assert load_session("../../etc/passwd") is None
+    save_session([{"role": "user", "content": "x"}], "m", "../../etc/passwd")
+    assert load_session("../../etc/passwd") == ([{"role": "user", "content": "x"}], "m")

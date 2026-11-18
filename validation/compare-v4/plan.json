@@ -1,0 +1,35 @@
+{
+  "model": {
+    "name": "deepseek-flash",
+    "base_url": "https://api.deepseek.com",
+    "temperature": 0.0,
+    "max_tokens": 8192,
+    "context_tokens": 128000,
+    "request_seconds": 60,
+    "sdk_retries": 0
+  },
+  "limits": {
+    "max_attempts": 3,
+    "max_model_calls": 30,
+    "rounds_per_attempt": 10,
+    "max_seconds": 900,
+    "verifier_seconds": 60,
+    "max_stagnant_attempts": 2
+  },
+  "comparison": "generic vs staged recovery feedback; identical instrumented runtime",
+  "real_model_calls_during_preparation": 0,
+  "tasks": [
+    "task04"
+  ],
+  "previous_suite": "/tmp/corecoder-compare-03",
+  "changed_variable": "recovery_strategy",
+  "arms": [
+    "generic",
+    "staged"
+  ],
+  "changes_from_previous": [
+    "rounds_per_attempt: 30 -> 10",
+    "observer-only feedback request/response linkage"
+  ],
+  "feedback_used_definition": "Matching feedback hash in a requested model input; response-returned recorded separately. Not proof of comprehension."
+}

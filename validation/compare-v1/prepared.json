@@ -1,0 +1,80 @@
+{
+  "real_model_calls": 0,
+  "cases": {
+    "task02-improved": {
+      "ready": true,
+      "workspace_digest": "c75cda1710e195df45120692ef5b9e7fe6d1112ee9747a734a12d4a3d2940361",
+      "runtime_digest": "6df4b7653c5ff76638f1250c914d4e9d81f447807fc2c5e82c5453bf2c35eb87",
+      "task_digest": "0fa74066cdf84b77332b5ca1741318833e0e6627416442723fc051aae2bd4825",
+      "settings_digest": "92015b9607e9ae62191e34a755dbb5f2164bced2cc7aeeb7f3d6380a0455e128",
+      "has_live_result": false
+    },
+    "task02-original": {
+      "ready": true,
+      "workspace_digest": "c75cda1710e195df45120692ef5b9e7fe6d1112ee9747a734a12d4a3d2940361",
+      "runtime_digest": "c75cda1710e195df45120692ef5b9e7fe6d1112ee9747a734a12d4a3d2940361",
+      "task_digest": "0fa74066cdf84b77332b5ca1741318833e0e6627416442723fc051aae2bd4825",
+      "settings_digest": "4b017744a8d8ce6e384a82140ee218387abf5e07675aedf514927b7413b97c61",
+      "has_live_result": false
+    },
+    "task04-improved": {
+      "ready": true,
+      "workspace_digest": "c75cda1710e195df45120692ef5b9e7fe6d1112ee9747a734a12d4a3d2940361",
+      "runtime_digest": "6df4b7653c5ff76638f1250c914d4e9d81f447807fc2c5e82c5453bf2c35eb87",
+      "task_digest": "1f99b48e213b93cb2f07ee0e3439f769a3fd07630745ce25205954a85642ed54",
+      "settings_digest": "abf3b55103380816fbe6d8328d1cad1860170e910603790dc5b0ff453bdf37aa",
+      "has_live_result": false
+    },
+    "task04-original": {
+      "ready": true,
+      "workspace_digest": "c75cda1710e195df45120692ef5b9e7fe6d1112ee9747a734a12d4a3d2940361",
+      "runtime_digest": "c75cda1710e195df45120692ef5b9e7fe6d1112ee9747a734a12d4a3d2940361",
+      "task_digest": "1f99b48e213b93cb2f07ee0e3439f769a3fd07630745ce25205954a85642ed54",
+      "settings_digest": "e95a94d8041cfe75977d416b538977ec9dd03b2697b7f31f4b377531b3893f6e",
+      "has_live_result": false
+    }
+  },
+  "protected_baseline_files": 683,
+  "protected_files_changed": [],
+  "preflight": {
+    "task02-original": {
+      "expected_acceptance_failures": 5,
+      "workspace_matches": true
+    },
+    "task02-improved": {
+      "expected_acceptance_failures": 5,
+      "workspace_matches": true
+    },
+    "task04-original": {
+      "expected_acceptance_failures": 9,
+      "workspace_matches": true
+    },
+    "task04-improved": {
+      "expected_acceptance_failures": 9,
+      "workspace_matches": true
+    },
+    "regression": {
+      "passed": 352,
+      "known_failed": 1,
+      "live_smoke_excluded": true
+    },
+    "real_model_calls": 0
+  },
+  "smoke": {
+    "real_model_calls": 0,
+    "initial_requests_match": true,
+    "results": [
+      {
+        "arm": "original",
+        "calls": 1,
+        "status": "returned_empty"
+      },
+      {
+        "arm": "improved",
+        "calls": 3,
+        "status": "no_progress"
+      }
+    ]
+  },
+  "frozen_runner_digest": "c9e5dcf8d7ba2bc85c8da23683919f512527d9cb899595363244874f4227ee51"
+}

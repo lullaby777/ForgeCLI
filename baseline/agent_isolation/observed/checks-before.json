@@ -1,0 +1,14 @@
+{
+  "reproduction": {
+    "exit_code": 0,
+    "log": "/tmp/corecoder-agent-isolation-baseline-01/reproduction-before.txt"
+  },
+  "acceptance": {
+    "exit_code": 1,
+    "log": "/tmp/corecoder-agent-isolation-baseline-01/acceptance-before.txt"
+  },
+  "regression": {
+    "exit_code": 1,
+    "log": "/tmp/corecoder-agent-isolation-baseline-01/regression-before.txt"
+  }
+}

@@ -1,0 +1,10 @@
+命令: cd sub && false
+输出: [exit code: 1]
+记录目录: /private/var/folders/_8/4ygyt9010tjgz7z68qb4skb80000gn/T/corecoder-cwd-test-5j1chdc3
+下一条 pwd: /private/var/folders/_8/4ygyt9010tjgz7z68qb4skb80000gn/T/corecoder-cwd-test-5j1chdc3
+期望目录: /private/var/folders/_8/4ygyt9010tjgz7z68qb4skb80000gn/T/corecoder-cwd-test-5j1chdc3/sub
+命令: false && cd sub; true
+输出: (no output)
+记录目录: /private/var/folders/_8/4ygyt9010tjgz7z68qb4skb80000gn/T/corecoder-cwd-test-5j1chdc3/sub
+下一条 pwd: /private/var/folders/_8/4ygyt9010tjgz7z68qb4skb80000gn/T/corecoder-cwd-test-5j1chdc3/sub
+期望目录: /private/var/folders/_8/4ygyt9010tjgz7z68qb4skb80000gn/T/corecoder-cwd-test-5j1chdc3

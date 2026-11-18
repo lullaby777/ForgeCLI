@@ -1,0 +1,92 @@
+test_ambiguous_match_does_not_change_file_or_checkpoint (test_acceptance.NewlineAcceptance.test_ambiguous_match_does_not_change_file_or_checkpoint) ... ok
+test_crlf_multiline_with_crlf_arguments (test_acceptance.NewlineAcceptance.test_crlf_multiline_with_crlf_arguments) ... FAIL
+test_crlf_multiline_with_lf_arguments (test_acceptance.NewlineAcceptance.test_crlf_multiline_with_lf_arguments) ... FAIL
+test_crlf_single_word (test_acceptance.NewlineAcceptance.test_crlf_single_word) ... FAIL
+test_diff_reports_only_the_changed_line (test_acceptance.NewlineAcceptance.test_diff_reports_only_the_changed_line) ... ok
+test_lf_multiline (test_acceptance.NewlineAcceptance.test_lf_multiline) ... ok
+test_lf_single_word (test_acceptance.NewlineAcceptance.test_lf_single_word) ... ok
+test_missing_match_does_not_change_file_or_checkpoint (test_acceptance.NewlineAcceptance.test_missing_match_does_not_change_file_or_checkpoint) ... ok
+test_no_final_newline_preserved (test_acceptance.NewlineAcceptance.test_no_final_newline_preserved) ... 
+  test_no_final_newline_preserved (test_acceptance.NewlineAcceptance.test_no_final_newline_preserved) (before=b'alpha\r\nbeta') ... FAIL
+test_non_utf8_is_rejected_without_modification (test_acceptance.NewlineAcceptance.test_non_utf8_is_rejected_without_modification) ... ok
+test_undo_after_restart_restores_original_bytes (test_acceptance.NewlineAcceptance.test_undo_after_restart_restores_original_bytes) ... ok
+test_unicode_and_blank_lines (test_acceptance.NewlineAcceptance.test_unicode_and_blank_lines) ... FAIL
+
+======================================================================
+FAIL: test_crlf_multiline_with_crlf_arguments (test_acceptance.NewlineAcceptance.test_crlf_multiline_with_crlf_arguments)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/corecoder-compare-01/evaluation/task02/test_acceptance.py", line 64, in test_crlf_multiline_with_crlf_arguments
+    self.edited(b"head\r\nalpha\r\nbeta\r\ntail\r\n", "alpha\r\nbeta", "A\r\nB",
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                b"head\r\nA\r\nB\r\ntail\r\n")
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/corecoder-compare-01/evaluation/task02/test_acceptance.py", line 48, in edited
+    self.assertTrue(result.startswith("Edited "), result)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : Error: old_string not found in /var/folders/_8/4ygyt9010tjgz7z68qb4skb80000gn/T/corecoder-newline-test-51bnux0z/sample.txt.
+File starts with:
+head
+alpha
+beta
+tail
+
+
+======================================================================
+FAIL: test_crlf_multiline_with_lf_arguments (test_acceptance.NewlineAcceptance.test_crlf_multiline_with_lf_arguments)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/corecoder-compare-01/evaluation/task02/test_acceptance.py", line 60, in test_crlf_multiline_with_lf_arguments
+    self.edited(b"head\r\nalpha\r\nbeta\r\ntail\r\n", "alpha\nbeta", "A\nB\nC",
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                b"head\r\nA\r\nB\r\nC\r\ntail\r\n")
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/corecoder-compare-01/evaluation/task02/test_acceptance.py", line 49, in edited
+    self.assertEqual(path.read_bytes(), expected)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: b'head\nA\nB\nC\ntail\n' != b'head\r\nA\r\nB\r\nC\r\ntail\r\n'
+
+======================================================================
+FAIL: test_crlf_single_word (test_acceptance.NewlineAcceptance.test_crlf_single_word)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/corecoder-compare-01/evaluation/task02/test_acceptance.py", line 53, in test_crlf_single_word
+    self.edited(b"alpha\r\nbeta\r\ngamma\r\n", "beta", "BETA",
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                b"alpha\r\nBETA\r\ngamma\r\n")
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/corecoder-compare-01/evaluation/task02/test_acceptance.py", line 49, in edited
+    self.assertEqual(path.read_bytes(), expected)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: b'alpha\nBETA\ngamma\n' != b'alpha\r\nBETA\r\ngamma\r\n'
+
+======================================================================
+FAIL: test_no_final_newline_preserved (test_acceptance.NewlineAcceptance.test_no_final_newline_preserved) (before=b'alpha\r\nbeta')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/corecoder-compare-01/evaluation/task02/test_acceptance.py", line 75, in test_no_final_newline_preserved
+    self.edited(before, "beta", "BETA", expected)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/corecoder-compare-01/evaluation/task02/test_acceptance.py", line 49, in edited
+    self.assertEqual(path.read_bytes(), expected)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: b'alpha\nBETA' != b'alpha\r\nBETA'
+
+======================================================================
+FAIL: test_unicode_and_blank_lines (test_acceptance.NewlineAcceptance.test_unicode_and_blank_lines)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/corecoder-compare-01/evaluation/task02/test_acceptance.py", line 78, in test_unicode_and_blank_lines
+    self.edited("标题\r\n\r\n旧内容\r\n结尾\r\n".encode(), "旧内容", "新内容",
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                "标题\r\n\r\n新内容\r\n结尾\r\n".encode())
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/corecoder-compare-01/evaluation/task02/test_acceptance.py", line 49, in edited
+    self.assertEqual(path.read_bytes(), expected)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: b'\xe[17 chars]\x98\n\n\xe6\x96\xb0\xe5\x86\x85\xe5\xae\xb9\n[22 chars]be\n' != b'\xe[17 chars]\x98\r\n\r\n\xe6\x96\xb0\xe5\x86\x85\xe5\xae\x[30 chars]\r\n'
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.007s
+
+FAILED (failures=5)
